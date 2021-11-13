@@ -5,3 +5,10 @@ html, body {
 canvas {
   display: block;
 }
+#p5_loading{
+  display: table-cell;
+  width: 100vw;
+  height: 100vh;
+  vertical-align: middle;
+  text-align: center;
+}
