@@ -1,0 +1,15 @@
+html, body {
+  margin: 0;
+  padding: 0;
+}
+canvas {
+  display: block;
+  margin: 0 auto;
+}
+#p5_loading{
+  display: table-cell;
+  width: 100vw;
+  height: 100vh;
+  vertical-align: middle;
+  text-align: center;
+}
