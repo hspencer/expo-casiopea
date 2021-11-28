@@ -35,4 +35,5 @@ draw=_=>{
 function mousePressed(){
 	t = 0;
 	setup();
+	noiseSeed(round(random(9999)));
 }
