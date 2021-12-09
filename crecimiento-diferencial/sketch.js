@@ -81,7 +81,7 @@ function windowResized(){
 }
 
 function keyTyped(){
-	if(key=== ' ' || key ==='x' || key === 'X'){
+	if(key === ' ' || key === 'x' || key === 'X'){
 		setup();
 	}
 }
