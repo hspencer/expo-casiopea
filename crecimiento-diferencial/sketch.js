@@ -1,3 +1,7 @@
+/**
+ * differential growth
+ */
+
 let curves;
 let rad = 8;
 let spd = 0.05;
@@ -7,13 +11,15 @@ function setup() {
 	background(255);
 	stroke(0, 20);
 	curves = [];
-	
+	frameCount = 0;
     textAlign(CENTER);
     fill(0);
     textFont('Alegreya Sans', 28);
     text("Crecimiento Diferencial", width/2, height/2);
     textFont('Alegreya Sans', 16);
     text("dibuja en cualquier parte", width/2, height/2 + 22);
+	textFont('Alegreya Sans', 16);
+    text("pulsa X para reiniciar", width/2, height/2 + 44);
     noFill();
 }
 
@@ -33,10 +39,8 @@ function mouseDragged() {
 }
 
 function draw() {
-	if(frameCount > 100){background(255, 15);}
-		
+	if(frameCount > 200){background(255, 15);}
 	if(curves.length >= 1 && !mouseIsPressed) {
-		
 		for(var i1=0; i1<curves.length; ++i1) {
 			for(var j1=0; j1<curves[i1].length; ++j1) {
 				for(var i2=0; i2<curves.length; ++i2) {
@@ -74,4 +78,10 @@ function draw() {
 
 function windowResized(){
     setup();
+}
+
+function keyTyped(){
+	if(key ==='x' || key === 'X'){
+		setup();
+	}
 }
