@@ -19,7 +19,7 @@ function setup() {
     textFont('Alegreya Sans', 16);
     text("dibuja en cualquier parte", width/2, height/2 + 22);
 	textFont('Alegreya Sans', 16);
-    text("pulsa X para reiniciar", width/2, height/2 + 44);
+    text("(ESPACIO para reiniciar)", width/2, height/2 + 44);
     noFill();
 }
 
@@ -81,7 +81,7 @@ function windowResized(){
 }
 
 function keyTyped(){
-	if(key ==='x' || key === 'X'){
+	if(key=== ' ' || key ==='x' || key === 'X'){
 		setup();
 	}
 }
