@@ -1,4 +1,4 @@
-let str = "¿no fue el hallazgo ajeno a los descubrimientos oh marinos sus pájaras salvajes el mar incierto las gentes desnudas entre sus dioses! porque el don para mostrarse equivoca la esperanza? no dejó así la primera pasión del oro al navegante ciego por esa claridad sin nombre con que la tarde premia y destruye la apariencia? ¿y ni día ni noche la tercera jornada no llegó como una isla y suavemente sin violentar engaños para que el aire humano recibiera sus orillas? que también para nosotros el destino despierte mansamente desde aquella gratuidad del yerro se abren todavía los grandes ríos crueles de anchas complacencias las montañas solas sobre las lluvias los árboles difíciles dejando frutos en la casa abandonada";
+let str = "hallazgo ajeno descubrimientos oh marinos sus pájaras salvajesmar incierto gentes desnudas entre sus dioses! porquedon mostrarse equivoca esperanza? no dejó así primera pasión oro navegante ciego esa claridad sin nombre tarde premia destruye apariencia? ¿y día ni noche tercera jornada no llegó isla suavemente sin violentar engaños queaire humano recibiera sus orillas? también nosotros destino despierte mansamente desde aquella gratuidad yerro abren todavía grandes ríos crueles anchas complacencias montañas solas lluvias árboles difíciles dejando frutos casa abandonada";
 let str_arr = [];
 
 let font;
@@ -10,7 +10,6 @@ function preload() {
 
 function setup() {
   createCanvas(windowWidth, windowHeight, WEBGL);
-  colorMode(HSB, 360, 100, 100, 100);
   let strs = str.split(" ");
   for (let i = 0; i < strs.length*20; i++) {
     let x = random(-width / 2, width / 2);
@@ -21,7 +20,7 @@ function setup() {
 }
 
 function draw() {
-  background(0,0,100);
+  background(255);
 	orbitControl();
   for (let i = 0; i < str_arr.length; i++) {
     str_arr[i].update();
@@ -49,8 +48,8 @@ class Type {
     translate(this.x, this.y, this.z);
     textAlign(CENTER, CENTER);
     textFont(font);
-    textSize(100);
-		fill(0,0,0);
+    textSize(80);
+    fill(0, 200);
     text(this.str, 0, 0);
     pop();
   }
