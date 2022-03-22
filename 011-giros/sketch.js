@@ -70,3 +70,7 @@ class Giro {
     this.a += this.aInc;
   }
 }
+
+function mouseClicked(){
+  setup();
+}
