@@ -6,7 +6,8 @@ function setup() {
   createCanvas(windowWidth, windowHeight);
   noLoop();
   noStroke();
-
+  rectMode(CENTER);
+  ellipseMode(CENTER);
   if (width < height) {
     SIDE = width; 
   } else {
@@ -20,24 +21,24 @@ function draw() {
   fill(color[0]);
   placePoint(random(SIDE));
   fill(color[1]);
-  placeSurface(random(100, SIDE), random(30, SIDE / 2));
+  placeSurface(random(SIDE/10, SIDE), random(SIDE/5, SIDE / 2));
   fill(color[2]);
-  placePoint(random(10, 150));
+  placePoint(random(SIDE/20, SIDE));
   blendMode(BURN);
   fill(color[3]);
-  placeSurface(random(5, 100), random(30, SIDE / 2));
+  placeSurface(random(SIDE/10, SIDE), random(SIDE/5, SIDE / 2));
   fill(color[4]);
-  placeSurface(random(5, 100), random(30, SIDE / 2));
+  placeSurface(random(SIDE/10, SIDE), random(SIDE/5, SIDE / 2));
 }
 
 function placePoint(size) {
   let x = random(size, width - size);
   let y = random(size, height - size);
-  circle(x, y, size / 2);
+  ellipse(x, y, size / 2, size / 2);
 }
 
 function placeSurface(w, h) {
-  let diag = dist(0, 0, w, h);
+  let diag = dist(0, 0, w/1.5, h/1.5);
   let x = random(diag, width - diag);
   let y = random(diag, height - diag);
   push();
@@ -51,6 +52,13 @@ function placeSurface(w, h) {
 
 function keyTyped() {
   if(key === ' '){
+    clear(); 
+  }
+  redraw();
+}
+
+function mouseClicked(){
+  if (mouseButton === RIGHT) {
     clear(); 
   }
   redraw();
