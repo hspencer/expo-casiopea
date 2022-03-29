@@ -4,7 +4,7 @@ let SIDE;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  noLoop();
+  //noLoop();
   noStroke();
   rectMode(CENTER);
   ellipseMode(CENTER);
@@ -13,10 +13,12 @@ function setup() {
   } else {
     SIDE = height;
   }
+  frameRate(0.2);
 }
 
 function draw() {
   let color = shuffle(colors);
+  clear(); 
   blendMode(MULTIPLY);
   fill(color[0]);
   placePoint(random(SIDE));
