@@ -13,10 +13,11 @@ function setup() {
   } else {
     SIDE = height;
   }
+  suprematism();
   frameRate(0.2);
 }
 
-function draw() {
+function suprematism(){
   let color = shuffle(colors);
   clear(); 
   blendMode(MULTIPLY);
@@ -31,6 +32,10 @@ function draw() {
   placeSurface(random(SIDE/10, SIDE), random(SIDE/5, SIDE / 2));
   fill(color[4]);
   placeSurface(random(SIDE/10, SIDE), random(SIDE/5, SIDE / 2));
+}
+
+function draw() {
+  suprematism();
 }
 
 function placePoint(size) {
