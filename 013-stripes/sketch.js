@@ -28,6 +28,7 @@ function draw() {
   }
   range = mouseX/width;
   step = mouseY/height * 10;
+  step = constrain(step, 0.1, 1);
 }
 
 class Hal{
