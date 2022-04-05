@@ -1,11 +1,11 @@
 let h, num;
 
-let range;
+let range, step;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
   h = [];
-  num = 4;
+  num = 6;
   let yInc = height/(num - 1);
   let y1, y2;
   y1 = 0;
@@ -19,6 +19,7 @@ function setup() {
   background(255);
   range = 0.5;
   mouseX = width/2;
+  step = 5;
 }
 
 function draw() {
@@ -26,6 +27,7 @@ function draw() {
     h[i].draw();
   }
   range = mouseX/width;
+  step = mouseY/height * 10;
 }
 
 class Hal{
@@ -41,8 +43,8 @@ class Hal{
   
   run(){
     noiseSeed(this.seed);
-    this.x1 += noise(millis()/this.zoom);
-    this.x2 += noise((millis()+this.seed)/this.zoom);
+    this.x1 += noise(millis()/this.zoom) * step;
+    this.x2 += noise((this.seed+millis())/this.zoom) * step;
     
     if(this.x1 > width || this.x2 > width){
       this.x1 = this.x2 = 0;
@@ -55,11 +57,9 @@ class Hal{
   
   draw(){
     this.run();
+    strokeWeight(step);
     stroke(0, 20);
     noFill();
-    
-    //line(this.x1, this.y1, this.x2, this.y2);
-    
     bezier(this.x1, this.y1, 
            this.x1, lerp(this.y1, this.y2, range), 
            this.x2, lerp(this.y1, this.y2, 1-range), 
