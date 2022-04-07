@@ -17,12 +17,3 @@ canvas {
   vertical-align: middle;
   text-align: center;
 }
-#controls{
-  display: flex;
-  justify-content: space-around;
-  
-}
-
-input[type="range"]{
-  width: 90px;
-}
