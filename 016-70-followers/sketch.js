@@ -6,13 +6,15 @@ let N; // next point
 let numPolis = 7;
 let polis = [];
 
+spirits = ["#CC334502", "#FF7B0002", "#E5ED0202", "#07D6FF02", "#0AB6F502", "#3471FF02", "#FFB13302"];
+
 function setup() {
   p = [];
   createCanvas(windowWidth, windowHeight);
   createCircle(width / 2, height / 2, height / 2.4);
   
   for(let i = 0; i < numPolis; i++){
-    polis[i] = new Poly(7, "#CC334501");
+    polis[i] = new Poly(7, spirits[i]);
   }
 }
 
