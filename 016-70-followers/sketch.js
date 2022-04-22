@@ -1,6 +1,6 @@
-const DRAG = 0.0028;
+const DRAG = 0.0070;
 const NUM = 70;
-const FRAMES = 1111;
+const FRAMES = 777;
 let p; // P array
 let N; // next point
 let landscape;
@@ -27,7 +27,7 @@ function setup() {
 }
 
 function createPoints(){
-  let m = side / 7;
+  let m = side / 20;
   for (let i = 0; i < NUM; i++) {
     p[i] = new P(random(m, width-m), random(m, height-m));
   }
@@ -58,8 +58,8 @@ function defineReticularArray(){
     marginY = height/10;
     spacerY = (height - 2*marginY) / 9;
   }
-  for(let y = marginY; y <= height - marginY; y+=spacerY){
-    for(let x = marginX; x <= width - marginX; x+=spacerX){
+  for(let y = marginY; y <= 1 + height - marginY; y+=spacerY){
+    for(let x = marginX; x <= 1 + width - marginX; x+=spacerX){
       p[i].reticularArray = createVector(x, y);
       i++;
     }
@@ -68,23 +68,21 @@ function defineReticularArray(){
 }
 
 function defineLinearArray(){
-  let i = 0;
   if(landscape){
-    let marginX = width/10;
+    let marginX = width/20;
     let spacerX = (width - 2*marginX) / (NUM-1);
-    for(let x = marginX; x <= (width - marginX)+1; x+=spacerX){
-      p[i].linearArray = createVector(x, height/2 + random(-10, 10));
-      i++;
+    for(let i = 0; i < NUM; i+=2){
+      p[i].linearArray = createVector(marginX + spacerX*i, height/2 + marginX/3);
+      p[i+1].linearArray = createVector(marginX + spacerX*i, height/2 - marginX/3);
     }
   }else{
-    let marginY = height/10;
+    let marginY = height/20;
     let spacerY = (height - 2*marginY) / (NUM-1);
-    for(let y = marginY; y <= height - marginY; y+=spacerY){
-      p[i].linearArray = createVector(width/2 + random(-10, 10), y);
-      i++;
+    for(let i = 0; i < NUM; i+=2){
+      p[i].linearArray = createVector(height/2 + marginY/3, marginY + spacerY*i);
+      p[i+1].linearArray = createVector(height/2 - marginY/3, marginY + spacerY*i);
     }
   }
-  print("linear array has "+i+" points");
 }
 
 function createShapes(){
@@ -106,7 +104,7 @@ function draw() {
   for (let i = 0; i < NUM; i++) {
     p[i].draw();
   }
-  if (frameCount % FRAMES === 0 || frameCount === 20) {
+  if (frameCount % FRAMES === 0 || frameCount === 30) {
     T = round(random(-0.49, 7.49));
     if (T === 0) {
       for (let i = 0; i < NUM; i++) {
@@ -137,7 +135,6 @@ function draw() {
       print("go to the next "+m);
     } 
   }
-  
     for(let i = 0; i < numPolis; i++){
     polis[i].draw();
   }
@@ -147,10 +144,10 @@ class P {
   constructor(x, y) {
     this.origin = createVector(x, y);
     this.position = createVector(x, y);
-    this.target = this.origin;
     this.circularArray = createVector();
     this.linearArray = createVector();
     this.reticularArray = createVector();
+    this.target = this.origin;
   }
   move() {
     //this.distToTarget = dist(target.x, target.y, this.position.x, this.position.y);
@@ -160,7 +157,7 @@ class P {
     this.position.y += diffY * DRAG;
   }
   draw() {
-    strokeWeight(2);
+    strokeWeight(1.2);
     stroke(0, 150);
     point(this.position.x, this.position.y);
     this.move();
