@@ -24,6 +24,10 @@ function setup() {
   defineReticularArray();
   defineLinearArray();
   createShapes();
+
+  for(let i = 0; i < NUM; i++){
+    p[i].target = p[i].circularArray;
+  }
 }
 
 function createPoints(){
@@ -104,7 +108,7 @@ function draw() {
   for (let i = 0; i < NUM; i++) {
     p[i].draw();
   }
-  if (frameCount % FRAMES === 0 || frameCount === 30) {
+  if (frameCount % FRAMES === 0) {
     T = round(random(-0.49, 7.49));
     if (T === 0) {
       for (let i = 0; i < NUM; i++) {
