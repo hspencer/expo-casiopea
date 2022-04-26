@@ -111,32 +111,15 @@ function draw() {
   if (frameCount % FRAMES === 0) {
     T = round(random(-0.49, 7.49));
     if (T === 0) {
-      for (let i = 0; i < NUM; i++) {
-        p[i].target = p[i].circularArray;
-      }
-      print("circular array");
+      moveToCircle();
     } else if (T === 1) {
-      for (let i = 0; i < NUM; i++) {
-        p[i].target = p[i].reticularArray;
-      }
-      print("reticular array")
+      moveToGrid();
     } else if (T === 2){
-      for (let i = 0; i < NUM; i++) {
-        p[i].target = p[i].linearArray;
-      }
-      print("linear array")
+      moveToLine();
     } else if (T === 3){
-      for (let i = 0; i < NUM; i++) {
-        p[i].target = p[i].origin;
-      }
-      print("random array")
+      moveToRandom
     }else {
-      let m = round(random(2, NUM));
-      for (let i = 0; i < NUM; i++) {
-        let next = (i + m) % p.length;
-        p[i].target = p[next].position;
-      }
-      print("go to the next "+m);
+      moveToNextN();
     } 
   }
     for(let i = 0; i < numPolis; i++){
@@ -183,5 +166,58 @@ class Poly {
       curveVertex(this.v[i].position.x, this.v[i].position.y);
     }
     endShape(CLOSE);
+  }
+}
+
+
+function moveToCircle(){
+  for (let i = 0; i < NUM; i++) {
+    p[i].target = p[i].circularArray;
+  }
+}
+
+function moveToRandom(){
+  let m = round(random(2, NUM));
+  for (let i = 0; i < NUM; i++) {
+    p[i].target = p[i].origin;
+  }
+}
+
+function moveToNextN(){
+  let m = round(random(2, NUM));
+  for (let i = 0; i < NUM; i++) {
+    let next = (i + m) % p.length;
+    p[i].target = p[next].position;
+  }
+  print("go to the next "+m);
+}
+
+function moveToLine(){
+  for (let i = 0; i < NUM; i++) {
+    p[i].target = p[i].linearArray;
+  }
+}
+
+function moveToGrid(){
+  for (let i = 0; i < NUM; i++) {
+    p[i].target = p[i].reticularArray;
+  }
+}
+
+function keyTyped(){
+  if(key === '1'){
+    moveToCircle();
+  }
+  if(key === '2'){
+    moveToGrid();
+  }
+  if(key === '3'){
+    moveToLine()
+  }
+  if(key === '4'){
+    moveToRandom();
+  }
+  if(key === '5'){
+    moveToNextN();
   }
 }
