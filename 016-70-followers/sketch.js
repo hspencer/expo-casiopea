@@ -5,12 +5,14 @@ let p; // P array
 let N; // next point
 let landscape;
 let numPolis = 7;
-let polis = [];
+let polis;
 let side;
 spirits = ["#CC334502", "#FF7B0002", "#E5ED0202", "#07D6FF02", "#0AB6F502", "#3471FF02", "#FFB13302"];
 
+// interface
+let radio, textInput;
+
 function setup() {
-  p = [];
   createCanvas(windowWidth, windowHeight);
   if(width > height){
     side = height;
@@ -28,9 +30,61 @@ function setup() {
   for(let i = 0; i < NUM; i++){
     p[i].target = p[i].circularArray;
   }
+  let c = createDiv();
+  c.id("controls");
+  
+  radio = createRadio();
+  radio.parent("controls");
+  radio.option('1', 'azar');
+  radio.option('2', 'fila');
+  radio.option('3', 'retícula');
+  radio.option('4', 'círculo');
+  radio.option('5', 'siguiente');
+  radio.selected('4');
+  radio.changed(newFormation);
+
+  textInput = createInput('2', 'number');
+  textInput.size(50);
+  textInput.parent("#controls");
+  textInput.style('margin-left', '20px');
+  textInput.attribute('min', '1');
+  textInput.attribute('max', NUM-1);
+
+  c.position(0, height - c.size().height);
+
+}
+
+function draw() {
+
+  /*
+  if (frameCount % FRAMES === 0) {
+    T = round(random(-0.49, 7.49));
+    if (T === 0) {
+      moveToCircle();
+    } else if (T === 1) {
+      moveToGrid();
+    } else if (T === 2){
+      moveToLine();
+    } else if (T === 3){
+      moveToRandom
+    }else {
+      moveToNextN();
+    } 
+  }
+  */
+  if(frameCount % 10 === 0){
+    velum();
+  }
+  for (let i = 0; i < NUM; i++) {
+    p[i].draw();
+  }
+    for(let i = 0; i < numPolis; i++){
+    polis[i].draw();
+  }
 }
 
 function createPoints(){
+  p = [];
   let m = side / 20;
   for (let i = 0; i < NUM; i++) {
     p[i] = new P(random(m, width-m), random(m, height-m));
@@ -68,7 +122,6 @@ function defineReticularArray(){
       i++;
     }
   }
-  print("reticular array has "+i+" points");
 }
 
 function defineLinearArray(){
@@ -90,8 +143,10 @@ function defineLinearArray(){
 }
 
 function createShapes(){
+  polis = []; 
   for(let i = 0; i < numPolis; i++){
-    polis[i] = new Poly(3, spirits[i]);
+    let sides = round(random(3, 7));
+    polis[i] = new Poly(sides, spirits[i]);
   }
 }
 
@@ -101,31 +156,108 @@ function velum() {
   rect(0, 0, width, height);
 }
 
-function draw() {
-  if(frameCount % 10 === 0){
-    velum();
-  }
+
+function moveToCircle(){
   for (let i = 0; i < NUM; i++) {
-    p[i].draw();
-  }
-  if (frameCount % FRAMES === 0) {
-    T = round(random(-0.49, 7.49));
-    if (T === 0) {
-      moveToCircle();
-    } else if (T === 1) {
-      moveToGrid();
-    } else if (T === 2){
-      moveToLine();
-    } else if (T === 3){
-      moveToRandom
-    }else {
-      moveToNextN();
-    } 
-  }
-    for(let i = 0; i < numPolis; i++){
-    polis[i].draw();
+    p[i].target = p[i].circularArray;
   }
 }
+
+function moveToRandom(){
+  let m = side / 20;
+  for (let i = 0; i < NUM; i++) {
+    p[i].origin.x = random(m, width-m);
+    p[i].origin.y = random(m, height-m);
+    p[i].target = p[i].origin;
+  }
+}
+
+function moveToNextN(){
+  let m = parseInt(textInput.value());
+  for (let i = 0; i < NUM; i++) {
+    let next = (i + m) % (NUM-1);
+    p[i].target = p[next].position;
+  }
+  print("go to the next "+m);
+}
+
+function moveToLine(){
+  for (let i = 0; i < NUM; i++) {
+    p[i].target = p[i].linearArray;
+  }
+}
+
+function moveToGrid(){
+  for (let i = 0; i < NUM; i++) {
+    p[i].target = p[i].reticularArray;
+  }
+}
+
+function keyTyped(){
+  if(key === '1'){
+    moveToCircle();
+  }
+  if(key === '2'){
+    moveToGrid();
+  }
+  if(key === '3'){
+    moveToLine()
+  }
+  if(key === '4'){
+    moveToRandom();
+  }
+  if(key === '5'){
+    moveToNextN();
+  }
+  if(key === ' '){
+    createShapes();
+  }
+}
+
+function newFormation(){
+  switch(radio.value()){
+    case '1':
+      moveToRandom();
+      break;
+    case '2':
+      moveToLine();
+      break;
+    case '3':
+      moveToGrid();
+      break;
+    case '4':
+      moveToCircle();
+      break;
+    case '5':
+      moveToNextN();
+      break;
+  }
+}
+
+/*
+function newFormationN(x){
+  switch(x){
+    case 1:
+      moveToRandom();
+      break;
+    case 2:
+      moveToLine();
+      break;
+    case 3:
+      moveToGrid();
+      break;
+    case 4:
+      moveToCircle();
+      break;
+    case 5:
+      moveToNextN();
+      break;
+  }
+}
+
+*/
+
+///---- Classes------
 
 class P {
   constructor(x, y) {
@@ -166,58 +298,5 @@ class Poly {
       curveVertex(this.v[i].position.x, this.v[i].position.y);
     }
     endShape(CLOSE);
-  }
-}
-
-
-function moveToCircle(){
-  for (let i = 0; i < NUM; i++) {
-    p[i].target = p[i].circularArray;
-  }
-}
-
-function moveToRandom(){
-  let m = round(random(2, NUM));
-  for (let i = 0; i < NUM; i++) {
-    p[i].target = p[i].origin;
-  }
-}
-
-function moveToNextN(){
-  let m = round(random(2, NUM));
-  for (let i = 0; i < NUM; i++) {
-    let next = (i + m) % p.length;
-    p[i].target = p[next].position;
-  }
-  print("go to the next "+m);
-}
-
-function moveToLine(){
-  for (let i = 0; i < NUM; i++) {
-    p[i].target = p[i].linearArray;
-  }
-}
-
-function moveToGrid(){
-  for (let i = 0; i < NUM; i++) {
-    p[i].target = p[i].reticularArray;
-  }
-}
-
-function keyTyped(){
-  if(key === '1'){
-    moveToCircle();
-  }
-  if(key === '2'){
-    moveToGrid();
-  }
-  if(key === '3'){
-    moveToLine()
-  }
-  if(key === '4'){
-    moveToRandom();
-  }
-  if(key === '5'){
-    moveToNextN();
   }
 }

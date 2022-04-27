@@ -5,3 +5,8 @@ html, body {
 canvas {
   display: block;
 }
+
+#controls div label::after{
+  content: '\a';
+  white-space: pre;
+}
