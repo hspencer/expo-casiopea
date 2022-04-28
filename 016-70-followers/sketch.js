@@ -1,6 +1,7 @@
+let mil; // millis counter
+const TIMEPASSED = 10000; // ten seconds
 const DRAG = 0.0070;
 const NUM = 70;
-const FRAMES = 777;
 let p; // P array
 let N; // next point
 let landscape;
@@ -9,8 +10,11 @@ let polis;
 let side;
 spirits = ["#CC334502", "#FF7B0002", "#E5ED0202", "#07D6FF02", "#0AB6F502", "#3471FF02", "#FFB13302"];
 
+
 // interface
 let radio, textInput;
+let counter;
+
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -33,16 +37,17 @@ function setup() {
   let c = createDiv();
   c.id("controls");
   
-  radio = createRadio();
-  radio.parent("controls");
-  radio.option('1', 'azar');
-  radio.option('2', 'fila');
-  radio.option('3', 'retícula');
-  radio.option('4', 'círculo');
-  radio.option('5', 'siguiente');
+  radio = createRadio(c, "formation");
+  
+  radio.option('1','azar');
+  radio.option('2','fila');
+  radio.option('3','retícula');
+  radio.option('4','círculo');
+  radio.option('5','siguiente');
   radio.selected('4');
   radio.changed(newFormation);
-
+  radio.parent("controls");
+  
   textInput = createInput('2', 'number');
   textInput.size(50);
   textInput.parent("#controls");
@@ -51,27 +56,15 @@ function setup() {
   textInput.attribute('max', NUM-1);
 
   c.position(0, height - c.size().height);
-
+  mil = millis();
+  
+  counter = createDiv();
+  counter.id("counter");
+  counter.position(0,0);
 }
 
 function draw() {
 
-  /*
-  if (frameCount % FRAMES === 0) {
-    T = round(random(-0.49, 7.49));
-    if (T === 0) {
-      moveToCircle();
-    } else if (T === 1) {
-      moveToGrid();
-    } else if (T === 2){
-      moveToLine();
-    } else if (T === 3){
-      moveToRandom
-    }else {
-      moveToNextN();
-    } 
-  }
-  */
   if(frameCount % 10 === 0){
     velum();
   }
@@ -81,6 +74,14 @@ function draw() {
     for(let i = 0; i < numPolis; i++){
     polis[i].draw();
   }
+  
+  if(millis() - mil > TIMEPASSED){
+    let x = round(random(1, 5));
+    newFormationN(x);
+    mil = millis();
+  }
+  
+  counter.html(millis() - mil);
 }
 
 function createPoints(){
@@ -215,6 +216,7 @@ function keyTyped(){
 }
 
 function newFormation(){
+  mil = millis();
   switch(radio.value()){
     case '1':
       moveToRandom();
@@ -234,8 +236,8 @@ function newFormation(){
   }
 }
 
-/*
 function newFormationN(x){
+  radio.selected(''+x);
   switch(x){
     case 1:
       moveToRandom();
@@ -254,8 +256,6 @@ function newFormationN(x){
       break;
   }
 }
-
-*/
 
 ///---- Classes------
 
