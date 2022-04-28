@@ -81,7 +81,7 @@ function draw() {
     mil = millis();
   }
   
-  counter.html(millis() - mil);
+  counter.html(TIMEPASSED - (millis() - mil));
 }
 
 function createPoints(){
