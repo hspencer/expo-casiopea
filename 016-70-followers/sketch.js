@@ -237,7 +237,7 @@ function newFormation(){
 }
 
 function newFormationN(x){
-  radio.selected(''+x);
+  radio.selected(x.toString());
   switch(x){
     case 1:
       moveToRandom();
