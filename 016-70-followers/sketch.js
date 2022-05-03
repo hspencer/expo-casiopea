@@ -78,7 +78,7 @@ function draw() {
   if(millis() - mil > TIMEPASSED){
     let x = round(random(1, 5));
     newFormationN(x);
-    mil = millis();
+    mil = round(millis());
   }
   
   counter.html(TIMEPASSED - (millis() - mil));
