@@ -6,7 +6,7 @@ html, body {
 }
 
 #controls{
-  line-height: 250%;
+  line-height: 160%;
 }
 
 input{
@@ -14,14 +14,14 @@ input{
 }
 
 input[type="radio"]{
-  border: 1px solid #c00;
+  margin-right: 1ex;
 }
 canvas {
   display: block;
 }
 
 label{
-
+  
 }
 
 #controls div label::after{

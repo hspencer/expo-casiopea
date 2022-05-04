@@ -55,7 +55,7 @@ function setup() {
   textInput.attribute('min', '1');
   textInput.attribute('max', NUM-1);
 
-  c.position(0, height - c.size().height);
+  c.position(0, height - c.size().height - 10);
   mil = millis();
   
   counter = createDiv();
