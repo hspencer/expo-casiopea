@@ -11,15 +11,20 @@ let fourierX;
 let time = 0;
 let path = [];
 
+
+let horizonte;
+
 function setup() {
-  createCanvas(600, 700);
-  const skip = 2;
+  createCanvas(windowWidth, windowHeight);
+  const skip = 1;
   for (let i = 0; i < drawing.length; i += skip) {
     const c = new Complex(drawing[i].x, drawing[i].y);
     x.push(c);
   }
   fourierX = dft(x);
   fourierX.sort((a, b) => b.amp - a.amp);
+
+  horizonte = createGraphics(width, height,);
 }
 
 function epicycles(x, y, rotation, fourier) {
@@ -33,9 +38,10 @@ function epicycles(x, y, rotation, fourier) {
     y += radius * sin(freq * time + phase + rotation);
 
     stroke(0, 90);
-    noFill();
+    strokeWeight(.75);
+    fill(255, 150);
     ellipse(prevx, prevy, radius * 2);
-		strokeWeight(.75);
+		strokeWeight(2);
     line(prevx, prevy, x, y);
   }
   return createVector(x, y);
@@ -43,12 +49,14 @@ function epicycles(x, y, rotation, fourier) {
 
 function draw() {
 	//translate(-200, -150);
-	scale(1)//.3);
-  background(255);
+	scale(1.1)//.3);
+  clear();
+  image(horizonte, 0, 0);
 
   let v = epicycles(width / 2, height / 2, 0, fourierX);
   path.unshift(v);
   stroke('#f04657');
+  strokeWeight(0.75);
   beginShape();
   noFill();
   for (let i = 0; i < path.length; i++) {
@@ -63,5 +71,21 @@ function draw() {
     time = 0;
     path = [];
   }
-//	if (frameCount == 640) save('pix.jpg');  // allows the drawing to complete first.
+
+ 
+  //print(fourierX);
+  
+  let pl = path.length;
+  let prl = pl-1;
+  let paso = pl * 0.75;
+
+  // print(mag(path[0].x, path[0].y));
+
+  horizonte.stroke('#f9010136');
+  horizonte.line(paso, height - (mag(path[0].x, path[0].y) - 150 ), paso, height);
+}
+
+
+function keyTyped(){
+  if(key === 's') save('amereida-fourier.jpg');
 }
