@@ -77,7 +77,9 @@ function draw() {
   
   let pl = path.length;
   let prl = pl-1;
-  let paso = pl * 0.75;
+  let paso = (pl * 2) % width;
+
+  
 
   // print(mag(path[0].x, path[0].y));
 
