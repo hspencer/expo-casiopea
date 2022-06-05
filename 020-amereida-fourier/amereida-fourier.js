@@ -12,7 +12,7 @@ let time = 0;
 let path = [];
 
 
-let horizonte;
+// let horizonte;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -24,7 +24,7 @@ function setup() {
   fourierX = dft(x);
   fourierX.sort((a, b) => b.amp - a.amp);
 
-  horizonte = createGraphics(width, height,);
+ // horizonte = createGraphics(width, height,);
 }
 
 function epicycles(x, y, rotation, fourier) {
@@ -51,7 +51,7 @@ function draw() {
 	//translate(-200, -150);
 	scale(1.1)//.3);
   clear();
-  image(horizonte, 0, 0);
+  //image(horizonte, 0, 0);
 
   let v = epicycles(width / 2, height / 2, 0, fourierX);
   path.unshift(v);
@@ -79,14 +79,13 @@ function draw() {
   let prl = pl-1;
   let paso = (pl * 2) % width;
 
-  
-
   // print(mag(path[0].x, path[0].y));
-
+/*
   horizonte.stroke('#f9010136');
   horizonte.line(paso, height - (mag(path[0].x, path[0].y) - 150 ), paso, height);
-}
 
+  */
+}
 
 function keyTyped(){
   if(key === 's') save('amereida-fourier.jpg');
