@@ -26,7 +26,7 @@ function setup() {
   
   createCanvas(windowWidth, windowHeight - 30);
   //g = createGraphics(width, height);
-  speedSlider = createSlider(0, 2, 1, 0.01);
+  speedSlider = createSlider(0.8, 1.2, 1, 0.001);
   addEpicyclesBtn = createButton(" / ");
   addEpicyclesBtn.mouseReleased(addEpi);
   remEpicyclesBtn = createButton(" % ");
