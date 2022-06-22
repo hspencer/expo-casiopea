@@ -12,6 +12,7 @@ let time = 0;
 let path = [];
 
 
+let div;
 // let horizonte;
 
 function setup() {
@@ -21,8 +22,12 @@ function setup() {
     const c = new Complex(drawing[i].x, drawing[i].y);
     x.push(c);
   }
+
   fourierX = dft(x);
   fourierX.sort((a, b) => b.amp - a.amp);
+
+  div = createDiv();
+  div.position(0,0);
 
  // horizonte = createGraphics(width, height,);
 }
@@ -37,11 +42,12 @@ function epicycles(x, y, rotation, fourier) {
     x += radius * cos(freq * time + phase + rotation);
     y += radius * sin(freq * time + phase + rotation);
 
-    stroke(0, 90);
+    stroke(0, 40);
     strokeWeight(.75);
-    fill(255, 150);
+    //fill(255, 150);
+    noFill();
     ellipse(prevx, prevy, radius * 2);
-		strokeWeight(2);
+		stroke(0);
     line(prevx, prevy, x, y);
   }
   return createVector(x, y);
@@ -71,20 +77,20 @@ function draw() {
     time = 0;
     path = [];
   }
-
- 
-  //print(fourierX);
   
-  let pl = path.length;
-  let prl = pl-1;
-  let paso = (pl * 2) % width;
 
   // print(mag(path[0].x, path[0].y));
-/*
+  /*
   horizonte.stroke('#f9010136');
   horizonte.line(paso, height - (mag(path[0].x, path[0].y) - 150 ), paso, height);
 
   */
+
+  for(let i = 0; i < fourierX.length; i++){
+    //console.log(fourierX[i]);
+  }
+
+  console.log(fourierX[0]);
 }
 
 function keyTyped(){
