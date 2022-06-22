@@ -13,7 +13,7 @@ let signal = [];
 let fourier = [];
 let removedFourier = [];
 
-let g;
+//let g;
 let speedSlider, addEpicyclesBtn, remEpicyclesBtn;
 
 let font;
@@ -25,8 +25,8 @@ function preload() {
 function setup() {
   
   createCanvas(windowWidth, windowHeight - 30);
-  g = createGraphics(width, height);
-  speedSlider = createSlider(0, 2, 1, 0.1);
+  //g = createGraphics(width, height);
+  speedSlider = createSlider(0, 2, 1, 0.01);
   addEpicyclesBtn = createButton(" / ");
   addEpicyclesBtn.mouseReleased(addEpi);
   remEpicyclesBtn = createButton(" % ");
@@ -51,7 +51,7 @@ function mousePressed() {
 }
 
 function mouseReleased() {
-  //frameRate(10);
+  frameRate(12);
   state = FOURIER;
   const skip = 1;
   for (let i = 0; i < drawing.length; i+=skip) {
@@ -65,7 +65,9 @@ function mouseReleased() {
 
 function epicycles(x, y, rotation, fourier) {
 
-  ellipse(x, y, 10, 10);
+  noStroke();
+  fill(0);
+  ellipse(x, y, 7, 7);
 
   for (let i = 0; i < fourier.length; i++) {
     let prevx = x;
@@ -99,7 +101,6 @@ let animation = true;
 
 function draw() {
   clear();
-  image(g, 0, 0);
 
   if(animation == true){
     textSize(24);
@@ -138,13 +139,14 @@ function draw() {
   
     // Add final point to the array
     path.unshift(v);
-    g.noFill();
-    g.stroke("#fd5017f0");
-    g.beginShape();
+    noFill();
+    stroke("#fd5017f0");
+    strokeWeight(1.5);
+    beginShape();
     for (let i = 0; i < path.length; i++) {
-      g.vertex(path[i].x, path[i].y);
+      vertex(path[i].x, path[i].y);
     }
-    g.endShape();
+    endShape();
    
     // Increment Time
     const dt = (TWO_PI / fourier.length) * speedMod;
@@ -166,8 +168,7 @@ function draw() {
     //if (path.length > 600) {
     //  path.pop();
     //}
-    
-    g.filter(BLUR, 1);
+
   }
   
     

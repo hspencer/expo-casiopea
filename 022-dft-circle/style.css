@@ -8,12 +8,16 @@ canvas {
 }
 
 button{
-  border: 1px solid rgba(253, 81, 23, 0.347);
+  font-size: 11px;
+  border: 1px solid rgba(253, 81, 23);
+  width: 4em;
   border-radius: 4px;
   background-color: transparent;
-  width: 3em;
   margin-left: 4em;
+  padding: .25ex 1em;
 }
+
+button:hover{background-color: rgba(253, 81, 23, 0.193);}
 
 input[type=range] {
   height: 10px;
