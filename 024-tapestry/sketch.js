@@ -8,6 +8,7 @@ function setup() {
   graphics = createGraphics(width, height);
   graphics.colorMode(HSB, 360, 100, 100, 100);
   graphics.noStroke();
+
   for (let i = 0; i < (width * height * 15) / 100; i++) {
     let r = ((1 - random(random(random()))) * sqrt(sq(width) + sq(height))) / 2;
     let angle = random(360);
@@ -19,6 +20,7 @@ function setup() {
     graphics.fill(0, 0, 0, 33);
     graphics.ellipse(x, y, w, h);
   }
+  noLoop();
 }
 
 function draw() {
@@ -80,7 +82,4 @@ function draw() {
     y += yVal;
   }
   image(graphics, 0, 0);
-  noLoop();
 }
-
-mouseClicked = () => setup()
