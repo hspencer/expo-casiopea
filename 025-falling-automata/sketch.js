@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Based on https://www.rudyrucker.com/oldhomepage/celdoc/rules.html#HGlass
 ////////////////////////////////////////////////////////////////////////////////
-const n = 300
+const n = 126
 let step
 let board = []
 
@@ -17,6 +17,7 @@ setup = () => {
       board[x][y] = (random(1) < .5 && y > n / 8)? 1 : 0
     }
   }
+  ellipseMode(CORNER)
 }
 draw = () => {
   background('white')
@@ -36,8 +37,8 @@ draw = () => {
 			case 11: case 21: case 25:
 			case 29: case 30:case 31:
         next[x][y] = 1
-				fill(map(dist(x * step, y * step, mouseX, mouseY), 0, height, 0, 255))
-        rect(x * step, y * step, step + 1, step + 1)
+				fill(200);//map(dist(x * step, y * step, mouseX, mouseY), 0, height, 30, 222))
+        ellipse(x * step, y * step, step + 1, step + 1)
         break;
       default:
         next[x][y] = 0
