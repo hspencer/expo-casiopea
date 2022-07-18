@@ -1,0 +1,17 @@
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+#container{
+  height: 100vh;
+  display: flex;
+  flex-flow: row;
+  align-items: center;
+  justify-content: space-around;
+}
+canvas {
+  border-radius: 5px;
+  box-shadow: 0 0 10px #00000033;
+  align-self: middle;
+}
