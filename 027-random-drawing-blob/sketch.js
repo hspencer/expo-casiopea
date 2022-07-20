@@ -2,7 +2,7 @@ let b = [];
 let num = 70;
 
 function setup() {
-  createCanvas(windowWidth, windowHeight);
+  createCanvas(windowWidth - 20, windowHeight - 20);
   b.push(new Blob(random(width), random(height)));
 }
 
