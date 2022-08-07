@@ -1,0 +1,18 @@
+html, body {
+  margin: 0 auto;
+  padding: 0;
+  
+  font-family: monospace, mono;
+  font-size: 10px;
+  line-height: 13px;
+  max-width: 72em;
+}
+canvas {
+  display: none;
+}
+
+#ascii{
+  color: #FB0;
+  background-color: #282828;
+  border-radius: 10px;
+}
