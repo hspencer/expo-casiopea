@@ -16,8 +16,10 @@ function setup() {
   msk.fill(0);
   msk.ellipseMode(CENTER);
   msk.ellipse(10, 10, 10, 10);
-  msk.filter(BLUR, 4.5);
+  msk.filter(BLUR, 5);
   
+  //image(msk, 0, 0);
+
   for(let i = 0; i < 40; i++){
     createPoints();
   }

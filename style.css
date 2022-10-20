@@ -12,3 +12,8 @@ body{
 canvas {
   display: block;
 }
+
+footer{
+  font-size: 80%;
+  padding: 3em;
+}
