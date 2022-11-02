@@ -53,7 +53,7 @@ function generate() {
 }
 
 function setup() {
-	createCanvas(windowWidth, 450, WEBGL)
+	createCanvas(windowWidth, 300, WEBGL)
 	setAttributes({ antialias: true })
 	lineShader = createShader(...lineShaderSource())
 	blobShader = createShader(...blobShaderSource())
