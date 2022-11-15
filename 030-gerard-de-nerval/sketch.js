@@ -10,15 +10,17 @@ let sliderA, sliderB, sliderAMP;
 
 function preload() {
   img = loadImage("../data/gerard-de-nerval.jpg");
-  // offset coordinates
-  imgX = -250;
-  imgY = 0;
-  imgSCL = 0.44;
 }
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  turns = 50;
+
+    // offset coordinates
+  imgX =  width * -0.5;
+  imgY = height * -0.23;
+  imgSCL = 0.44;
+
+  turns = 70;
   step = 0.04;
   radius = 200;
   createPoints(width / 2, height / 2, radius, turns, step);
