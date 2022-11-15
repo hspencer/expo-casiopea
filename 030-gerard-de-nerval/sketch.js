@@ -9,12 +9,10 @@ const EPSILON = 1.0e-4;
 let sliderA, sliderB, sliderAMP;
 
 function preload() {
-  img = loadImage(
-    "https://upload.wikimedia.org/wikipedia/commons/0/03/F%C3%A9lix_Nadar_1820-1910_portraits_G%C3%A9rard_de_Nerval.jpg"
-  );
+  img = loadImage("../data/gerard-de-nerval.jpg");
   // offset coordinates
-  imgX = 615;
-  imgY = 584;
+  imgX = -250;
+  imgY = 0;
   imgSCL = 0.44;
 }
 
@@ -29,9 +27,9 @@ function setup() {
 }
 
 function draw() {
-  //image(img, -imgX * imgSCL, -imgY * imgSCL, img.width * imgSCL, img.height * imgSCL);
+  image(img, -imgX * imgSCL, -imgY * imgSCL, img.width * imgSCL, img.height * imgSCL);
   if (n < p.length / 2) {
-    background(255);
+    background(255, 10);
     drawPoints(p.length / 2 - n, p.length / 2 + n);
     n++;
   } else {
@@ -57,7 +55,7 @@ function createPoints(xpos, ypos, radius, turns, step) {
 
     let b = 255 - brightness(img.get(x / imgSCL + imgX, y / imgSCL + imgY));
     //let r = map(b, 0, 255, 0, (radius/turns)*.5);
-    let r = ((QuadraticBezier(b / 255, 1, 0) * radius) / turns) * 0.89; //amp
+    let r = ((QuadraticBezier(b / 255, 1, 0) * radius) / turns) * 0.94; //amp
 
     let x1 = x + cos(angle) * r;
     let y1 = y + sin(angle) * r;
