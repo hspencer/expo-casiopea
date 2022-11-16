@@ -59,12 +59,17 @@ function draw() {
     drawPointFromCenter(n);
     n++;
   } else {
-    fill(255);
-    textFont("Georgia Bold", 18);
+    push();
+    fill(0, 70);
+    textFont("Georgia", 12);
     textAlign(CENTER);
-    text("Gérard de Nerval", width / 2, height / 2 + radius * 0.62);
+    translate(width / 2 + radius + 10, height / 2);
+    rotate(-HALF_PI);
+    text("Gérard de Nerval", 0, 0);
+    pop();
     noLoop();
   }
+
 }
 
 function createPoints(xpos, ypos, radius, turns, step) {
