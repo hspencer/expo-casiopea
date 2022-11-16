@@ -53,9 +53,9 @@ function drawPointFromCenter(n) {
 }
 
 function draw() {
-    image(img, -imgX * imgSCL, -imgY * imgSCL, img.width * imgSCL, img.height * imgSCL);
+// image(img, -imgX * imgSCL, -imgY * imgSCL, img.width * imgSCL, img.height * imgSCL);
   if (n < p.length / 2) {
-    background(255, 100);
+    background(255); //, 100);
     drawPointFromCenter(n);
     n++;
   } else {
