@@ -16,29 +16,53 @@ function setup() {
   createCanvas(windowWidth, windowHeight);
 
     // offset coordinates
-  imgX =  width * -0.5;
-  imgY = height * -0.23;
+  imgX =  width * -0.46;
+  imgY = height * 0.12643;
   imgSCL = 0.44;
 
-  turns = 70;
+  turns = 48;
   step = 0.04;
-  radius = 200;
+  radius = 210;
   createPoints(width / 2, height / 2, radius, turns, step);
-  print(p.length);
+  print("p.length = "+p.length);
   n = 0;
 }
 
+function drawPointsToCenter(from, to) {
+  noStroke();
+  fill(0);
+  beginShape();
+  for (let i = from; i < to; i++) {
+    vertex(p[i].x, p[i].y);
+  }
+  endShape();
+}
+
+function drawPointFromCenter(n) {
+  noStroke();
+  fill(0);
+  let l = p.length - 1;
+  beginShape();
+  for (let i = 0; i < n; i++) {
+    vertex(p[i].x, p[i].y);
+  }
+  for (let i = l - n; i < p.length; i++) {
+    vertex(p[i].x, p[i].y);
+  }
+  endShape();
+}
+
 function draw() {
-  // image(img, -imgX * imgSCL, -imgY * imgSCL, img.width * imgSCL, img.height * imgSCL);
+    image(img, -imgX * imgSCL, -imgY * imgSCL, img.width * imgSCL, img.height * imgSCL);
   if (n < p.length / 2) {
-    background(255);
-    drawPoints(p.length / 2 - n, p.length / 2 + n);
+    background(255, 100);
+    drawPointFromCenter(n);
     n++;
   } else {
     fill(255);
     textFont("Georgia Bold", 18);
     textAlign(CENTER);
-    text("Gérard de Nerval", width / 2, height / 2 + radius * 0.82);
+    text("Gérard de Nerval", width / 2, height / 2 + radius * 0.62);
     noLoop();
   }
 }
@@ -68,7 +92,7 @@ function createPoints(xpos, ypos, radius, turns, step) {
     p[i] = createVector(x1, y1);
     p[totalPoints * 2 - 1 - i] = createVector(x2, y2);
 
-    angle += step;
+    angle -= step;
     currentRadius += radiusStep;
   }
 }
