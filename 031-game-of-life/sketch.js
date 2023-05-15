@@ -41,6 +41,9 @@ function keyPressed() {
   if (key === " ") {
     grid = getNextGeneration(grid);
   }
+  if (key === "e") {
+    grid = createEmptyGrid();
+  }
   if (key === "p") {
     p = !p;
   }
