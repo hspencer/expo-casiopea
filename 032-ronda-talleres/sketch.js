@@ -41,7 +41,7 @@ function gotData(){
 
 
 function setup() {
-  createCanvas(windowWidth, windowHeight);
+  createCanvas(windowWidth - 10, windowHeight - 35);
   rectMode(CENTER);
   w = width;
   h = height;
@@ -122,7 +122,7 @@ function createConstraints() {
 	boundaries.push(new Boundary(w / 2, 0 - thickness / 2, w*2, thickness, 0));
 
 	// bottom
-	boundaries.push(new Boundary(w / 2, height + thickness / 2 - 50, w*2, thickness, 0));
+	boundaries.push(new Boundary(w / 2, height + thickness / 2 - 5, w*2, thickness, 0));
 
 	// sides
 	boundaries.push(new Boundary(-thickness / 2, h / 2, thickness, height * 15, 0));
