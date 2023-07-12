@@ -5,15 +5,25 @@ html{
 }
 
 body{
-  width: 30em;
+  width: 90vw;
   margin: 0 auto;
 }
 
-canvas {
-  display: block;
-}
 
 footer{
   font-size: 80%;
   padding: 3em;
+}
+
+ol {
+  height: 100px;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  min-height: 70vh;
+}
+
+li{
+  width: 10vw;
+  min-width: 200px;
 }
