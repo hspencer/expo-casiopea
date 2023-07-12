@@ -68,6 +68,7 @@ function draw() {
   }
 
   if (mConstraint.body) {
+		mouseOverBody = event.body;
 		let pos = mConstraint.body.position;
 		let offset = mConstraint.constraint.pointB;
 		let m = mConstraint.mouse.position;
@@ -76,17 +77,22 @@ function draw() {
 		strokeWeight(2);
 		stroke(200);
 		line(pos.x + offset.x, pos.y + offset.y, m.x, m.y);
+	}else{
+		mouseOverBody = null;
 	}
 
+	/*
     // Listen for start of collision
     Matter.Events.on(mConstraint, "startdrag", function (event) {
         mouseOverBody = event.body;
     });
+	
 
     // Listen for end of collision
     Matter.Events.on(mConstraint, "enddrag", function (event) {
         mouseOverBody = null;
     });
+	*/
 
 
 	if (mouseX < 0 || mouseX > width || mouseY < 0 || mouseY > height) {

@@ -4,21 +4,3 @@ html, body {
   font-family: 'Alegreya Sans', sans-serif;
   line-height: 140%;
 }
-
-canvas{
-  display: block;
-  margin: 1em auto;
-}
-
-h1{
-  text-transform: uppercase;
-  font-size: .85em;
-}
-
-ul > li > span{
-  text-transform: uppercase;
-  background-color: lightgray;
-  border: .51px solid gray;
-  border-radius: 1ex;
-  padding: .1ex .5ex;
-}
