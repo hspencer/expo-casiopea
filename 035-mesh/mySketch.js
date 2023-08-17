@@ -4,7 +4,7 @@ let gridCols, gridRows;
 let distanceSlider;
 
 function setup() {
-  createCanvas(windowWidth, 350);
+  createCanvas(windowWidth - 16, 350);
   distanceSlider = createSlider(5, 500, 80, 1);
   distanceSlider.position(10, 10);
   gridCols = ceil(width / gridSize) + 1;
