@@ -1,15 +1,18 @@
 let particles = [];
-let gridSize = 30; // Tamaño de la celda de la cuadrícula
+let gridSize = 40; // Tamaño de la celda de la cuadrícula
 let gridCols, gridRows;
 let distanceSlider;
+let minDistance = 10;
+let maxDistance = 500;
+let numParticles = 222;
 
 function setup() {
-  createCanvas(windowWidth - 16, 350);
-  distanceSlider = createSlider(5, 500, 80, 1);
+  createCanvas(windowWidth, 350);
+  distanceSlider = createSlider(minDistance, maxDistance, 40, 1);
   distanceSlider.position(10, 10);
   gridCols = ceil(width / gridSize) + 1;
   gridRows = ceil(height / gridSize) + 1;
-  for (let i = 0; i < 400; i++) {
+  for (let i = 0; i < numParticles; i++) {
     particles.push(new Particle());
   }
 }
@@ -53,8 +56,8 @@ class Particle {
           if (this !== other) {
             let d = dist(this.pos.x, this.pos.y, other.pos.x, other.pos.y);
             if (d < distanceSlider.value()) {
-              let weight = map(d, 0, distanceSlider.value(), 4, 1);
-              let alpha = map(d, 0, distanceSlider.value(), 100, 50);
+              let weight = map(d, 0, distanceSlider.value(), .1, 4);
+              let alpha = map(d, 0, distanceSlider.value(), 255, 0);
               stroke(0, alpha);
               strokeWeight(weight);
               line(this.pos.x, this.pos.y, other.pos.x, other.pos.y);
