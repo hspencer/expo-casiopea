@@ -19,31 +19,20 @@ function setup() {
   numX = floor(width / side);
 
   buildChords();
-
-  for (let chord of chords) {
-    chord.draw();
-  }
 }
 
 function draw() {
-  // clear();
+   clear();
 
   // Dibujar acordes
-  /*
   for (let chord of chords) {
     chord.draw();
   }
-  */
-  // Reemplazar aleatoriamente algunos acordes, ajustando a la grilla
-  if (frameCount % 7 === 0) {
-    
-    let index = floor(random(chords.length));
-    // print("f "+frameCount+"\tindex = "+index);
-    let x = chords[index].x;
-    let y = chords[index].y;
-    chords[index] = new Chord(x, y, side, shapes[floor(random(6))]);
-    chords[index].draw();
-  }
+
+  let index = floor(random(chords.length));
+  chords[index].rotate();
+  // print(chords[index].rotation);
+
 }
 
 class Chord {
@@ -52,10 +41,31 @@ class Chord {
     this.y = y;
     this.side = side;
     this.shape = shape;
+    this.rotation = floor(random(4));
   }
 
   draw() {
-    image(this.shape, this.x - this.side / 2, this.y - this.side / 2, this.side, this.side);
+    push();
+    rotate(this.rotation * HALF_PI);
+    switch(this.rotation){
+      case 0:
+        break;
+      case 1:
+        translate(-this.side, -this.side);
+        break;
+      case 2:
+        translate(this.side, -this.side);
+        break;
+      case 3:
+        translate(-this.side, this.side);
+        break;
+    }
+    image(this.shape, this.x - this.side, this.y - this.side, this.side, this.side);
+    pop();
+  }
+
+  rotate(){
+    this.rotation = floor(random(4));
   }
 }
 
