@@ -13,8 +13,8 @@ let prev;
 
 function setup() {
   // Cambio de proporción del lienzo a 16:3
-  let canvasHeight = floor((4 / 16) * windowWidth);
-  createCanvas(windowWidth, canvasHeight);
+  let canvasHeight = floor((2 / 16) * windowWidth);
+  createCanvas(windowWidth, canvasHeight+100);
   
   // Aumento de la densidad: reducción del tamaño del acorde
   side = width / 30;  // Cambiado de 100 a 200 para más densidad
@@ -22,6 +22,7 @@ function setup() {
 
   buildChords();
   prev = createImage(width, height);
+  print(height);
 }
 
 
@@ -68,7 +69,7 @@ function draw() {
       chord.draw();
     }
   }
- print(frameCount);
+ // print(frameCount);
 }
 
 class Chord {
@@ -90,13 +91,13 @@ class Chord {
       case 0:
         break;
       case 1:
-        this.img.translate(-this.side/2, -this.side/2);
+        this.img.translate(-this.side, -this.side);
         break;
       case 2:
-        this.img.translate(this.side/2, -this.side/2);
+        this.img.translate(this.side, -this.side);
         break;
       case 3:
-        this.img.translate(-this.side/2, this.side/2);
+        this.img.translate(-this.side, this.side);
         break;
     }
     this.img.image(this.shape, 0, 0, this.side, this.side);
@@ -116,8 +117,8 @@ class Chord {
 
 function buildChords() {
   chords = [];
-  for (let y = side / 2; y < height; y += side) {
-    for (let x = side / 2; x < width; x += side) {
+  for (let y = side / 4; y < height - side/2; y += side) {
+    for (let x = side / 4; x < width - side/2; x += side) {
       let c = new Chord(x, y, side, shapes[floor(random(6))]);
       c.make();
       chords.push(c);
