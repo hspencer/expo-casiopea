@@ -126,3 +126,8 @@ function buildChords() {
   }
 }
 
+function mousePressed(){
+  clear();
+  prev = createImage(width, height);
+  buildChords();
+}
