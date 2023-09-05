@@ -29,21 +29,18 @@ function setup() {
 
 
 function draw() {
-  
-  
   if (frameCount > 1){
     background(prev);
   }else{
     clear();
   }
    
-  
   // Dibujar acordes
   for (let chord of chords) {
     chord.draw();
   }
 
-  for(let i = 0; i < 10; i++){
+  for(let i = 0; i < 40; i++){
     let index = floor(random(chords.length));
     chords[index].rotate();
   }
@@ -61,7 +58,7 @@ function draw() {
   }
 
   prev = get();
-  prev.filter(BLUR, 0.4);
+  prev.filter(BLUR, 0.1);
   if(frameCount % 49 === 0){
     prev.filter(INVERT);
     blendMode(BLEND);
@@ -83,23 +80,23 @@ class Chord {
   }
 
   make() {
+    //this.img.background(255);
     this.img.push();
     this.img.rotate(this.rotation * HALF_PI);
     //this.img.translate(this.side/2, this.side/2);
     
     switch(this.rotation){
-      case 0:
-        break;
       case 1:
-        this.img.translate(-this.side, -this.side);
+        this.img.translate(0, -this.side);
         break;
       case 2:
-        this.img.translate(this.side, -this.side);
+        this.img.translate(-this.side, -this.side);
         break;
       case 3:
-        this.img.translate(-this.side, this.side);
+        this.img.translate(0, -this.side);
         break;
     }
+    
     this.img.image(this.shape, 0, 0, this.side, this.side);
     this.img.pop();
   }
