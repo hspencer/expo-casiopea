@@ -48,19 +48,19 @@ function draw() {
   }
 
  if (frameCount % 17 === 0) {
-    blendMode(MULTIPLY);
+    blendMode(LIGHTEST);
   } else if (frameCount % 23 === 0) {
     blendMode(BLEND);
   } else if (frameCount % 13 === 0) {
     blendMode(LIGHTEST);
   } else if (frameCount % 29 === 0) {
-    blendMode(DIFFERENCE);
+    blendMode(SOFT_LIGHT);
   } else if (frameCount % 49 === 0) {
-    blendMode(ADD);
+    blendMode(DIFFERENCE);
   }
 
   prev = get();
-  prev.filter(BLUR, 1.4);
+  prev.filter(BLUR, 0.4);
   if(frameCount % 49 === 0){
     prev.filter(INVERT);
     blendMode(BLEND);
