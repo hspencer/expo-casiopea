@@ -9,6 +9,8 @@ function preload() {
   }
 }
 
+let prev;
+
 function setup() {
   // Cambio de proporción del lienzo a 16:3
   let canvasHeight = floor((4 / 16) * windowWidth);
@@ -19,20 +21,54 @@ function setup() {
   numX = floor(width / side);
 
   buildChords();
+  prev = createImage(width, height);
 }
 
-function draw() {
-   clear();
 
+
+
+function draw() {
+  
+  
+  if (frameCount > 1){
+    background(prev);
+  }else{
+    clear();
+  }
+   
+  
   // Dibujar acordes
   for (let chord of chords) {
     chord.draw();
   }
 
-  let index = floor(random(chords.length));
-  chords[index].rotate();
-  // print(chords[index].rotation);
+  for(let i = 0; i < 10; i++){
+    let index = floor(random(chords.length));
+    chords[index].rotate();
+  }
 
+ if (frameCount % 17 === 0) {
+    blendMode(MULTIPLY);
+  } else if (frameCount % 23 === 0) {
+    blendMode(BLEND);
+  } else if (frameCount % 13 === 0) {
+    blendMode(LIGHTEST);
+  } else if (frameCount % 29 === 0) {
+    blendMode(DIFFERENCE);
+  } else if (frameCount % 49 === 0) {
+    blendMode(ADD);
+  }
+
+  prev = get();
+  prev.filter(BLUR, 1.4);
+  if(frameCount % 49 === 0){
+    prev.filter(INVERT);
+    blendMode(BLEND);
+    for (let chord of chords) {
+      chord.draw();
+    }
+  }
+ print(frameCount);
 }
 
 class Chord {
@@ -42,30 +78,39 @@ class Chord {
     this.side = side;
     this.shape = shape;
     this.rotation = floor(random(4));
+    this.img = createGraphics(side, side);
   }
 
-  draw() {
-    push();
-    rotate(this.rotation * HALF_PI);
+  make() {
+    this.img.push();
+    this.img.rotate(this.rotation * HALF_PI);
+    //this.img.translate(this.side/2, this.side/2);
+    
     switch(this.rotation){
       case 0:
         break;
       case 1:
-        translate(-this.side, -this.side);
+        this.img.translate(-this.side/2, -this.side/2);
         break;
       case 2:
-        translate(this.side, -this.side);
+        this.img.translate(this.side/2, -this.side/2);
         break;
       case 3:
-        translate(-this.side, this.side);
+        this.img.translate(-this.side/2, this.side/2);
         break;
     }
-    image(this.shape, this.x - this.side, this.y - this.side, this.side, this.side);
-    pop();
+    this.img.image(this.shape, 0, 0, this.side, this.side);
+    this.img.pop();
+  }
+
+  draw(){
+    image(this.img, this.x, this.y, this.side, this.side);
   }
 
   rotate(){
+    this.img = createGraphics(side, side);
     this.rotation = floor(random(4));
+    this.make();
   }
 }
 
@@ -73,7 +118,10 @@ function buildChords() {
   chords = [];
   for (let y = side / 2; y < height; y += side) {
     for (let x = side / 2; x < width; x += side) {
-      chords.push(new Chord(x, y, side, shapes[floor(random(6))]));
+      let c = new Chord(x, y, side, shapes[floor(random(6))]);
+      c.make();
+      chords.push(c);
     }
   }
 }
+
