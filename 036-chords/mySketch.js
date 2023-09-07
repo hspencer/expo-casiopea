@@ -13,11 +13,11 @@ let prev;
 
 function setup() {
   // Cambio de proporción del lienzo a 16:3
-  let canvasHeight = floor((2 / 16) * windowWidth);
-  createCanvas(windowWidth, canvasHeight+100);
-  
+  let canvasHeight = floor((3 / 16) * windowWidth);
+  createCanvas(windowWidth, canvasHeight);
+
   // Aumento de la densidad: reducción del tamaño del acorde
-  side = width / 30;  // Cambiado de 100 a 200 para más densidad
+  side = width / 28; // Cambiado de 100 a 200 para más densidad
   numX = floor(width / side);
 
   buildChords();
@@ -25,26 +25,26 @@ function setup() {
   print(height);
 }
 
-
-
-
 function draw() {
+  /*
   if (frameCount > 1){
     background(prev);
   }else{
     clear();
   }
-   
+  */
+  clear();
+
   // Dibujar acordes
   for (let chord of chords) {
     chord.draw();
   }
 
-  for(let i = 0; i < 40; i++){
+  for (let i = 0; i < 1; i++) {
     let index = floor(random(chords.length));
     chords[index].rotate();
   }
-
+  /*
  if (frameCount % 17 === 0) {
     blendMode(LIGHTEST);
   } else if (frameCount % 23 === 0) {
@@ -67,6 +67,7 @@ function draw() {
     }
   }
  // print(frameCount);
+ */
 }
 
 class Chord {
@@ -84,8 +85,8 @@ class Chord {
     this.img.push();
     this.img.rotate(this.rotation * HALF_PI);
     //this.img.translate(this.side/2, this.side/2);
-    
-    switch(this.rotation){
+
+    switch (this.rotation) {
       case 1:
         this.img.translate(0, -this.side);
         break;
@@ -93,19 +94,19 @@ class Chord {
         this.img.translate(-this.side, -this.side);
         break;
       case 3:
-        this.img.translate(0, -this.side);
+        this.img.translate(-this.side, 0);
         break;
     }
-    
+
     this.img.image(this.shape, 0, 0, this.side, this.side);
     this.img.pop();
   }
 
-  draw(){
+  draw() {
     image(this.img, this.x, this.y, this.side, this.side);
   }
 
-  rotate(){
+  rotate() {
     this.img = createGraphics(side, side);
     this.rotation = floor(random(4));
     this.make();
@@ -114,8 +115,8 @@ class Chord {
 
 function buildChords() {
   chords = [];
-  for (let y = side / 4; y < height - side/2; y += side) {
-    for (let x = side / 4; x < width - side/2; x += side) {
+  for (let y = 0; y < height - side / 2; y += side) {
+    for (let x = 0; x < width - side / 2; x += side) {
       let c = new Chord(x, y, side, shapes[floor(random(6))]);
       c.make();
       chords.push(c);
@@ -123,7 +124,7 @@ function buildChords() {
   }
 }
 
-function mousePressed(){
+function mousePressed() {
   clear();
   prev = createImage(width, height);
   buildChords();
