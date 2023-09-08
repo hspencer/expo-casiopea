@@ -1,0 +1,15 @@
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+#controls{
+  position:absolute;
+  left: 10px;
+  bottom: 10px;
+  width: 50%;
+}
+
+#controls button{
+  margin: 0 1ex 0 0;
+}
