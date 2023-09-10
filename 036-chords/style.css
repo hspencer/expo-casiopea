@@ -3,3 +3,11 @@ body{
     overflow: hidden;
     margin: 0;
 }
+
+#p5_loading{
+    text-align: center;
+    margin-top: 45vh;
+    text-transform: uppercase;
+    font-family: 'Courier New', Courier, monospace;
+    color: rgba(0, 0, 0, 0.452);
+}
