@@ -31,18 +31,21 @@ function draw() {
     background(prev);
   }else{
     clear();
-  }
+  }*/
+
+  clear();
    
   // Dibujar acordes
   for (let chord of chords) {
     chord.draw();
   }
 
-  for(let i = 0; i < 40; i++){
+  for(let i = 0; i < 2; i++){
     let index = floor(random(chords.length));
     chords[index].rotate();
   }
 
+  /*
  if (frameCount % 17 === 0) {
     blendMode(LIGHTEST);
   } else if (frameCount % 23 === 0) {
