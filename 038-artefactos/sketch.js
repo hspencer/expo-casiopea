@@ -11,7 +11,7 @@ function setup() {
   sides = 9;
   radius = width / 5.0;
   frameRate(14);
-  noCursor();
+  // noCursor();
   
   pt = Array.from({length: sides}, () => createVector());
 
