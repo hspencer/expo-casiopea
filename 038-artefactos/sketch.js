@@ -27,7 +27,7 @@ function setup() {
 
   black = color(0, 0, 0);
   white = color(0, 0, 0);
-  red = color(255, 68, 0);
+  red = color(200, 45, 0);
   gold = color(142, 127, 80);
 
   strokeColor[0] = white;
@@ -86,7 +86,7 @@ class Line {
 
   render(bm, a) {
     bm.rotate(this.t);
-    bm.blendMode(HARD_LIGHT);
+    bm.blendMode(OVERLAY);
     bm.stroke(this.c, a);
     bm.strokeWeight(this.sw);
     bm.noFill();
@@ -137,7 +137,7 @@ class Sign {
 
   reset() {
     this.init = true;
-    this.lifespan = Math.round(random(70, 250));
+    this.lifespan = Math.round(random(50, 150));
     this.existence = this.lifespan * 1.5;          // lifespan + blacktime
     this.tic = 0;
     this.fade = 255;
@@ -188,7 +188,6 @@ class Sign {
   }
 
   updateGraphics() {
-    //this.bitmap.beginDraw();
     this.bitmap.push();
     this.bitmap.translate(this.bitmap.width / 2, this.bitmap.height / 2);
 
@@ -205,7 +204,6 @@ class Sign {
     } 
     
     this.bitmap.pop();
-    //this.bitmap.endDraw();
   }
 
   render() {
