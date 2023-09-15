@@ -162,7 +162,7 @@ class Sign {
 
   drawText() {
     let lang = Math.floor(random(5));
-    this.bitmap.textSize(20);
+    this.bitmap.textSize(15);
     this.bitmap.textFont(font);
     this.bitmap.fill(black);
 
