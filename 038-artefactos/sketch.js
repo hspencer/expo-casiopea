@@ -4,7 +4,11 @@ let radius;
 let signA, signB;
 let black, white, red, gold;
 let strokeColor = [];
+let font;
 
+function preload(){
+  font = loadFont("../data/Alegreya_Sans/AlegreyaSans-Regular.ttf");
+}
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -12,7 +16,6 @@ function setup() {
   radius = width / 5.0;
   frameRate(14);
   // noCursor();
-  
   pt = Array.from({length: sides}, () => createVector());
 
   for (let i = 0; i < sides; i++) {
@@ -160,7 +163,7 @@ class Sign {
   drawText() {
     let lang = Math.floor(random(5));
     this.bitmap.textSize(20);
-    this.bitmap.textFont("Arial");
+    this.bitmap.textFont(font);
     this.bitmap.fill(black);
 
     let k = radius * 0.666;
@@ -178,7 +181,7 @@ class Sign {
         this.bitmap.text(german[this.randomWord], xpos, ypos);
         break;
       case 3: // greek
-        this.bitmap.textFont("Arial");
+        this.bitmap.textFont(font);
         this.bitmap.text(greek[this.randomWord], xpos, ypos);
         break;
       case 4: // french
