@@ -30,7 +30,7 @@ function newDrawing() {
   // We create a grid here
   let num_cols = floor(random(4, 18));
   let num_rows = floor(random(2, 10));
-  let border = floor(random(100, 380));
+  let border = floor(random(width/15, width/7));
   let col_size = (width - border) / num_cols;
   let row_size = (height - border) / num_rows;
 
@@ -42,7 +42,7 @@ function newDrawing() {
   brush.field("truncated");
   // You can also disable field completely with brush.noField()
 
-  background("#fffceb");
+  background("#fbfaf6");
   push();
   translate(-width / 2, -height / 2);
 
