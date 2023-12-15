@@ -4,7 +4,6 @@ let palette;
 
 function setup() {
   createCanvas(400, 400);
-  strokeCap(PROJECT);
   shuffle(colorScheme, true); // randomize order from colorScheme
   palette = colorScheme[0]; // pick first
 
@@ -13,11 +12,16 @@ function setup() {
   o = [];
   const v = -0.5; // velocidad constante de las órbitas
   for(let i = 0; i < num; i++){
-    let r = random(15, 180);
+    let r = skewedRandom(10, 180, 0.59);
     let s = v / r;
     o.push(new Orbit(width/2 + random(-j, j), height/2 + random(-j, j), r, random(TWO_PI), s))
   }
-  strokeWeight(7);
+}
+
+function skewedRandom(min, max, skew) {
+  let range = max - min;
+  let rand = pow(random(), skew); // Usar la función de potencia para sesgar la distribución
+  return min + rand * range;
 }
 
 function draw() {
@@ -36,21 +40,12 @@ function draw() {
       let d = dist(o[i].px, o[i].py, o[j].px, o[j].py);
       if (d < connectDist) {
 
-       /*
-        abailable brushes: 
-        "pen", "rotring", "2B", "HB", "2H", "cpencil", 
-        "charcoal", "hatch_brush", "spray", "marker",
-        "marker2"
-       */
-
-         let alfa = map(d, 0, connectDist, 100, 0);
+         let alfa = map(d, 0, connectDist, 130, 0);
+         //let sw = map(d, 0, connectDist, 9, 2);
          alfa = constrain(alfa, 0, 255);
          let c = color(o[i].colHex);
          c.setAlpha(alfa);
-        // print("alfa de "+i+" es "+alfa);
-        //let col = lerpColor(o[i].col, o[j].col, 0.5);
-        // col.setAlpha(alfa);
-        //brush.set("rotring", o[i].col, 4);
+        strokeWeight(8);
         stroke(c);
         line(o[i].px, o[i].py, o[j].px, o[j].py);
       }
