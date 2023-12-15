@@ -42,7 +42,7 @@ function newDrawing() {
   brush.field("truncated");
   // You can also disable field completely with brush.noField()
 
-  background("#fffceb");
+  background("#fbfaf6");
   push();
   translate(-width / 2, -height / 2);
 
