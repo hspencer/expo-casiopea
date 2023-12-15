@@ -1,12 +1,11 @@
 let o;
 let num;
 let palette;
-
+let canvas;
 function setup() {
-  createCanvas(400, 400);
+  canvas = createCanvas(400, 400);
   shuffle(colorScheme, true); // randomize order from colorScheme
   palette = colorScheme[0]; // pick first
-
   num = 222;
   let j = 15; // rango de descalce del centro
   o = [];
@@ -25,16 +24,18 @@ function skewedRandom(min, max, skew) {
 }
 
 function draw() {
-  background("#fffceb");
-  // translate(-width/2, -height/2);
+	clear();
+	noStroke();
+  fill("#fffceb");
+	circle(width/2, height/2, 399);
  
   // let the orbits go
   for(let orbit of o){
-    orbit.update();
+    orbit.go();
   }
   
   // draw connecting lines
-  let connectDist = 32;
+  let connectDist = 42;
    for (let i = 0; i < o.length; i++) {
     for (let j = o.length - 1; j > i; j--) {
       let d = dist(o[i].px, o[i].py, o[j].px, o[j].py);
@@ -67,7 +68,9 @@ class Orbit{
   }
   
   draw(){
-    circle(this.px, this.py, 3);
+		strokeWeight(1);
+    stroke(this.col);
+    circle(this.px, this.py, 8);
   }
   
   update(){
