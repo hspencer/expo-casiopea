@@ -30,7 +30,7 @@ function newDrawing() {
   // We create a grid here
   let num_cols = floor(random(4, 18));
   let num_rows = floor(random(2, 10));
-  let border = floor(random(100, 380));
+  let border = floor(random(random(width/20), random(width/8)));
   let col_size = (width - border) / num_cols;
   let row_size = (height - border) / num_rows;
 
