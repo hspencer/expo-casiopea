@@ -1,0 +1,66 @@
+@import url('https://fonts.googleapis.com/css2?family=Alegreya+Sans:wght@100&display=swap');
+
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+}
+canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.cols-2{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px; /* Espacio entre columnas */
+  grid-template-areas: "visualization controls";
+  place-items: center;
+  min-height: 100vh;
+  
+}
+
+#p5{
+  text-align: center;
+}
+#controls{
+  text-align: center;
+  text-transform: uppercase;
+  font-size: .6rem;
+  font-weight: bolder;
+  letter-spacing: 0.2ex;
+  width: 100%;
+  
+}
+
+.dimension{
+  text-align: left;
+  margin: 0 2em 3em 2em;
+  width: 100%;
+  filter: opacity(.3);
+  transition: all .5s ease;
+}
+
+.dimension:active{
+  filter: opacity(1);
+}
+
+input[type="range"]{
+  width: 100%;
+}
+
+
+@media (max-width: 800px) {
+
+    .cols-2 {
+        display: flex;
+        flex-flow: column-reverse;
+        margin: 2em 0;
+    }
+
+    .dimension{
+      width: auto;
+    }
+
+}

@@ -13,6 +13,7 @@ function setup() {
 }
 
 function drawGrid() {
+  background("PINK");
   // Define el número de celdas en la grilla
   let cols = floor(random(4, 10));
   let rows = cols; // Para mantener la grilla cuadrada
