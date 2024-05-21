@@ -3,64 +3,97 @@
 html, body {
   margin: 0;
   padding: 0;
-  font-family: sans-serif;
+  font-family: "Alegreya Sans", sans-serif;
 }
+
 canvas {
   display: block;
   width: 100%;
   height: auto;
 }
 
-.cols-2{
+.cols-2 {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 10px; /* Espacio entre columnas */
   grid-template-areas: "visualization controls";
   place-items: center;
   min-height: 100vh;
-  
 }
 
-#p5{
+#p5 {
   text-align: center;
 }
-#controls{
+
+#controls {
   text-align: center;
   text-transform: uppercase;
   font-size: .6rem;
   font-weight: bolder;
   letter-spacing: 0.2ex;
   width: 100%;
-  
 }
 
-.dimension{
+.dimension {
   text-align: left;
-  margin: 0 2em 3em 2em;
+  margin: 0 2em 2em 2em;
   width: 100%;
   filter: opacity(.3);
   transition: all .5s ease;
 }
 
-.dimension:active{
+.dimension:active {
   filter: opacity(1);
 }
 
-input[type="range"]{
+input[type="range"] {
+  --c: orange; /* active color */
+  --g: 8px; /* the gap */
+  --l: 5px; /* line thickness */
+  --s: 1px; /* thumb size */
   width: 100%;
+  height: var(--s);
+  background: #6a6a6a;
 }
 
+input[type="range"]:hover {
+  opacity: 1;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 1ex;
+  height: 1ex;
+  background: #545454;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+input[type="range"]:hover::-webkit-slider-thumb {
+  background: rgb(247, 108, 15);
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 1ex;
+  height: 1ex;
+  background: #545454;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+input[type="range"]:hover::-moz-range-thumb {
+  background: rgb(247, 108, 15);
+}
 
 @media (max-width: 800px) {
+  .cols-2 {
+    display: flex;
+    flex-flow: column-reverse;
+    margin: 2em 0;
+  }
 
-    .cols-2 {
-        display: flex;
-        flex-flow: column-reverse;
-        margin: 2em 0;
-    }
-
-    .dimension{
-      width: auto;
-    }
-
+  .dimension {
+    width: auto;
+  }
 }

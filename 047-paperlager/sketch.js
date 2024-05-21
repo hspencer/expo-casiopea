@@ -1,20 +1,21 @@
 let puntos = [];
 let achurados = [];
 let cnv,
-  numX,
-  numY,
-  m,
+  numX,               /* # de divisiones en X */
+  numY,               /* # de divisiones en X */
+  m,                  /* margen */
   numPuntos,
   anchoTrazo,
   anchoTrama,
+  tw, 
   fondo,
   lineas,
   distortionAmount,
   tiempo,
   velocidadAnimacion,
   zoomNoise,
-  amplificacionNoise;
-
+  amplificacionNoise,
+  grosorTrazo;  // Nueva variable para el grosor del trazo
 
 const paletaFondos = [
   "#F0E8E3",
@@ -30,13 +31,13 @@ const paletaFondos = [
   "#EBEBEB",
   "#E8E8E8",
   "#E6E6E6",
-  "#E2F6FE",
+  "#e0f4fc",
   "#FEFEDD",
-  "#E0E0E0",
+  "#e7fdfe",
   "#EFE4E4",
   "#E6EFF2",
   "#F2F6E7",
-  "#FBF2FE",
+  "#fafbd8",
 ];
 
 const paletaLineas = [
@@ -56,12 +57,13 @@ const paletaLineas = [
   "#8C3A13",
   "#6B310D",
   "#4A2806",
-  "#291F00",
-  "#190C00",
+  "#02253d",
+  "#36028e",
   "#F0653F",
   "#D15437",
 ];
 
+// Clase que representa un punto en la cuadrícula
 class Punto {
   constructor(x, y) {
     this.x = x;
@@ -69,6 +71,7 @@ class Punto {
   }
 }
 
+// Clase que representa un cuadrante achurado
 class Achurado {
   constructor(a, b, c, d) {
     this.a = a;
@@ -82,8 +85,9 @@ class Achurado {
     this.horizontal = random(1) < 0.5;
   }
 
+  // Dibuja el cuadrante achurado
   draw() {
-    strokeWeight(anchoTrazo);
+    strokeWeight(grosorTrazo * 0.5);  // Usa el 80% del grosor para los achurados
     stroke(lineas);
     if (this.horizontal) {
       hatch(this.a, this.b, this.c, this.d);
@@ -91,6 +95,7 @@ class Achurado {
       hatch(this.c, this.a, this.d, this.b);
     }
     noFill();
+    strokeWeight(grosorTrazo);  // Usa el grosor completo para los bordes del cuadrante
     quad(
       this.a.x,
       this.a.y,
@@ -103,6 +108,7 @@ class Achurado {
     );
   }
 
+  // Actualiza las coordenadas del cuadrante
   update(a, b, c, d) {
     this.a = a;
     this.b = b;
@@ -115,6 +121,7 @@ class Achurado {
   }
 }
 
+// Función de configuración inicial
 function setup() {
   cnv = createCanvas(380, 380);
   cnv.style("border-radius", "50%");
@@ -129,11 +136,12 @@ function setup() {
   createControls();
 }
 
+// Inicializa las variables
 function initializeVariables() {
   if (numX === undefined) numX = int(random(12, 30)); // Número de puntos en la dirección x
   if (numY === undefined) numY = int(random(12, 30)); // Número de puntos en la dirección y
   if (m === undefined) m = -200; // Margen
-  anchoTrazo = random(0.2, 1); // Ancho del trazo
+  if (grosorTrazo === undefined) grosorTrazo = random(0.2, 1); // Grosor del trazo
   if (anchoTrama === undefined) anchoTrama = random(3, 10); // Ancho de la trama
   fondo = selectRandomColor(paletaFondos); // Color de fondo
   lineas = color(selectRandomColor(paletaLineas)); // Color de las líneas
@@ -145,9 +153,7 @@ function initializeVariables() {
   cnv.style("background-color", fondo);
 }
 
-let tw; // tramaWidth
-
-
+// Crea los elementos necesarios
 function createElements() {
   puntos = [];
   achurados = [];
@@ -159,11 +165,12 @@ function createElements() {
   strokeJoin(BEVEL);
 }
 
-
+// Selecciona un color aleatorio de la paleta
 function selectRandomColor(paleta) {
   return paleta[int(random(paleta.length))];
 }
 
+// Crea los puntos en la cuadrícula
 function creaPuntos() {
   let xSpacer = (width - 2 * m) / (numX - 1);
   let ySpacer = (height - 2 * m) / (numY - 1);
@@ -194,7 +201,7 @@ function creaPuntos() {
   }
 }
 
-
+// Crea los cuadrantes achurados
 function creaAchurados() {
   for (let i = 0; i < puntos.length - numX - 1; i++) {
     if ((i - (numX - 1)) % numX != 0) {
@@ -209,6 +216,7 @@ function creaAchurados() {
   }
 }
 
+// Actualiza los cuadrantes achurados
 function updateAchurados() {
   for (let i = 0; i < puntos.length - numX - 1; i++) {
     if ((i - (numX - 1)) % numX != 0) {
@@ -225,6 +233,7 @@ function updateAchurados() {
   }
 }
 
+// Dibuja el lienzo
 function draw() {
   clear();
   tiempo += velocidadAnimacion;
@@ -234,13 +243,14 @@ function draw() {
   dibujaAchurados();
 }
 
-
+// Dibuja los cuadrantes achurados
 function dibujaAchurados() {
   for (let a of achurados) {
     a.draw();
   }
 }
 
+// Función para dibujar las líneas achuradas
 function hatch(a, b, c, d) {
   let num = round(
     (dist(a.x, a.y, b.x, b.y) + dist(c.x, c.y, d.x, d.y)) / 2 / anchoTrama
@@ -254,11 +264,13 @@ function hatch(a, b, c, d) {
   }
 }
 
+// Reinicia el lienzo al presionar el mouse
 function mousePressed() {
   initializeVariables();
   createElements();
 }
 
+// Crea los controles de la interfaz
 function createControls() {
   let controls = select('#controls');
   controls.html('');
@@ -318,4 +330,11 @@ function createControls() {
     createElements();
   });
   createControl('Amplificación', amplificacionNoiseSlider, controls);
+
+  let grosorTrazoSlider = createSlider(0.1, 5, grosorTrazo, 0.1);
+  grosorTrazoSlider.input(() => {
+    grosorTrazo = grosorTrazoSlider.value();
+    createElements();
+  });
+  createControl('Grosor del Trazo', grosorTrazoSlider, controls);
 }
