@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Alegreya+Sans:wght@100&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Alegreya+Sans:wght@400&display=swap');
 
 html, body {
   margin: 0;
@@ -29,61 +29,58 @@ canvas {
   text-align: center;
   text-transform: uppercase;
   font-size: .6rem;
-  font-weight: bolder;
   letter-spacing: 0.2ex;
   width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3em;
 }
 
 .dimension {
   text-align: left;
-  margin: 0 2em 2em 2em;
+  margin: 0 2em 0 2em;
   width: 100%;
-  filter: opacity(.3);
-  transition: all .5s ease;
-}
-
-.dimension:active {
-  filter: opacity(1);
 }
 
 input[type="range"] {
-  --c: orange; /* active color */
-  --g: 8px; /* the gap */
-  --l: 5px; /* line thickness */
-  --s: 1px; /* thumb size */
   width: 100%;
-  height: var(--s);
-  background: #6a6a6a;
+  height: 1px;
+  background: #bebebe;
 }
 
-input[type="range"]:hover {
-  opacity: 1;
-}
 
 input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 1ex;
-  height: 1ex;
-  background: #545454;
+  width: 1.5ex;
+  height: 1.5ex;
+  background: #bebebe;
   cursor: pointer;
-  transition: background 0.3s ease;
 }
 
-input[type="range"]:hover::-webkit-slider-thumb {
-  background: rgb(247, 108, 15);
-}
 
 input[type="range"]::-moz-range-thumb {
-  width: 1ex;
-  height: 1ex;
-  background: #545454;
+  width: 1.5ex;
+  height: 1.5ex;
+  background: #bebebe;
   cursor: pointer;
-  transition: background 0.3s ease;
+
 }
 
 input[type="range"]:hover::-moz-range-thumb {
-  background: rgb(247, 108, 15);
+  background: rgb(254, 63, 15);
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.47);
+}
+
+input[type="range"]:hover::-webkit-slider-thumb {
+  background: rgb(254, 63, 15);
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.47);
+}
+
+input[type="color"]{
+  width: 32px;
+  height: 32px;
+  border: none;
 }
 
 @media (max-width: 800px) {
@@ -91,6 +88,10 @@ input[type="range"]:hover::-moz-range-thumb {
     display: flex;
     flex-flow: column-reverse;
     margin: 2em 0;
+  }
+
+  #controls{
+    margin: 3em 0 0 0;
   }
 
   .dimension {

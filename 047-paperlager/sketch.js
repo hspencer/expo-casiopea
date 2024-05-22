@@ -1,9 +1,9 @@
 let puntos = [];
 let achurados = [];
 let cnv,
-  numX,               /* # de divisiones en X */
-  numY,               /* # de divisiones en X */
-  m,                  /* margen */
+  numX,               /* Número de divisiones en X */
+  numY,               /* Número de divisiones en Y */
+  m,                  /* Margen */
   numPuntos,
   anchoTrazo,
   anchoTrama,
@@ -15,53 +15,9 @@ let cnv,
   velocidadAnimacion,
   zoomNoise,
   amplificacionNoise,
-  grosorTrazo;  // Nueva variable para el grosor del trazo
+  grosorTrazo;        /* Grosor del trazo */
 
-const paletaFondos = [
-  "#F0E8E3",
-  "#FCFAE3",
-  "#F4F4E8",
-  "#E4F1E3",
-  "#EDFE84",
-  "#F2F2F2",
-  "#F5F5F5",
-  "#FEF9EF",
-  "#F8F8F8",
-  "#FAFAFA",
-  "#EBEBEB",
-  "#E8E8E8",
-  "#E6E6E6",
-  "#e0f4fc",
-  "#FEFEDD",
-  "#e7fdfe",
-  "#EFE4E4",
-  "#E6EFF2",
-  "#F2F6E7",
-  "#fafbd8",
-];
-
-const paletaLineas = [
-  "#EE3706",
-  "#9C5E05",
-  "#FD6601",
-  "#D95A00",
-  "#C25200",
-  "#AA4A00",
-  "#933F00",
-  "#7B3400",
-  "#642800",
-  "#4C1D00",
-  "#EE5426",
-  "#CD4B20",
-  "#AD431A",
-  "#8C3A13",
-  "#6B310D",
-  "#4A2806",
-  "#02253d",
-  "#36028e",
-  "#F0653F",
-  "#D15437",
-];
+let colorFondo, colorLinea;  /* Variables para el color de fondo y de las líneas */
 
 // Clase que representa un punto en la cuadrícula
 class Punto {
@@ -87,7 +43,7 @@ class Achurado {
 
   // Dibuja el cuadrante achurado
   draw() {
-    strokeWeight(grosorTrazo * 0.5);  // Usa el 80% del grosor para los achurados
+    strokeWeight(grosorTrazo * 0.5);  // Usa el 50% del grosor para los achurados
     stroke(lineas);
     if (this.horizontal) {
       hatch(this.a, this.b, this.c, this.d);
@@ -116,7 +72,7 @@ class Achurado {
     this.d = d;
     this.centro = new Punto(
       (a.x + b.x + c.x + d.x) / 4,
-      (a.y + b.y + c.y) / 4
+      (a.y + b.y + c.y + d.y) / 4
     );
   }
 }
@@ -125,10 +81,7 @@ class Achurado {
 function setup() {
   cnv = createCanvas(380, 380);
   cnv.style("border-radius", "50%");
-  cnv.style(
-    "box-shadow",
-    "inset 10px 10px 14px #0000001C, 10px 10px 14px #0000001C"
-  );
+  cnv.style("box-shadow", "inset 10px 10px 14px #0000001C, 10px 10px 14px #0000001C");
   cnv.style("border", "2px solid rgba(0,0,0,0.3)");
   cnv.parent("p5");
   initializeVariables();
@@ -138,18 +91,20 @@ function setup() {
 
 // Inicializa las variables
 function initializeVariables() {
-  if (numX === undefined) numX = int(random(12, 30)); // Número de puntos en la dirección x
-  if (numY === undefined) numY = int(random(12, 30)); // Número de puntos en la dirección y
-  if (m === undefined) m = -200; // Margen
-  if (grosorTrazo === undefined) grosorTrazo = random(0.2, 1); // Grosor del trazo
-  if (anchoTrama === undefined) anchoTrama = random(3, 10); // Ancho de la trama
-  fondo = selectRandomColor(paletaFondos); // Color de fondo
-  lineas = color(selectRandomColor(paletaLineas)); // Color de las líneas
-  if (distortionAmount === undefined) distortionAmount = random(3, 7); // Cantidad de distorsión
-  if (tiempo === undefined) tiempo = 0; // Variable de tiempo para la animación
-  if (velocidadAnimacion === undefined) velocidadAnimacion = 0.001; // Velocidad de la animación
-  if (zoomNoise === undefined) zoomNoise = 0.1; // Zoom sobre la función noise
-  if (amplificacionNoise === undefined) amplificacionNoise = 1; // Amplificación del noise
+  numX = int(random(12, 30)); // Número de puntos en la dirección x
+  numY = int(random(12, 30)); // Número de puntos en la dirección y
+  m = -200; // Margen
+  grosorTrazo = random(0.2, 1); // Grosor del trazo
+  anchoTrama = random(3, 10); // Ancho de la trama
+  distortionAmount = random(3, 7); // Cantidad de distorsión
+  tiempo = 0; // Variable de tiempo para la animación
+  velocidadAnimacion = 0.001; // Velocidad de la animación
+  zoomNoise = 0.1; // Zoom sobre la función noise
+  amplificacionNoise = 1; // Amplificación del noise
+  colorFondo = "#F0E8E3"; // Color de fondo por defecto
+  colorLinea = "#EE3706"; // Color de las líneas por defecto
+  fondo = color(colorFondo);
+  lineas = color(colorLinea);
   cnv.style("background-color", fondo);
 }
 
@@ -158,16 +113,11 @@ function createElements() {
   puntos = [];
   achurados = [];
   numPuntos = numX * numY;
-  tw = (width+height)/(numX+numY);
+  tw = (width + height) / (numX + numY);
   creaPuntos();
   creaAchurados();
   strokeCap(SQUARE);
   strokeJoin(BEVEL);
-}
-
-// Selecciona un color aleatorio de la paleta
-function selectRandomColor(paleta) {
-  return paleta[int(random(paleta.length))];
 }
 
 // Crea los puntos en la cuadrícula
@@ -264,10 +214,13 @@ function hatch(a, b, c, d) {
   }
 }
 
-// Reinicia el lienzo al presionar el mouse
-function mousePressed() {
-  initializeVariables();
-  createElements();
+// Guarda una imagen del canvas al presionar espacio
+function keyPressed() {
+  if (key === ' ') {
+    background(fondo);
+    dibujaAchurados();
+    saveCanvas(cnv, 'paperlager-' + Date.now(), 'png');
+  }
 }
 
 // Crea los controles de la interfaz
@@ -283,14 +236,14 @@ function createControls() {
     div.parent(parent);
   }
 
-  let numXSlider = createSlider(1, 100, numX);
+  let numXSlider = createSlider(2, 100, numX);
   numXSlider.input(() => {
     numX = numXSlider.value();
     createElements();
   });
   createControl('N de X', numXSlider, controls);
 
-  let numYSlider = createSlider(1, 100, numY);
+  let numYSlider = createSlider(2, 100, numY);
   numYSlider.input(() => {
     numY = numYSlider.value();
     createElements();
@@ -304,7 +257,7 @@ function createControls() {
   });
   createControl('Margen', marginSlider, controls);
 
-  let anchoTramaSlider = createSlider(1, tw, anchoTrama);
+  let anchoTramaSlider = createSlider(1, tw, anchoTrama); // Invertido
   anchoTramaSlider.input(() => {
     anchoTrama = anchoTramaSlider.value();
     createElements();
@@ -317,14 +270,14 @@ function createControls() {
   });
   createControl('Velocidad', velocidadAnimacionSlider, controls);
 
-  let zoomNoiseSlider = createSlider(0.01, 1, zoomNoise, 0.01);
+  let zoomNoiseSlider = createSlider(0.001, 1, zoomNoise, 0.01); // Invertido
   zoomNoiseSlider.input(() => {
     zoomNoise = zoomNoiseSlider.value();
     createElements();
   });
   createControl('Zoom', zoomNoiseSlider, controls);
 
-  let amplificacionNoiseSlider = createSlider(0.1, 10, amplificacionNoise, 0.1);
+  let amplificacionNoiseSlider = createSlider(0.1, 10, amplificacionNoise, 0.001);
   amplificacionNoiseSlider.input(() => {
     amplificacionNoise = amplificacionNoiseSlider.value();
     createElements();
@@ -336,5 +289,20 @@ function createControls() {
     grosorTrazo = grosorTrazoSlider.value();
     createElements();
   });
-  createControl('Grosor del Trazo', grosorTrazoSlider, controls);
+  createControl('Trazo', grosorTrazoSlider, controls);
+
+  let colorFondoInput = createColorPicker(colorFondo);
+  colorFondoInput.input(() => {
+    colorFondo = colorFondoInput.value();
+    fondo = color(colorFondo);
+    cnv.style("background-color", fondo);
+  });
+  createControl('Fondo', colorFondoInput, controls);
+
+  let colorLineaInput = createColorPicker(colorLinea);
+  colorLineaInput.input(() => {
+    colorLinea = colorLineaInput.value();
+    lineas = color(colorLinea);
+  });
+  createControl('Línea', colorLineaInput, controls);
 }
