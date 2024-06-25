@@ -1,0 +1,246 @@
+[
+   {
+     "name": "Años",
+     "strength": 0.9,
+     "members": ["2020", "2021", "2022", "2023", "2024", "2018", "2019", "2025"]
+   },
+   {
+     "name": "Cursos y Talleres",
+     "strength": 0.7,
+     "members": ["Taller de Amereida VII", "Taller del Programa y Forma de la Edificación 2º Semestre 2018", "Acceder a la Observación 2020: Primer Semestre", "Acceder a la observación 2021", "Taller", "Talleres"]
+   },
+   {
+     "name": "Arquitectura",
+     "strength": 0.8,
+     "members": ["ARQ", "ARQ 1", "ARQ 2", "ARQ 3º", "ARQ 4º", "ARQ 5º", "Arquitectura", "Diseño"]
+   },
+   {
+     "name": "Accesibilidad",
+     "strength": 0.9,
+     "members": ["Accesibilidad", "Accesibilidad Cognitiva", "Accesibilidad Universal", "Accesibilidad Web"]
+   },
+   {
+     "name": "Acto",
+     "strength": 0.7,
+     "members": ["Acto", "Acto Poético", "Acto de habitar", "Acto de comer", "Acto y Vacio", "Acto y Vacío"]
+   },
+   {
+     "name": "Amereida",
+     "strength": 0.8,
+     "members": ["Amereida", "Amereida 2014", "Amereida en Barcelona"]
+   },
+   {
+     "name": "Aprendizaje",
+     "strength": 0.8,
+     "members": ["Aprendizaje", "Aprendizaje activo", "Aprendizaje colaborativo", "Aprendizaje significativo", "Aprendizaje urbano", "Ambiente de aprendizaje", "Ambientes de aprendizaje"]
+   },
+   {
+     "name": "Análisis",
+     "strength": 0.7,
+     "members": ["Análisis", "Análisis del discurso", "Análisis heurístico"]
+   },
+   {
+     "name": "Aplicaciones",
+     "strength": 0.9,
+     "members": ["App", "App movil", "App móvil", "Aplicación"]
+   },
+   {
+     "name": "Agua",
+     "strength": 0.9,
+     "members": ["Agua", "Aguas", "Aguas públicas"]
+   },
+   {
+     "name": "América",
+     "strength": 0.9,
+     "members": ["América", "América latina"]
+   },
+   {
+     "name": "Adultos",
+     "strength": 0.9,
+     "members": ["Adulto mayor", "Adultos mayores"]
+   },
+   {
+     "name": "Animación",
+     "strength": 0.7,
+     "members": ["Animación", "Animación basura"]
+   },
+   {
+     "name": "Abstracción",
+     "strength": 0.8,
+     "members": ["Abstracción", "Abstracción y fragmento"]
+   },
+   {
+     "name": "Ciudad",
+     "strength": 0.8,
+     "members": ["Ciudad", "Ciudad Abierta", "Urbanismo"]
+   },
+   {
+     "name": "Color",
+     "strength": 0.9,
+     "members": ["Color", "Colores"]
+   },
+   {
+     "name": "Espacio",
+     "strength": 0.7,
+     "members": ["Espacio", "Espacio público"]
+   },
+   {
+     "name": "Estructura",
+     "strength": 0.9,
+     "members": ["Estructura", "Estructuras"]
+   },
+   {
+     "name": "Forma",
+     "strength": 0.8,
+     "members": ["Forma", "Forma arquitectónica"]
+   },
+   {
+     "name": "Geometría",
+     "strength": 0.8,
+     "members": ["Geometría", "Geometría descriptiva"]
+   },
+   {
+     "name": "Habitar",
+     "strength": 0.8,
+     "members": ["Habitar", "Habitabilidad"]
+   },
+   {
+     "name": "Innovación",
+     "strength": 0.7,
+     "members": ["Innovación", "Innovación tecnológica"]
+   },
+   {
+     "name": "Juego",
+     "strength": 0.9,
+     "members": ["Juego", "Juegos"]
+   },
+   {
+     "name": "Luz",
+     "strength": 0.8,
+     "members": ["Luz", "Luz natural"]
+   },
+   {
+     "name": "Maqueta",
+     "strength": 0.9,
+     "members": ["Maqueta", "Maquetas"]
+   },
+   {
+     "name": "Observación",
+     "strength": 0.9,
+     "members": ["Observación", "Observar"]
+   },
+   {
+     "name": "Proyecto",
+     "strength": 0.9,
+     "members": ["Proyecto", "Proyectos"]
+   },
+   {
+     "name": "Ritmo",
+     "strength": 0.9,
+     "members": ["Ritmo", "Ritmos"]
+   },
+   {
+     "name": "Sustentabilidad",
+     "strength": 0.8,
+     "members": ["Sustentabilidad", "Sostenibilidad"]
+   },
+   {
+     "name": "Taller",
+     "strength": 0.9,
+     "members": ["Taller", "Talleres"]
+   },
+   {
+     "name": "Vanguardia",
+     "strength": 0.9,
+     "members": ["Vanguardia", "Vanguardias"]
+   },
+   {
+     "name": "Web",
+     "strength": 0.8,
+     "members": ["Web", "Website"]
+   },
+   {
+     "name": "Líneas",
+     "strength": 0.7,
+     "members": ["100 LINEAS", "1000 lineas", "10000 lineas", "100000 lineas"]
+   },
+   {
+     "name": "Bienal",
+     "strength": 0.8,
+     "members": ["Bienal", "Bienal 2010"]
+   },
+   {
+     "name": "Biblioteca",
+     "strength": 0.7,
+     "members": ["Biblioteca", "Bibliotecas Comunitarias"]
+   },
+   {
+     "name": "Adaptabilidad",
+     "strength": 0.8,
+     "members": ["Adaptabilidad", "Adaptación"]
+   },
+   {
+     "name": "Administración",
+     "strength": 0.8,
+     "members": ["Administración", "Administración de Archivos"]
+   },
+   {
+     "name": "Afiche",
+     "strength": 0.9,
+     "members": ["Afiche", "Affiche"]
+   },
+   {
+     "name": "Algoritmo",
+     "strength": 0.7,
+     "members": ["Algoritmo", "AI"]
+   },
+   {
+     "name": "Antropología",
+     "strength": 0.8,
+     "members": ["Antropología", "Antropología filosófica"]
+   },
+   {
+     "name": "Apertura",
+     "strength": 0.8,
+     "members": ["Apertura", "Apertura de los terrenos"]
+   },
+   {
+     "name": "Arte",
+     "strength": 0.9,
+     "members": ["Arte", "Artes"]
+   },
+   {
+     "name": "Autismo",
+     "strength": 0.9,
+     "members": ["Autismo", "Trastorno del Espectro Autista"]
+   },
+   {
+     "name": "Todas las Categorías",
+     "strength": 0.1,
+     "members": [
+       "2020", "2021", "2022", "2023", "2024", "2018", "2019", "2025",
+       "Taller de Amereida VII", "Taller del Programa y Forma de la Edificación 2º Semestre 2018", 
+       "Acceder a la Observación 2020: Primer Semestre", "Acceder a la observación 2021", 
+       "Taller", "Talleres", "ARQ", "ARQ 1", "ARQ 2", "ARQ 3º", "ARQ 4º", "ARQ 5º", 
+       "Arquitectura", "Diseño", "Accesibilidad", "Accesibilidad Cognitiva", 
+       "Accesibilidad Universal", "Accesibilidad Web", "Acto", "Acto Poético", 
+       "Acto de habitar", "Acto de comer", "Acto y Vacio", "Acto y Vacío", "Amereida", 
+       "Amereida 2014", "Amereida en Barcelona", "Aprendizaje", "Aprendizaje activo", 
+       "Aprendizaje colaborativo", "Aprendizaje significativo", "Aprendizaje urbano", "Ambiente de aprendizaje", "Ambientes de aprendizaje", 
+       "Análisis", "Análisis del discurso", "Análisis heurístico", "App", "App movil", "App móvil", "Aplicación", 
+       "Agua", "Aguas", "Aguas públicas", "América", "América latina", "Adulto mayor", "Adultos mayores", 
+       "Animación", "Animación basura", "Abstracción", "Abstracción y fragmento", "Ciudad", "Ciudad Abierta", 
+       "Urbanismo", "Color", "Colores", "Espacio", "Espacio público", "Estructura", "Estructuras", "Forma", 
+       "Forma arquitectónica", "Geometría", "Geometría descriptiva", "Habitar", "Habitabilidad", "Innovación", 
+       "Innovación tecnológica", "Juego", "Juegos", "Luz", "Luz natural", "Maqueta", "Maquetas", "Observación", 
+       "Observar", "Proyecto", "Proyectos", "Ritmo", "Ritmos", "Sustentabilidad", "Sostenibilidad", "Taller", 
+       "Talleres", "Vanguardia", "Vanguardias", "Web", "Website", "100 LINEAS", "1000 lineas", "10000 lineas", 
+       "100000 lineas", "Bienal", "Bienal 2010", "Biblioteca", "Bibliotecas Comunitarias", "Adaptabilidad", 
+       "Adaptación", "Administración", "Administración de Archivos", "Afiche", "Affiche", "Algoritmo", "AI", 
+       "Antropología", "Antropología filosófica", "Apertura", "Apertura de los terrenos", "Arte", "Artes", 
+       "Autismo", "Trastorno del Espectro Autista"
+     ]
+   }
+ ]
+ 
+ 

@@ -250,7 +250,7 @@ function createControls() {
   });
   createControl('N de Y', numYSlider, controls);
 
-  let marginSlider = createSlider(-width / 2, width / 2, m);
+  let marginSlider = createSlider(-width, width / 2, m);
   marginSlider.input(() => {
     m = marginSlider.value();
     createElements();
