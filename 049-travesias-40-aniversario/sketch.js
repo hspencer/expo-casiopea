@@ -11,17 +11,7 @@ const LIMITES_SUDAMERICA = {
 };
 
 // Paleta de colores que mezcla tonos tierra con acentos
-let palette = [
-  "#e86100",  // Naranja quemado
-  "#ff8c00",  // Naranja oscuro
-  "#ff6700",  // Naranja
-  "#cc5500",  // Marrón
-  "#B9E5E8",  // Azul claro
-  "#7AB2D3",  // Azul medio
-  "#3D5300",  // Verde oliva oscuro
-  "#7b4800",  // Marrón oscuro
-  "#d2691e",  // Chocolate
-];
+let palette = [ "#644404", "#241f02", "#720d04", "#08275d", "#ca4b02" ];
 
 // Variables para el manejo de datos y animación
 let travesias = [];         // Almacena todas las travesías
@@ -51,7 +41,7 @@ function setup() {
   // Creación y configuración del canvas
   createCanvas(windowWidth, CANVAS_HEIGHT, WEBGL);
   //blendMode(MULTIPLY);
-  frameRate(1);
+  frameRate(2);
   
   // Configuración de tipografía
   font = loadFont("Alegreya-Regular.ttf");
@@ -163,30 +153,46 @@ class Travesia {
     return createVector(x, y);
 }
 
-  show() {
-    let pos = this.latLonToPixel();
+show() {
+  let pos = this.latLonToPixel();
+  
+  console.log(`Pintando: ${this.name} (${this.year})
+  Coordenadas originales: lat ${this.lat}, lon ${this.lon}
+  Coordenadas en pantalla: x ${pos.x}, y ${pos.y}`);
 
-    console.log(`Pintando: ${this.name} (${this.year})
-      Coordenadas originales: lat ${this.lat}, lon ${this.lon}
-      Coordenadas en pantalla: x ${pos.x}, y ${pos.y}`);
+  push();
+  translate(pos.x, pos.y, 0);
+  rotate(PI); // Rotación de 180 grados
+  
+  // Configuración de brush para efecto acuarela
+  brush.stroke(this.color);
+  brush.pick("marker2"); // marker2 da un efecto más suave y difuminado
 
-    push();
-    translate(pos.x, pos.y, 0);
-    rotate(PI); // Rotación de 180 grados
+  // Creamos varios trazos cortos en forma radial para simular una mancha
+  let numTrazos = floor(random(4, 8));
+  let radio = random(10, 20);
 
-    brush.stroke(this.color);
-    brush.pick("marker");
-    brush.beginStroke("segments", 0, 0);
-    
-    for (let i = 0; i < random(3, 15); i++) {
-      let angle = random(30, 60);
-      let length = random(2, 25);
-      let pressure = random(0.5, 1);
-      brush.segment(angle, length, pressure);
-    }
-    brush.endStroke(0, .5);
-    pop();
+  for (let i = 0; i < numTrazos; i++) {
+      let angulo = (TWO_PI / numTrazos) * i + random(-0.5, 0.5);
+      
+      brush.beginStroke("curve", sin(angulo) * radio * 0.2, cos(angulo) * radio * 0.2);
+      
+      // Hacemos un trazo curvo corto
+      let numSegments = floor(random(3, 6));
+      for (let j = 0; j < numSegments; j++) {
+          let len = random(5, 15);
+          let press = random(0.3, 0.8) * (1 - j/numSegments); // La presión disminuye hacia el final
+          brush.segment(
+              angulo * RAD_TO_DEG + random(-30, 30),
+              len,
+              press
+          );
+      }
+      brush.endStroke(angulo * RAD_TO_DEG + random(-20, 20), 0.1);
   }
+  
+  pop();
+}
 }
 
 // Manejo de redimensionamiento de ventana
