@@ -12,19 +12,15 @@ const LIMITES_SUDAMERICA = {
 
 // Paleta de colores que mezcla tonos tierra con acentos
 let palette = [
-  "#3D5300",  // Verde oliva oscuro
-  "#ABBA7C",  // Verde sage
-  "#FFE31A",  // Amarillo brillante
-  "#7b4800",  // Marrón oscuro
-  "#d2691e",  // Chocolate
-  "#cd853f",  // Perú
   "#e86100",  // Naranja quemado
   "#ff8c00",  // Naranja oscuro
-  "#ff7f50",  // Coral
   "#ff6700",  // Naranja
   "#cc5500",  // Marrón
   "#B9E5E8",  // Azul claro
-  "#7AB2D3"   // Azul medio
+  "#7AB2D3",  // Azul medio
+  "#3D5300",  // Verde oliva oscuro
+  "#7b4800",  // Marrón oscuro
+  "#d2691e",  // Chocolate
 ];
 
 // Variables para el manejo de datos y animación
@@ -54,7 +50,7 @@ function setup() {
 
   // Creación y configuración del canvas
   createCanvas(windowWidth, CANVAS_HEIGHT, WEBGL);
-  blendMode(MULTIPLY);
+  //blendMode(MULTIPLY);
   frameRate(1);
   
   // Configuración de tipografía
@@ -179,16 +175,16 @@ class Travesia {
     rotate(PI); // Rotación de 180 grados
 
     brush.stroke(this.color);
-    brush.pick("rotring");
+    brush.pick("marker");
     brush.beginStroke("segments", 0, 0);
     
-    for (let i = 0; i < random(5, 15); i++) {
+    for (let i = 0; i < random(3, 15); i++) {
       let angle = random(30, 60);
-      let length = random(10, 30);
-      let pressure = random(0.5, 1.2);
+      let length = random(2, 25);
+      let pressure = random(0.5, 1);
       brush.segment(angle, length, pressure);
     }
-    brush.endStroke(0, 1);
+    brush.endStroke(0, .5);
     pop();
   }
 }
