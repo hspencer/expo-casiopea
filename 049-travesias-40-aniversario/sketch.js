@@ -96,10 +96,8 @@ function createObjects(response) {
       let name = t.fulltext;
       let url = t.fullurl;
 
-      // Filtrado de travesías por año y ubicación
-      if (year >= 1984 && !isNaN(lat) && !isNaN(lon) &&
-          lat >= LIMITES_SUDAMERICA.minLat && lat <= LIMITES_SUDAMERICA.maxLat &&
-          lon >= LIMITES_SUDAMERICA.minLon && lon <= LIMITES_SUDAMERICA.maxLon) {
+      // Solo filtramos por año y que tenga coordenadas válidas
+      if (year >= 1984 && !isNaN(lat) && !isNaN(lon)) {
         travesias.push(new Travesia(name, lat, lon, year, url));
       }
     }
