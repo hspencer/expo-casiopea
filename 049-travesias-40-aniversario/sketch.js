@@ -55,7 +55,7 @@ function setup() {
   // Creación y configuración del canvas
   createCanvas(windowWidth, CANVAS_HEIGHT, WEBGL);
   blendMode(MULTIPLY);
-  frameRate(120);
+  frameRate(1);
   
   // Configuración de tipografía
   font = loadFont("Alegreya-Regular.ttf");
