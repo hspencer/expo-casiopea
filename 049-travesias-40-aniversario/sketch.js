@@ -11,7 +11,16 @@ const LIMITES_SUDAMERICA = {
 };
 
 // Paleta de colores que mezcla tonos tierra con acentos
-let palette = [ "#644404", "#241f02", "#720d04", "#08275d", "#ca4b02" ];
+let palette = [
+  // Ladrillos medios terrosos
+  "#A65D4F", "#9D5347", "#96493F", "#8F3F37", "#88352F",
+  // Ladrillos con toque morado sutil
+  "#833531", "#7C2E2D", "#752729", "#6E2025", "#671921",
+  // Ladrillos profundos
+  "#5E1D23", "#571726", "#501521", "#49131C", "#421117",
+  // Ladrillos muy oscuros
+  "#3D0F15", "#360D13", "#2F0B11", "#28090F", "#21070D"
+];
 
 // Variables para el manejo de datos y animación
 let travesias = [];         // Almacena todas las travesías
@@ -41,7 +50,7 @@ function setup() {
   // Creación y configuración del canvas
   createCanvas(windowWidth, CANVAS_HEIGHT, WEBGL);
   //blendMode(MULTIPLY);
-  frameRate(2);
+  frameRate(1);
   
   // Configuración de tipografía
   font = loadFont("Alegreya-Regular.ttf");
@@ -113,7 +122,7 @@ function draw() {
     let travesia = travesias[currentYearIndex];
     
     // Actualización del div de información
-    infoDiv.html(`${travesia.name}, ${travesia.year}`);
+    infoDiv.html(`${travesia.year}, ${travesia.name}`);
     
     // Dibujo de la travesía
     travesia.show();
