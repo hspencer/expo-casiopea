@@ -157,14 +157,15 @@ class Travesia {
                       Math.abs(LIMITES_SUDAMERICA.maxLat - LIMITES_SUDAMERICA.minLat);
     const mapWidth = mapHeight * proporcion;
 
-    // Transformación de coordenadas invertida para rotación 180°
-    let x = map(this.lon, LIMITES_SUDAMERICA.minLon, LIMITES_SUDAMERICA.maxLon,
+    // Transformación de coordenadas para América invertida
+    // Invertimos minLat/maxLat para voltear el mapa
+    let x = map(this.lon, LIMITES_SUDAMERICA.maxLon, LIMITES_SUDAMERICA.minLon,
                 -mapWidth/2, mapWidth/2);
-    let y = map(this.lat, LIMITES_SUDAMERICA.maxLat, LIMITES_SUDAMERICA.minLat,
+    let y = map(this.lat, LIMITES_SUDAMERICA.minLat, LIMITES_SUDAMERICA.maxLat, // <-- Aquí está el cambio clave
                 -mapHeight/2 + MARGIN_TOP/2, mapHeight/2 + MARGIN_TOP/2);
     
     return createVector(x, y);
-  }
+}
 
   show() {
     let pos = this.latLonToPixel();
