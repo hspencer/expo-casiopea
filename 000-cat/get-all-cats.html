@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MediaWiki API Query</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+</head>
+<body>
+    <h1>Consulta a la API de MediaWiki</h1>
+    <div id="status"></div>
+    <button id="startButton">Iniciar Consulta</button>
+
+    <script>
+        document.getElementById('startButton').addEventListener('click', fetchCategories);
+
+        async function fetchCategories() {
+            document.getElementById('status').innerText = "Obteniendo categorías...";
+
+            const apiUrl = 'https://wiki.ead.pucv.cl/api.php?action=query&list=allcategories&aclimit=max&format=json&origin=*';
+
+            const categoriesResponse = await fetch(apiUrl);
+            const categoriesData = await categoriesResponse.json();
+            const categories = categoriesData.query.allcategories;
+
+            const categoryDetails = await Promise.all(categories.map(async (category, index) => {
+                const categoryName = category['*'].replace(/\\\"/g, '');
+
+                // Fetch category members to get the occurrence
+                const membersUrl = `https://wiki.ead.pucv.cl/api.php?action=query&list=categorymembers&cmtitle=Category:${encodeURIComponent(categoryName)}&cmlimit=max&format=json&origin=*`;
+                const membersResponse = await fetch(membersUrl);
+                const membersData = await membersResponse.json();
+                const occurrence = membersData.query.categorymembers.length;
+
+                // Fetch subcategories
+                const subcategoriesUrl = `https://wiki.ead.pucv.cl/api.php?action=query&list=categorymembers&cmtype=subcat&cmtitle=Category:${encodeURIComponent(categoryName)}&cmlimit=max&format=json&origin=*`;
+                const subcategoriesResponse = await fetch(subcategoriesUrl);
+                const subcategoriesData = await subcategoriesResponse.json();
+                const subcategories = subcategoriesData.query.categorymembers.map(subcat => subcat.title.replace('Category:', '').replace(/\\\"/g, ''));
+
+                // Update status
+                document.getElementById('status').innerText = `Procesando categoría ${index + 1} de ${categories.length}: ${categoryName}`;
+
+                return {
+                    name: categoryName,
+                    occurrence: occurrence,
+                    parentCategories: subcategories
+                };
+            }));
+
+            // Save the result to a file
+            const blob = new Blob([JSON.stringify(categoryDetails, null, 2)], { type: "application/json" });
+            saveAs(blob, "casiopea-categories.json");
+
+            document.getElementById('status').innerText = "Consulta completada y archivo guardado.";
+        }
+    </script>
+</body>
+</html>

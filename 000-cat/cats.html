@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Graph Visualization</title>
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+        .node circle {
+            fill: #fff;
+            stroke: steelblue;
+            stroke-width: 1.5px;
+        }
+        .node text {
+            font: 12px sans-serif;
+            pointer-events: none;
+        }
+        .link {
+            fill: none;
+            stroke: #ccc;
+            stroke-width: 1.5px;
+        }
+    </style>
+</head>
+<body>
+    <script>
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+
+        const svg = d3.select("body").append("svg")
+            .attr("width", width)
+            .attr("height", height)
+            .call(d3.zoom().on("zoom", (event) => {
+                svg.attr("transform", event.transform);
+            }))
+            .append("g");
+
+        const simulation = d3.forceSimulation()
+            .force("link", d3.forceLink().id(d => d.id).distance(100))
+            .force("charge", d3.forceManyBody().strength(-300))
+            .force("center", d3.forceCenter(width / 2, height / 2))
+            .force("collide", d3.forceCollide().radius(d => Math.sqrt(d.occurrence) * 5 + 10));
+
+        // Load the data from the JSON files
+        Promise.all([
+            d3.json("casiopea-categories.json"),
+            d3.json("rel.json")
+        ]).then(function(files) {
+            const categories = files[0];
+            const relations = files[1];
+
+            // Transform categories to nodes
+            const nodes = categories.map(cat => ({
+                id: cat.name,
+                group: cat.parentCategories.length > 0 ? cat.parentCategories[0] : "Independent",
+                occurrence: cat.occurrence
+            }));
+
+            // Add links for parent-child relationships
+            const links = [];
+            categories.forEach(cat => {
+                if (cat.parentCategories.length > 0) {
+                    cat.parentCategories.forEach(parent => {
+                        links.push({ source: cat.name, target: parent });
+                    });
+                }
+            });
+
+            // Add additional links from rel.json based on groups and strength
+            relations.forEach(rel => {
+                const group = rel.members;
+                group.forEach((source, i) => {
+                    for (let j = i + 1; j < group.length; j++) {
+                        links.push({ source: source, target: group[j], strength: rel.strength });
+                    }
+                });
+            });
+
+            const link = svg.append("g")
+                .attr("class", "links")
+                .selectAll("line")
+                .data(links)
+                .enter().append("line")
+                .attr("class", "link");
+
+            const node = svg.append("g")
+                .attr("class", "nodes")
+                .selectAll("g")
+                .data(nodes)
+                .enter().append("g")
+                .attr("class", "node");
+
+            node.append("circle")
+                .attr("r", d => Math.sqrt(d.occurrence) * 5 + 10);
+
+            node.append("text")
+                .attr("dx", 12)
+                .attr("dy", ".35em")
+                .text(d => d.id);
+
+            simulation
+                .nodes(nodes)
+                .on("tick", ticked);
+
+            simulation.force("link")
+                .links(links)
+                .strength(d => d.strength || 1);
+
+            function ticked() {
+                link
+                    .attr("x1", d => d.source.x)
+                    .attr("y1", d => d.source.y)
+                    .attr("x2", d => d.target.x)
+                    .attr("y2", d => d.target.y);
+
+                node
+                    .attr("transform", d => `translate(${d.x},${d.y})`);
+            }
+        }).catch(function(error) {
+            console.error("Error loading the files:", error);
+        });
+    </script>
+</body>
+</html>

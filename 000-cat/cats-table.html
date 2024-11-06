@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Datos de Categorías</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>Datos de Categorías</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Ocurrencias</th>
+                <th>Categorías Padre</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Aquí se insertarán las filas de datos -->
+        </tbody>
+    </table>
+    <script>
+        const data = [
+            {
+                "name": "Acceder a la observación 2020: Primer semestre",
+                "occurrence": 26,
+                "parentCategories": []
+            },
+            {
+                "name": "Bibliografía",
+                "occurrence": 1,
+                "parentCategories": []
+            },
+            {
+                "name": "Bienal 2010",
+                "occurrence": 1,
+                "parentCategories": [
+                    "Diseño de vivienda mínima."
+                ]
+            }
+            // Agrega aquí el resto de los objetos JSON
+        ];
+
+        const tbody = document.querySelector("tbody");
+
+        data.forEach(item => {
+            const tr = document.createElement("tr");
+
+            const nameTd = document.createElement("td");
+            nameTd.textContent = item.name;
+            tr.appendChild(nameTd);
+
+            const occurrenceTd = document.createElement("td");
+            occurrenceTd.textContent = item.occurrence;
+            tr.appendChild(occurrenceTd);
+
+            const parentCategoriesTd = document.createElement("td");
+            parentCategoriesTd.textContent = item.parentCategories.join(", ");
+            tr.appendChild(parentCategoriesTd);
+
+            tbody.appendChild(tr);
+        });
+    </script>
+</body>
+</html>

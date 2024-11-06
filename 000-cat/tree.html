@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Árbol de Categorías Wiki Casiopea</title>
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            font-family: Arial, sans-serif;
+        }
+        #graph-container {
+            width: 100%;
+            height: 100%;
+        }
+        .node circle {
+            fill: #fff;
+            stroke: steelblue;
+            stroke-width: 3px;
+        }
+        .node text {
+            font: 12px sans-serif;
+        }
+        .link {
+            fill: none;
+            stroke: #ccc;
+            stroke-width: 2px;
+        }
+    </style>
+</head>
+<body>
+    <div id="graph-container"></div>
+
+    <script>
+        const baseUrl = "https://wiki.ead.pucv.cl/api.php";
+
+        async function fetchRootCategories() {
+            const params = new URLSearchParams({
+                action: 'query',
+                list: 'allcategories',
+                aclimit: 'max',
+                format: 'json',
+                origin: '*'
+            });
+
+            try {
+                const response = await fetch(`${baseUrl}?${params}`);
+                const data = await response.json();
+                console.log('Root Categories Response:', data);
+
+                if (!data.query || !data.query.allcategories) {
+                    console.error('Unexpected API response structure for root categories:', data);
+                    return [];
+                }
+
+                return data.query.allcategories.map(cat => ({
+                    name: cat['*'],
+                    children: []
+                }));
+            } catch (error) {
+                console.error('Error fetching root categories:', error);
+                return [];
+            }
+        }
+
+        async function fetchSubcategories(category) {
+            const params = new URLSearchParams({
+                action: "query",
+                list: "categorymembers",
+                cmtitle: `Category:${category}`,
+                cmtype: "subcat",
+                format: "json",
+                origin: "*"
+            });
+
+            try {
+                const response = await fetch(`${baseUrl}?${params}`);
+                const data = await response.json();
+                console.log("API Response:", data);
+
+                if (!data.query || !data.query.categorymembers) {
+                    console.error("Unexpected API response structure:", data);
+                    return [];
+                }
+
+                return data.query.categorymembers.map(cat => ({
+                    name: cat.title.split(":")[1],
+                    children: []
+                }));
+            } catch (error) {
+                console.error("Error fetching subcategories:", error);
+                return [];
+            }
+        }
+
+        async function createGraph() {
+            const width = window.innerWidth;
+            const height = window.innerHeight;
+
+            const svg = d3.select("#graph-container").append("svg")
+                .attr("width", width)
+                .attr("height", height);
+
+            const g = svg.append("g");
+
+            const zoom = d3.zoom()
+                .scaleExtent([0.1, 10])
+                .on("zoom", (event) => {
+                    g.attr("transform", event.transform);
+                });
+
+            svg.call(zoom);
+
+            const tree = d3.tree().size([height, width - 200]);
+
+            async function update(source) {
+                const root = d3.hierarchy(source);
+                
+                tree(root);
+
+                const nodes = root.descendants();
+                const links = root.links();
+
+                const node = g.selectAll(".node")
+                    .data(nodes, d => d.data.name);
+
+                const nodeEnter = node.enter().append("g")
+                    .attr("class", "node")
+                    .attr("transform", d => `translate(${source.y0 || 0}, ${source.x0 || 0})`)
+                    .on("dblclick", (event, d) => doubleClick(event, d));
+
+                nodeEnter.append("circle")
+                    .attr("r", 5)
+                    .style("fill", d => d._children ? "lightsteelblue" : "#fff");
+
+                nodeEnter.append("text")
+                    .attr("dy", ".35em")
+                    .attr("x", d => d.children || d._children ? -13 : 13)
+                    .attr("text-anchor", d => d.children || d._children ? "end" : "start")
+                    .text(d => d.data.name);
+
+                const nodeUpdate = nodeEnter.merge(node);
+
+                nodeUpdate.transition()
+                    .duration(750)
+                    .attr("transform", d => `translate(${d.y}, ${d.x})`);
+
+                nodeUpdate.select("circle")
+                    .attr("r", 5)
+                    .style("fill", d => d._children ? "lightsteelblue" : "#fff");
+
+                const nodeExit = node.exit().transition()
+                    .duration(750)
+                    .attr("transform", d => `translate(${source.y}, ${source.x})`)
+                    .remove();
+
+                nodeExit.select("circle")
+                    .attr("r", 1e-6);
+
+                nodeExit.select("text")
+                    .style("fill-opacity", 1e-6);
+
+                const link = g.selectAll(".link")
+                    .data(links, d => d.target.data.name);
+
+                const linkEnter = link.enter().insert("path", "g")
+                    .attr("class", "link")
+                    .attr("d", d => {
+                        const o = {x: source.x0 || 0, y: source.y0 || 0};
+                        return diagonal(o, o);
+                    });
+
+                const linkUpdate = linkEnter.merge(link);
+
+                linkUpdate.transition()
+                    .duration(750)
+                    .attr("d", d => diagonal(d, d.parent));
+
+                link.exit().transition()
+                    .duration(750)
+                    .attr("d", d => {
+                        const o = {x: source.x, y: source.y};
+                        return diagonal(o, o);
+                    })
+                    .remove();
+
+                nodes.forEach(d => {
+                    d.x0 = d.x;
+                    d.y0 = d.y;
+                });
+            }
+
+            function diagonal(s, d) {
+                return `M ${s.y} ${s.x}
+                        C ${(s.y + d.y) / 2} ${s.x},
+                          ${(s.y + d.y) / 2} ${d.x},
+                          ${d.y} ${d.x}`;
+            }
+
+            async function doubleClick(event, d) {
+                if (d.children) {
+                    d._children = d.children;
+                    d.children = null;
+                } else {
+                    if (d._children) {
+                        d.children = d._children;
+                        d._children = null;
+                    } else {
+                        const subcategories = await fetchSubcategories(d.data.name);
+                        d.children = subcategories;
+                    }
+                }
+                update(d);
+            }
+
+            try {
+                console.log('Fetching root categories...');
+                const rootCategories = await fetchRootCategories();
+                console.log('Root categories:', rootCategories);
+
+                if (rootCategories.length === 0) {
+                    console.error('No root categories found');
+                    d3.select("#graph-container").append("p")
+                        .text("No se encontraron categorías. Por favor, verifica la conexión con la API.");
+                    return;
+                }
+
+                const root = d3.hierarchy({name: "Wiki Casiopea", children: rootCategories});
+                root.x0 = height / 2;
+                root.y0 = 0;
+                console.log('Initializing tree with root:', root);
+                update(root);
+            } catch (error) {
+                console.error('Error in createGraph:', error);
+                d3.select("#graph-container").append("p")
+                    .text("Ocurrió un error al crear el gráfico. Por favor, revisa la consola para más detalles.");
+            }
+        }
+
+        createGraph();
+    </script>
+</body>
+</html>
