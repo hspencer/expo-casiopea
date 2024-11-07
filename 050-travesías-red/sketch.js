@@ -73,7 +73,7 @@ function setup() {
 
   // Creación y configuración del canvas
   createCanvas(windowWidth, CANVAS_HEIGHT, WEBGL);
-  frameRate(100);
+  frameRate(1);
   
   // Configuración de tipografía
   font = loadFont("Alegreya-Regular.ttf");
