@@ -6,7 +6,7 @@ let rotationX = 0, rotationY = 0, rotationZ = 0;
 let targetX = 0, targetY = 0, targetZ = 0;
 let animStartTime = 0;
 let animDuration = 12000;
-let waitDuration = 4000;
+let waitDuration = 1000;
 
 function preload() {
     primesData = {
@@ -24,7 +24,7 @@ function preload() {
 }
 
 function setup() {
-    createCanvas(windowWidth, 650, WEBGL);
+    createCanvas(windowWidth, 550, WEBGL);
     ortho();
     textFont(font);
     scheduleNextRotation();
