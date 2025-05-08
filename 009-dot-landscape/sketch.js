@@ -1,5 +1,7 @@
 /*
 
+Stolen and modified from:
+
 Mulholland	
 by
 Mathias
@@ -13,7 +15,7 @@ https://openprocessing.org/sketch/1488948
 let w; // Width of canvas
 let h; // Height of canvas
 let s; // Scale, min of w and h
-let asp = 1 / 0.35; // Aspect ratio
+let asp = 1 / .5; // Aspect ratio
 let c; // Canvas
 let pixelMapper; // Pixel coordinate mapper
 let gfx;
@@ -32,7 +34,7 @@ let pointFill;
 function setup() {
   pixelDensity(window.devicePixelRatio);
   
-  seed = 5325*random();
+  seed = 5325 * random();
 
   [w, h] = computeCanvasSize(windowWidth, windowHeight, asp);
   w = Math.round(w);
@@ -93,12 +95,14 @@ function setup() {
   addGrain(grainImg, 0.1, false, random);
   grainImg.resize(w, h);
 
+  /*
 	backgroundLightness = random();
 	pointFill = backgroundLightness > 0.5 ? "#030203" : "#fcfdfc";
-	
-  gfx.colorMode(HSL, 1);
-  gfx.background(random(), random(), backgroundLightness);
+  */
 
+  //
+  gfx.background('#FFFFF00');
+  pointFill = "#030203A9";
   image(gfx, 0, 0);
   
   const grainStart = pixelMapper.toPixel(canvasExtent[0], canvasExtent[2]);
@@ -109,14 +113,14 @@ function setup() {
   const grainW = round(grainEnd[0] - grainStart[0]);
   const grainH = round(grainEnd[1] - grainStart[1]);
 
-  blend(grainImg, grainX, grainY, grainW, grainH, grainX, grainY, grainW, grainH, DIFFERENCE);
-	loop();
+  // blend(grainImg, grainX, grainY, grainW, grainH, grainX, grainY, grainW, grainH, DIFFERENCE);
+  loop();
 }
 
 function draw() {
 
   stroke(pointFill);
-  strokeWeight(s / 300);
+  strokeWeight(s / 200);
 
   for (let i = 0; i < pointsPerFrame; i++) {
     let p = pds.next();
