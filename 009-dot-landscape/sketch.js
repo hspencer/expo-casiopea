@@ -171,7 +171,7 @@ function addGrain(img, fill = 0.05, color = false, rng = Math.random) {
 
 //////////////////////////////
 
-function addMargin(extent, margin = 0.05) {
+function addMargin(extent, margin = 0.01) {
     let [xMin, xMax, yMin, yMax] = extent;
     const width = xMax - xMin;
     const height = yMax - yMin;
