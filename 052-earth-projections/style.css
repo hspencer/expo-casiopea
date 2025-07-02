@@ -1,0 +1,420 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+    overflow: hidden; /* Evita barras de desplazamiento */
+}
+
+#map-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #f5f5f5; /* Fondo del mapa */
+}
+
+.map-svg {
+    border: none; /* Eliminar borde para pantalla completa */
+    background: white;
+    cursor: grab;
+    display: block; /* Asegura que el SVG ocupe el espacio */
+}
+
+.map-svg:active {
+    cursor: grabbing;
+}
+
+/* Overlay para la interfaz */
+.overlay-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none; /* Permite clics a través del overlay por defecto */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Empuja el info arriba y los controles abajo */
+    align-items: flex-start; /* Alinea los elementos a la izquierda */
+    padding: 20px;
+    box-sizing: border-box;
+    transition: opacity 0.3s ease;
+    opacity: 1;
+    z-index: 1000; /* Asegura que el overlay esté sobre el mapa */
+}
+
+.overlay-container.hidden {
+    opacity: 0;
+    pointer-events: none; /* Deshabilita interacciones cuando está oculto */
+}
+
+.overlay-toggle-btn {
+    position: fixed;
+    top: 15px;
+    right: 15px;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 20px;
+    cursor: pointer;
+    z-index: 1001; /* Asegura que esté por encima de todo */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    pointer-events: all; /* Permite interacción con el botón */
+}
+
+/* Contenedor para el título único y la descripción */
+.top-left-info {
+    pointer-events: all; /* Permite interacción con el contenido */
+    background: rgba(255, 255, 255, 0.85); /* Fondo ligeramente más sólido */
+    padding: 15px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15); /* Sombra más pronunciada */
+    max-width: 500px; /* Limita el ancho para legibilidad */
+    text-align: left;
+    margin-top: 0; 
+    align-self: flex-start; /* Alinea a la izquierda dentro del overlay */
+}
+
+/* Estilos para el div que contiene el título y la info. 
+   El texto del 'name' de la proyección será el título principal. */
+.projection-info {
+    padding: 0; /* Quitar padding interno ya que el padre (.top-left-info) lo tiene */
+    background: none; /* Quitar fondo, lo hereda del padre */
+    border-radius: 0; /* Quitar border-radius, lo hereda del padre */
+    box-shadow: none; /* Quitar sombra, lo hereda del padre */
+    font-size: 1em; /* Tamaño base */
+    color: #2c3e50;
+    text-align: left;
+    margin-top: 0; 
+    line-height: 1.5; 
+}
+
+/* Estilo para el nombre de la proyección (que ahora actúa como título principal) */
+.projection-info .projection-main-title {
+    font-size: 2em; /* Tamaño grande para el título */
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 10px; /* Espacio debajo del título principal */
+    line-height: 1.2;
+}
+
+/* Estilos para los subtítulos (Descripción, Autor, etc.) */
+.projection-info h3 {
+    margin-top: 15px; /* Espacio para separar secciones de info */
+    color: #3498db;
+    font-size: 1.2em;
+    margin-bottom: 8px;
+}
+
+/* Estilos para los párrafos de información */
+.projection-info p {
+    margin: 4px 0;
+    font-size: 0.9em; /* Ligeramente más pequeño que el texto base */
+    color: #555;
+}
+
+.projection-info strong {
+    color: #333; /* Color más oscuro para resaltar */
+}
+
+.projection-info code {
+    display: block;
+    background-color: #eee;
+    padding: 8px;
+    border-radius: 4px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.85em; /* Ajuste para el código */
+    white-space: pre-wrap;
+    word-break: break-word;
+    max-height: 200px;
+    overflow-y: auto;
+    margin-top: 10px; 
+}
+
+/* Controles en la parte inferior */
+.controls.overlay-controls {
+    pointer-events: all;
+    background: rgba(255, 255, 255, 0.85);
+    border-radius: 8px;
+    box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.15);
+    padding: 15px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+    width: calc(100% - 40px); 
+    margin-top: auto; 
+    margin-bottom: 0; 
+    position: relative; 
+}
+
+.control-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    min-width: 120px;
+    flex-grow: 1;
+    padding: 5px;
+}
+
+.control-group label {
+    font-weight: bold;
+    color: #555;
+    font-size: 14px;
+    white-space: nowrap;
+    text-align: center;
+}
+
+.slider {
+    width: 100%;
+    height: 6px;
+    border-radius: 3px;
+    background: #ddd;
+    outline: none;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #4CAF50;
+    cursor: pointer;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+.slider::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #4CAF50;
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+.value-display {
+    font-size: 12px;
+    color: #666;
+    min-width: 60px;
+    text-align: center;
+}
+
+.projection-selector {
+    padding: 8px 12px;
+    border: 2px solid #ddd;
+    border-radius: 4px;
+    background: white;
+    font-size: 14px;
+    cursor: pointer;
+    outline: none;
+    transition: border-color 0.3s ease;
+    width: 100%;
+}
+
+.projection-selector:focus {
+    border-color: #4CAF50;
+}
+
+.button {
+    margin: 5px;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    color: white;
+    transition: background-color 0.3s ease, transform 0.1s ease;
+    flex-grow: 1;
+    min-width: 100px;
+}
+
+.button:hover {
+    transform: translateY(-1px);
+}
+.button:active {
+    transform: translateY(0);
+}
+
+.reset-btn {
+    background: #3498db;
+}
+.reset-btn:hover {
+    background: #2183c5;
+}
+
+.export-btn {
+    background: #27ae60;
+}
+.export-btn:hover {
+    background: #229a53;
+}
+
+.countries {
+    fill: #2c3e50;
+    stroke: #34495e;
+    stroke-width: 0.5px;
+    transition: fill 0.2s ease;
+}
+
+.countries:hover {
+    fill: #e74c3c;
+}
+
+.graticule {
+    fill: none;
+    stroke: #ccc;
+    stroke-width: 0.5px;
+}
+
+.sphere {
+    fill: none;
+    stroke: #000;
+    stroke-width: 1px;
+}
+
+.loading {
+    text-align: center;
+    color: #666;
+    font-style: italic;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(255, 255, 255, 0.9);
+    padding: 15px 25px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+
+.error {
+    text-align: center;
+    color: #e74c3c;
+    background: #fdf2f2;
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid #e74c3c;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+}
+
+.range-info {
+    font-size: 11px;
+    color: #888;
+    margin-top: 2px;
+}
+
+/* Media Queries para pantallas más pequeñas */
+@media (max-width: 1024px) {
+    .controls.overlay-controls {
+        gap: 10px;
+        padding: 10px;
+    }
+}
+
+@media (max-width: 768px) {
+    .top-left-info {
+        max-width: 90%;
+        padding: 10px 15px;
+    }
+    
+    .projection-info .projection-main-title {
+        font-size: 1.5em; /* Ajuste para pantallas pequeñas */
+    }
+
+    .projection-info p {
+        font-size: 0.85em;
+    }
+
+    .controls.overlay-controls {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 10px;
+        width: calc(100% - 20px);
+        gap: 8px;
+    }
+
+    .control-group {
+        width: 100%;
+        min-width: unset;
+        flex-grow: unset;
+    }
+
+    .slider {
+        width: 100%;
+    }
+
+    .projection-selector {
+        width: 100%;
+    }
+
+    .button {
+        width: 100%;
+        margin: 5px 0;
+    }
+}
+
+@media (max-width: 480px) {
+    .projection-info .projection-main-title {
+        font-size: 1.2em; /* Más pequeño para móviles */
+    }
+
+    .overlay-toggle-btn {
+        width: 35px;
+        height: 35px;
+        font-size: 18px;
+        top: 10px;
+        right: 10px;
+    }
+    
+    .top-left-info {
+        padding: 8px 12px;
+        max-width: 95%;
+    }
+
+    .projection-info p {
+        font-size: 0.8em;
+    }
+
+    .projection-info code {
+        font-size: 0.75em;
+        padding: 6px;
+    }
+    
+    .controls.overlay-controls {
+        padding: 8px;
+    }
+
+    .control-group label {
+        font-size: 12px;
+    }
+
+    .value-display, .range-info {
+        font-size: 10px;
+    }
+
+    .projection-selector, .button {
+        font-size: 13px;
+        padding: 6px 12px;
+    }
+}
