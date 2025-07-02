@@ -86,7 +86,7 @@ body {
     align-self: flex-start; /* Alinea a la izquierda dentro del overlay */
 }
 
-/* Estilos para el div que contiene el título y la info. 
+/* Estilos para el div que contiene el nombre de la proyección y los detalles. 
    El texto del 'name' de la proyección será el título principal. */
 .projection-info {
     padding: 0; /* Quitar padding interno ya que el padre (.top-left-info) lo tiene */
@@ -109,12 +109,14 @@ body {
     line-height: 1.2;
 }
 
-/* Estilos para los subtítulos (Descripción, Autor, etc.) */
+/* Los h3 originales de la descripción ya no se usan, pero se mantienen por si acaso.
+   Si en algún momento el projDef.name no fuera suficiente, se podrían reactivar. */
 .projection-info h3 {
-    margin-top: 15px; /* Espacio para separar secciones de info */
-    color: #3498db;
-    font-size: 1.2em;
-    margin-bottom: 8px;
+    display: none; /* Oculta el h3 si se usa internamente en updateTitleAndInfo */
+    /* margin-top: 15px; */
+    /* color: #3498db; */
+    /* font-size: 1.2em; */
+    /* margin-bottom: 8px; */
 }
 
 /* Estilos para los párrafos de información */
@@ -128,18 +130,24 @@ body {
     color: #333; /* Color más oscuro para resaltar */
 }
 
-.projection-info code {
-    display: block;
-    background-color: #eee;
+/* Estilos para el contenedor de fórmulas matemáticas */
+.projection-info .math-formula {
+    display: block; /* Para que las fórmulas de display math ocupen su propia línea */
+    background-color: #eee; /* Fondo claro para el bloque de código */
     padding: 8px;
     border-radius: 4px;
-    font-family: 'Courier New', Courier, monospace;
+    font-family: 'Courier New', Courier, monospace; /* Fuente monoespaciada para el LaTeX */
     font-size: 0.85em; /* Ajuste para el código */
-    white-space: pre-wrap;
-    word-break: break-word;
-    max-height: 200px;
-    overflow-y: auto;
+    white-space: pre-wrap; /* Permite saltos de línea */
+    word-break: break-word; /* Rompe palabras largas */
+    max-height: 200px; /* Limita la altura */
+    overflow-y: auto; /* Scroll si es necesario */
     margin-top: 10px; 
+}
+
+/* Estilos adicionales para MathJax (si es necesario un control más fino) */
+.MathJax_Display {
+    margin: 0 !important; /* Elimina márgenes extra que MathJax pueda añadir */
 }
 
 /* Controles en la parte inferior */
@@ -339,7 +347,7 @@ body {
     }
     
     .projection-info .projection-main-title {
-        font-size: 1.5em; /* Ajuste para pantallas pequeñas */
+        font-size: 1.5em; 
     }
 
     .projection-info p {
@@ -376,7 +384,7 @@ body {
 
 @media (max-width: 480px) {
     .projection-info .projection-main-title {
-        font-size: 1.2em; /* Más pequeño para móviles */
+        font-size: 1.2em; 
     }
 
     .overlay-toggle-btn {

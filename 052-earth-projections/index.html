@@ -8,6 +8,7 @@
     <script src="https://d3js.org/d3-geo-projection.v4.min.js"></script>
     <script src="https://d3js.org/topojson.v3.min.js"></script>
     <link rel="stylesheet" href="style.css">
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
 <body>
     <div id="map-container">
@@ -131,17 +132,17 @@
                 history: 'Una de las proyecciones más antiguas, conocida y utilizada desde la antigüedad griega. Es una perspectiva directa de la Tierra.',
                 usage: 'Ideal para representar un hemisferio o una vista "desde el espacio", común en globos y mapas de exploración polar.',
                 author: 'Desconocido (orígenes antiguos)',
-                math: 'Proyección acimutal en la que los puntos de la esfera se proyectan sobre un plano tangente desde un punto en el infinito. Las coordenadas cartesianas $(x, y)$ se derivan de la longitud $\\lambda$ y latitud $\\phi$: $x = R \\cos(\\phi) \\sin(\\lambda - \\lambda_0)$, $y = R (\\cos(\\phi_0) \\sin(\\phi) - \\sin(\\phi_0) \\cos(\\phi) \\cos(\\lambda - \\lambda_0))$, donde $R$ es el radio de la esfera, $(\\lambda_0, \\phi_0)$ es el centro de la proyección.',
+                math: 'Proyección acimutal en la que los puntos de la esfera se proyectan sobre un plano tangente desde un punto en el infinito. Las coordenadas cartesianas $(\\mathbf{x}, \\mathbf{y})$ se derivan de la longitud $\\lambda$ y latitud $\\phi$: \\[x = R \\cos(\\phi) \\sin(\\lambda - \\lambda_0)\\] \\[y = R (\\cos(\\phi_0) \\sin(\\phi) - \\sin(\\phi_0) \\cos(\\phi) \\cos(\\lambda - \\lambda_0))\\] donde $R$ es el radio de la esfera, $(\\lambda_0, \\phi_0)$ es el centro de la proyección.',
                 creator: () => d3.geoOrthographic(),
                 defaultScale: null
             },
             stereographic: {
                 name: 'Estereográfica',
                 description: 'Proyección conforme que preserva los ángulos.',
-                history: 'Conocida desde la antigüedad clásica, utilizada por Hiparco, Ptolomeo y matemáticos islámicos. Fue fundamental en el desarrollo de la cartografía y la navegación.',
+                history: 'Conocida desde la antigüedad clásica, utilizada por Hiparco, Ptolomeo y matemáticos islámicos. Fue fundamental en el desarrollo del cartografía y la navegación.',
                 usage: 'Utilizada para mapas polares, navegación aérea y en campos como la geología y la cristalografía debido a su propiedad de conformancia.',
                 author: 'Desconocido (orígenes antiguos, popularizada por Hiparco y Ptolomeo)',
-                math: 'Proyección acimutal en la que los puntos de la esfera se proyectan sobre un plano tangente desde el polo opuesto al punto de tangencia. Las coordenadas $(x, y)$ se calculan como: $x = 2R \\tan(\\pi/4 + \\phi/2) \\sin(\\lambda - \\lambda_0)$ y $y = -2R \\tan(\\pi/4 + \\phi/2) \\cos(\\lambda - \\lambda_0)$, para una proyección tangente en el Polo Norte. Preserva los ángulos, pero distorsiona las áreas a medida que se aleja del centro.',
+                math: 'Proyección acimutal en la que los puntos de la esfera se proyectan sobre un plano tangente desde el polo opuesto al punto de tangencia. Las coordenadas $(x, y)$ se calculan como: \\[x = 2R \\tan(\\pi/4 + \\phi/2) \\sin(\\lambda - \\lambda_0)\\] \\[y = -2R \\tan(\\pi/4 + \\phi/2) \\cos(\\lambda - \\lambda_0)\\] para una proyección tangente en el Polo Norte. Preserva los ángulos, pero distorsiona las áreas a medida que se aleja del centro.',
                 creator: () => d3.geoStereographic(),
                 defaultScale: null
             },
@@ -151,7 +152,7 @@
                 history: 'La proyección Lambert Azimuthal Equal-Area fue desarrollada por Johann Heinrich Lambert en 1772. Es una de las primeras proyecciones que garantizan la igualdad de áreas.',
                 usage: 'Comúnmente usada para mapas de continentes, océanos o para representar distribuciones estadísticas donde el tamaño relativo es importante.',
                 author: 'Johann Heinrich Lambert',
-                math: 'Para una proyección con centro en $(\\lambda_0, \\phi_0)$: $k = \\sqrt{2 / (1 + \\sin(\\phi_0) \\sin(\\phi) + \\cos(\\phi_0) \\cos(\\phi) \\cos(\\lambda - \\lambda_0))}$. Las coordenadas son: $x = R k \\cos(\\phi) \\sin(\\lambda - \\lambda_0)$, $y = R k (\\cos(\\phi_0) \\sin(\\phi) - \\sin(\\phi_0) \\cos(\\phi) \\cos(\\lambda - \\lambda_0))$. El factor $k$ asegura que el área se conserve.',
+                math: 'Para una proyección con centro en $(\\lambda_0, \\phi_0)$: \\[k = \\sqrt{2 / (1 + \\sin(\\phi_0) \\sin(\\phi) + \\cos(\\phi_0) \\cos(\\phi) \\cos(\\lambda - \\lambda_0))}\\] Las coordenadas son: \\[x = R k \\cos(\\phi) \\sin(\\lambda - \\lambda_0)\\] \\[y = R k (\\cos(\\phi_0) \\sin(\\phi) - \\sin(\\phi_0) \\cos(\\phi) \\cos(\\lambda - \\lambda_0))\\] El factor $k$ asegura que el área se conserve.',
                 creator: () => d3.geoAzimuthalEqualArea(),
                 defaultScale: null
             },
@@ -161,7 +162,7 @@
                 history: 'Creada por Gerardus Mercator en 1569. Revolucionó la navegación ya que las líneas de rumbo constante (loxodromas) se representan como líneas rectas.',
                 usage: 'Estándar para la navegación marina, mapas mundiales en línea (como Google Maps en ciertos niveles de zoom) y cartas náuticas. Muy útil para la dirección, pero distorsiona severamente las áreas cerca de los polos.',
                 author: 'Gerardus Mercator',
-                math: 'Proyección cilíndrica conforme. Las coordenadas cartesianas $(x, y)$ se calculan como: $x = R (\\lambda - \\lambda_0)$ y $y = R \\ln[\\tan(\\pi/4 + \\phi/2)]$. Las líneas de latitud y longitud son ortogonales, y las loxodromas son líneas rectas. La distorsión de área aumenta drásticamente con la latitud.',
+                math: 'Proyección cilíndrica conforme. Las coordenadas cartesianas $(x, y)$ se calculan como: \\[x = R (\\lambda - \\lambda_0)\\] \\[y = R \\ln[\\tan(\\pi/4 + \\phi/2)]\\] Las líneas de latitud y longitud son ortogonales, y las loxodromas son líneas rectas. La distorsión de área aumenta drásticamente con la latitud.',
                 creator: () => d3.geoMercator(),
                 defaultScale: null
             },
@@ -181,7 +182,7 @@
                 history: 'Desarrollada por Carl B. Mollweide en 1805. Es una proyección de área igual, lo que significa que las proporciones de área en el mapa son las mismas que en la realidad.',
                 usage: 'Comúnmente utilizada para mapas del mundo donde la precisión de las áreas es crucial, como mapas temáticos de población o distribución de recursos.',
                 author: 'Carl B. Mollweide',
-                math: 'Proyección pseudocilíndrica de área igual. La longitud $\\lambda$ y latitud $\\phi$ se transforman usando una latitud auxiliar $\\theta$: $\\lambda = \\lambda_0 + (\\pi R \\cos(\\theta) - 2R \\theta) / (R \\cos(\\phi))$ y $\\phi = \\arcsin[(2\\theta + \\sin(2\\theta)) / \\pi]$. El semieje mayor es el doble del semieje menor, y el meridiano central es una línea recta. Los paralelos son líneas rectas y los meridianos son elipses.',
+                math: 'Proyección pseudocilíndrica de área igual. La longitud $\\lambda$ y latitud $\\phi$ se transforman usando una latitud auxiliar $\\theta$: \\[\\lambda = \\lambda_0 + \\frac{R \\cos(\\theta) \\sqrt{2\\pi^2 \\cos^2(\\theta) - (2\\theta + \\sin(2\\theta))^2}}{2(2\\theta + \\sin(2\\theta))}\\] \\[\\phi = \\arcsin\\left(\\frac{2\\theta + \\sin(2\\theta)}{\\pi}\\right)\\] El semieje mayor es el doble del semieje menor, y el meridiano central es una línea recta. Los paralelos son líneas rectas y los meridianos son elipses.',
                 creator: () => d3.geoMollweide(),
                 defaultScale: null
             },
@@ -201,7 +202,7 @@
                 history: 'Desarrollada por Oswald Winkel en 1921. Su nombre "Tripel" (triple) se refiere a su objetivo de minimizar las tres distorsiones principales (área, ángulo y distancia).',
                 usage: 'Desde 1998, es la proyección estándar para los mapas mundiales de la National Geographic Society. Es una buena opción para mapas de referencia generales donde se busca un equilibrio de distorsiones.',
                 author: 'Oswald Winkel',
-                math: 'Es la media aritmética de la proyección cilíndrica equirectangular y la proyección Aitoff. No es conforme ni de área igual, pero es un buen compromiso. Su complejidad se debe a ser una combinación de otras proyecciones: $x = ( (\\lambda - \\lambda_0) \\cos(\\phi) + R \\frac{2 \\cos(\\phi) \\sin((\\lambda - \\lambda_0)/2) \\cos(\\alpha)}{\\text{sinc}(\\alpha)} ) / 2$, $y = (\\phi + R \\frac{\\sin(\\phi) \\sin(\\alpha)}{\\text{sinc}(\\alpha)}) / 2$, donde $\\alpha = \\arccos(\\cos(\\phi) \\cos((\\lambda - \\lambda_0)/2))$.',
+                math: 'Es la media aritmética de la proyección cilíndrica equirectangular y la proyección Aitoff. No es conforme ni de área igual, pero es un buen compromiso. Su complejidad se debe a ser una combinación de otras proyecciones: \\[x = \\frac{1}{2} \\left( (\\lambda - \\lambda_0) \\cos(\\phi) + \\frac{2 \\cos(\\phi) \\sin((\\lambda - \\lambda_0)/2) \\cos(\\alpha)}{\\text{sinc}(\\alpha)} \\right)\\] \\[y = \\frac{1}{2} \\left( \\phi + \\frac{\\sin(\\phi) \\sin(\\alpha)}{\\text{sinc}(\\alpha)} \\right)\\] donde $\\alpha = \\arccos(\\cos(\\phi) \\cos((\\lambda - \\lambda_0)/2))$ y $\\text{sinc}(x) = \\sin(x)/x$.',
                 creator: () => d3.geoWinkel3(),
                 defaultScale: null
             },
@@ -211,7 +212,7 @@
                 history: 'Creada por Max Eckert en 1906, es una de las seis proyecciones de su serie. Es una proyección de área igual, utilizada para representar el mundo completo.',
                 usage: 'Adecuada para mapas temáticos del mundo donde la precisión de área es fundamental, como distribución de cultivos, densidad de población o recursos naturales.',
                 author: 'Max Eckert',
-                math: 'Proyección pseudocilíndrica de área igual. Los meridianos son elipses y los paralelos son líneas rectas. Se usan fórmulas para garantizar la igualdad de áreas, con una latitud auxiliar $\\theta$: $x = \\frac{2}{\\sqrt{4\\pi^2 + \\pi}} R (\\lambda - \\lambda_0)(1 + \\cos(\\theta))$, $y = \\frac{2}{\\sqrt{4\\pi^2 + \\pi}} R (2\\theta + \\sin(2\\theta))$. Donde el factor de escala es tal que el área se conserva.',
+                math: 'Proyección pseudocilíndrica de área igual. Los meridianos son elipses y los paralelos son líneas rectas. Se usan fórmulas para garantizar la igualdad de áreas, con una latitud auxiliar $\\theta$: \\[x = \\frac{2}{\\sqrt{4\\pi^2 + \\pi}} R (\\lambda - \\lambda_0)(1 + \\cos(\\theta))\\] \\[y = \\frac{2}{\\sqrt{4\\pi^2 + \\pi}} R (2\\theta + \\sin(2\\theta))\\] Donde el factor de escala es tal que el área se conserva.',
                 creator: () => d3.geoEckert4(),
                 defaultScale: null
             },
@@ -221,7 +222,7 @@
                 history: 'Desarrollada por Vladimir V. Kavrayskiy en 1939. Buscó un buen equilibrio entre distorsiones de forma y área.',
                 usage: 'Una alternativa a la proyección de Robinson para mapas mundiales de uso general, aunque menos común. Ofrece una apariencia bastante equilibrada.',
                 author: 'Vladimir V. Kavrayskiy',
-                math: 'Proyección pseudocilíndrica: $x = \\frac{3}{2}R \\lambda \\sqrt{1 - (\\frac{\\phi}{\\pi/2})^2}$, $y = R \\phi$. Los meridianos son curvas y los paralelos son líneas rectas. Es un compromiso entre distorsiones, no es conforme ni de área igual, pero es una buena alternativa para mapas de referencia.',
+                math: 'Proyección pseudocilíndrica: \\[x = \\frac{3}{2}R \\lambda \\sqrt{1 - \\left(\\frac{\\phi}{\\pi/2}\\right)^2}\\] \\[y = R \\phi\\] Los meridianos son curvas y los paralelos son líneas rectas. Es un compromiso entre distorsiones, no es conforme ni de área igual, pero es una buena alternativa para mapas de referencia.',
                 creator: () => d3.geoKavrayskiy7(),
                 defaultScale: null
             },
@@ -231,7 +232,7 @@
                 history: 'Desarrollada por Karl Wagner en 1932. Pertenece a una familia de proyecciones pseudocilíndricas, buscando un balance entre forma y área.',
                 usage: 'Utilizada para mapas mundiales generales, donde se busca una representación visualmente agradable y un buen compromiso en la distorsión.',
                 author: 'Karl Wagner',
-                math: 'Proyección pseudocilíndrica que asigna $x = \\frac{1}{2} R (\\lambda - \\lambda_0) \\sqrt{1 - 3 (\\frac{\\phi}{\\pi})^2}$ y $y = R \\phi$. Los polos son líneas rectas la mitad de largas que el ecuador. Ofrece un buen balance visual.',
+                math: 'Proyección pseudocilíndrica que asigna \\[x = \\frac{1}{2} R (\\lambda - \\lambda_0) \\sqrt{1 - 3 \\left(\\frac{\\phi}{\\pi}\\right)^2}\\] \\[y = R \\phi\\] Los polos son líneas rectas la mitad de largas que el ecuador. Ofrece un buen balance visual.',
                 creator: () => d3.geoWagner6(),
                 defaultScale: null
             },
@@ -241,7 +242,7 @@
                 history: 'Desarrollada por David A. Aitoff en 1889. Se basa en la proyección acimutal equidistante, pero las longitudes se reducen a la mitad para darle forma elíptica.',
                 usage: 'Comúnmente utilizada para mapas mundiales en atlas y para representaciones de cielos estrellados, ya que la forma elíptica es estéticamente agradable.',
                 author: 'David A. Aitoff',
-                math: 'Se obtiene a partir de la proyección acimutal equidistante. Sea $\\alpha = \\arccos(\\cos(\\phi) \\cos((\\lambda - \\lambda_0)/2))$. Las coordenadas son: $x = 2R \\frac{\\cos(\\phi) \\sin((\\lambda - \\lambda_0)/2)}{\\text{sinc}(\\alpha)}$, $y = R \\frac{\\sin(\\phi)}{\\text{sinc}(\\alpha)}$. Donde $\\text{sinc}(x) = \\sin(x)/x$.',
+                math: 'Se obtiene a partir de la proyección acimutal equidistante. Sea $\\alpha = \\arccos(\\cos(\\phi) \\cos((\\lambda - \\lambda_0)/2))$. Las coordenadas son: \\[x = 2R \\frac{\\cos(\\phi) \\sin((\\lambda - \\lambda_0)/2)}{\\text{sinc}(\\alpha)}\\] \\[y = R \\frac{\\sin(\\phi)}{\\text{sinc}(\\alpha)}\\] Donde $\\text{sinc}(x) = \\sin(x)/x$.',
                 creator: () => d3.geoAitoff(),
                 defaultScale: null
             },
@@ -251,7 +252,7 @@
                 history: 'Desarrollada por Heinrich C. Albers en 1805. Es una proyección cónica que mantiene la propiedad de igualdad de área.',
                 usage: 'Ideal para mapas de países grandes que tienen un gran alcance este-oeste y un alcance norte-sur limitado, como Estados Unidos. Se usa en mapas temáticos y atlas para garantizar la precisión de área.',
                 author: 'Heinrich C. Albers',
-                math: 'Proyección cónica de área igual. Utiliza dos paralelos estándar $(\\phi_1, \\phi_2)$ para controlar la distorsión. Las coordenadas se derivan de la fórmula del cono: $x = R \\rho \\sin(\\theta)$, $y = R (\\rho_0 - \\rho \\cos(\\theta))$, donde $\\rho$ es una función de $\\phi$ y $\\theta = n (\\lambda - \\lambda_0)$. El factor $n$ se calcula a partir de los paralelos estándar para asegurar la igualdad de área.',
+                math: 'Proyección cónica de área igual. Utiliza dos paralelos estándar $(\\phi_1, \\phi_2)$ para controlar la distorsión. Las coordenadas se derivan de la fórmula del cono: \\[x = R \\rho \\sin(\\theta)\\] \\[y = R (\\rho_0 - \\rho \\cos(\\theta))\\] donde $\\rho$ es una función de $\\phi$ y $\\theta = n (\\lambda - \\lambda_0)$. El factor $n$ se calcula a partir de los paralelos estándar para asegurar la igualdad de área.',
                 creator: () => d3.geoAlbers(),
                 defaultScale: null
             },
@@ -261,7 +262,7 @@
                 history: 'También conocida como Cónica Conforme de Lambert. Desarrollada por Johann Heinrich Lambert en 1772. Es una de las proyecciones más importantes para la aviación y la topografía.',
                 usage: 'Ampliamente utilizada para mapas aeronáuticos, mapas estatales y regionales, y sistemas de coordenadas planas como el SPC (State Plane Coordinate System) en Estados Unidos. Es conforme y las líneas de latitud son arcos circulares concéntricos.',
                 author: 'Johann Heinrich Lambert',
-                math: 'Proyección cónica conforme. Las líneas de latitud son arcos de círculos concéntricos y las de longitud son líneas rectas que irradian desde el vértice del cono. Las coordenadas son: $x = R \\rho \\sin(n \\lambda)$ y $y = R (\\rho_0 - \\rho \\cos(n \\lambda))$, donde $n$ es la constante del cono (depende de los paralelos estándar), $\\rho$ es el radio del paralelo proyectado y $\\rho_0$ es el radio del paralelo central.',
+                math: 'Proyección cónica conforme. Las líneas de latitud son arcos de círculos concéntricos y las de longitud son líneas rectas que irradian desde el vértice del cono. Las coordenadas son: \\[x = R \\rho \\sin(n \\lambda)\\] \\[y = R (\\rho_0 - \\rho \\cos(n \\lambda))\\] donde $n$ es la constante del cono (depende de los paralelos estándar), $\\rho$ es el radio del paralelo proyectado y $\\rho_0$ es el radio del paralelo central.',
                 creator: () => d3.geoConicConformal(),
                 defaultScale: null
             },
@@ -271,7 +272,7 @@
                 history: 'Una de las proyecciones más antiguas, se remonta a la antigua Grecia, utilizada por Thales de Mileto. Es la proyección central del globo sobre un plano tangente.',
                 usage: 'Fundamental para la navegación marítima y aérea, ya que las grandes circunferencias (los caminos más cortos entre dos puntos en la esfera) se representan como líneas rectas. También se usa para sísmica y para el mapeo de cielos.',
                 author: 'Thales de Mileto (orígenes antiguos)',
-                math: 'Proyección acimutal en la que los puntos se proyectan desde el centro de la esfera sobre un plano tangente. Para un centro en $(\\lambda_0, \\phi_0)$: $x = R \\frac{\\cos(\\phi) \\sin(\\lambda - \\lambda_0)}{\\sin(\\phi_0) \\sin(\\phi) + \\cos(\\phi_0) \\cos(\\phi) \\cos(\\lambda - \\lambda_0)}$, $y = R \\frac{\\cos(\\phi_0) \\sin(\\phi) - \\sin(\\phi_0) \\cos(\\phi) \\cos(\\lambda - \\lambda_0)}{\\sin(\\phi_0) \\sin(\\phi) + \\cos(\\phi_0) \\cos(\\phi) \\cos(\\lambda - \\lambda_0)}$. Las distancias y áreas se distorsionan rápidamente lejos del centro.',
+                math: 'Proyección acimutal en la que los puntos se proyectan desde el centro de la esfera sobre un plano tangente. Para un centro en $(\\lambda_0, \\phi_0)$: \\[x = R \\frac{\\cos(\\phi) \\sin(\\lambda - \\lambda_0)}{\\sin(\\phi_0) \\sin(\\phi) + \\cos(\\phi_0) \\cos(\\phi) \\cos(\\lambda - \\lambda_0)}\\] \\[y = R \\frac{\\cos(\\phi_0) \\sin(\\phi) - \\sin(\\phi_0) \\cos(\\phi) \\cos(\\lambda - \\lambda_0)}{\\sin(\\phi_0) \\sin(\\phi) + \\cos(\\phi_0) \\cos(\\phi) \\cos(\\lambda - \\lambda_0)}\\] Las distancias y áreas se distorsionan rápidamente lejos del centro.',
                 creator: () => d3.geoGnomonic(),
                 defaultScale: null
             },
@@ -281,7 +282,7 @@
                 history: 'Desarrollada por Ernst von Hammer en 1892. Es una proyección de área igual y, a menudo, se considera una versión de área igual de la proyección Aitoff.',
                 usage: 'Se utiliza para mapas mundiales temáticos donde es crucial preservar la igualdad de áreas, como en atlas y para la visualización de datos globales.',
                 author: 'Ernst von Hammer',
-                math: 'Proyección acimutal de área igual. Es una proyección elíptica. Las coordenadas son: $x = 2R \\frac{\\cos(\\phi) \\sin((\\lambda - \\lambda_0)/2)}{\\sqrt{1 + \\cos(\\phi) \\cos((\\lambda - \\lambda_0)/2)}}$, $y = R \\frac{\\sin(\\phi)}{\\sqrt{1 + \\cos(\\phi) \\cos((\\lambda - \\lambda_0)/2)}}$. Los meridianos son elipses y los paralelos son curvas complejas.',
+                math: 'Proyección acimutal de área igual. Es una proyección elíptica. Las coordenadas son: \\[x = 2R \\frac{\\cos(\\phi) \\sin((\\lambda - \\lambda_0)/2)}{\\sqrt{1 + \\cos(\\phi) \\cos((\\lambda - \\lambda_0)/2)}}\\] \\[y = R \\frac{\\sin(\\phi)}{\\sqrt{1 + \\cos(\\phi) \\cos((\\lambda - \\lambda_0)/2)}}\\] Los meridianos son elipses y los paralelos son curvas complejas.',
                 creator: () => d3.geoHammer(),
                 defaultScale: null
             },
@@ -291,7 +292,7 @@
                 history: 'Desarrollada por Johann Heinrich Lambert en 1772. Es una proyección acimutal que asegura que las distancias radiales desde el punto central son correctas.',
                 usage: 'Comúnmente utilizada para mapas polares y hemisféricos. También se usa para el sistema de coordenadas "LAEA Europe" de la Unión Europea.',
                 author: 'Johann Heinrich Lambert',
-                math: 'Proyección acimutal equidistante. Para un centro en $(\\lambda_0, \\phi_0)$: $c = \\arccos(\\sin(\\phi_0) \\sin(\\phi) + \\cos(\\phi_0) \\cos(\\phi) \\cos(\\lambda - \\lambda_0))$. Las coordenadas son: $x = R \\frac{\\cos(\\phi) \\sin(\\lambda - \\lambda_0)}{c} \\sin(c)$, $y = R \\frac{\\cos(\\phi_0) \\sin(\\phi) - \\sin(\\phi_0) \\cos(\\phi) \\cos(\\lambda - \\lambda_0)}{c} \\sin(c)$. Las distancias radiales desde el centro son exactas.',
+                math: 'Proyección acimutal equidistante. Para un centro en $(\\lambda_0, \\phi_0)$: \\[c = \\arccos(\\sin(\\phi_0) \\sin(\\phi) + \\cos(\\phi_0) \\cos(\\phi) \\cos(\\lambda - \\lambda_0))\\] Las coordenadas son: \\[x = R \\frac{\\cos(\\phi) \\sin(\\lambda - \\lambda_0)}{c} \\sin(c)\\] \\[y = R \\frac{\\cos(\\phi_0) \\sin(\\phi) - \\sin(\\phi_0) \\cos(\\phi) \\cos(\\lambda - \\lambda_0)}{c} \\sin(c)\\] Las distancias radiales desde el centro son exactas.',
                 creator: () => d3.geoLambertAzimuthalEqualArea(),
                 defaultScale: null
             },
@@ -321,7 +322,7 @@
                 history: 'Atribuida a Rigobert Bonne alrededor de 1752, aunque sus principios se conocen desde el siglo XVI. Es una proyección de área igual.',
                 usage: 'Utilizada para mapas de continentes y regiones. Es especialmente útil para áreas con una forma de "corazón" o "abanico", como Asia o África. Históricamente popular para atlas.',
                 author: 'Rigobert Bonne',
-                math: 'Proyección pseudocónica de área igual. Los paralelos son arcos circulares concéntricos, y el meridiano central es una línea recta. Las coordenadas son: $x = R \\rho \\sin(\\theta)$, $y = R (\\rho_0 - \\rho \\cos(\\theta))$, donde $\\rho$ es el radio desde el polo del cono, $\\theta$ es la longitud ajustada, y se usa un paralelo estándar para su construcción. Las distancias son correctas a lo largo del meridiano central y del paralelo estándar.',
+                math: 'Proyección pseudocónica de área igual. Los paralelos son arcos circulares concéntricos, y el meridiano central es una línea recta. Las coordenadas son: \\[x = R \\rho \\sin(\\theta)\\] \\[y = R (\\rho_0 - \\rho \\cos(\\theta))\\] donde $\\rho$ es el radio desde el polo del cono, $\\theta$ es la longitud ajustada, y se usa un paralelo estándar para su construcción. Las distancias son correctas a lo largo del meridiano central y del paralelo estándar.',
                 creator: () => d3.geoBonne(),
                 defaultScale: null
             },
@@ -331,7 +332,7 @@
                 history: 'Conocida desde el siglo XVI (Jean Cossin, 1570). También se la conoce como la proyección de Sanson-Flamsteed. Es una de las proyecciones de área igual más simples.',
                 usage: 'Adecuada para mapas mundiales donde la precisión de área es fundamental, como mapas temáticos de distribución de fenómenos. Se utiliza a menudo para representar continentes como África y América del Sur.',
                 author: 'Jean Cossin / Nicolas Sanson / John Flamsteed',
-                math: 'Proyección pseudocilíndrica de área igual. Los paralelos son líneas rectas, y los meridianos son curvas sinusoidales. Las coordenadas son: $x = R (\\lambda - \\lambda_0) \\cos(\\phi)$, $y = R \\phi$. Las distorsiones de forma son significativas en los bordes del mapa.',
+                math: 'Proyección pseudocilíndrica de área igual. Los paralelos son líneas rectas, y los meridianos son curvas sinusoidales. Las coordenadas son: \\[x = R (\\lambda - \\lambda_0) \\cos(\\phi)\\] \\[y = R \\phi\\] Las distorsiones de forma son significativas en los bordes del mapa.',
                 creator: () => d3.geoSinusoidal(),
                 defaultScale: null
             },
@@ -351,7 +352,7 @@
                 history: 'Desarrollada en 2018 por Bojan Šavrič, Tom Patterson y Bernhard Jenny. Es una alternativa moderna a las proyecciones de área igual existentes, buscando un mejor equilibrio visual y menos distorsión percibida que las tradicionales (como Gall-Peters).',
                 usage: 'Diseñada para ser la nueva proyección estándar de área igual para mapas mundiales generales y temáticos, especialmente en contextos educativos y científicos.',
                 author: 'Bojan Šavrič, Tom Patterson, Bernhard Jenny',
-                math: 'Es una proyección pseudocilíndrica de área igual definida por una serie de ecuaciones polinómicas. $x = A_1 \\lambda \\cos(\\phi) / (A_2 + A_3 \\cos(\\phi)^2 + A_4 \\sin(\\phi)^2)$, $y = B_1 \\sin(\\phi) + B_2 \\sin(\\phi)^3 + B_3 \\sin(\\phi)^7$. Los coeficientes $A_i, B_i$ son constantes optimizadas para la igualdad de área y la apariencia visual.',
+                math: 'Es una proyección pseudocilíndrica de área igual definida por una serie de ecuaciones polinómicas. \\[x = A_1 \\lambda \\cos(\\phi) / (A_2 + A_3 \\cos(\\phi)^2 + A_4 \\sin(\\phi)^2)\\] \\[y = B_1 \\sin(\\phi) + B_2 \\sin(\\phi)^3 + B_3 \\sin(\\phi)^7\\] Los coeficientes $A_i, B_i$ son constantes optimizadas para la igualdad de área y la apariencia visual.',
                 creator: () => d3.geoEqualEarth(),
                 defaultScale: null
             },
@@ -391,7 +392,7 @@
                 history: 'Desarrollada por Joseph-Louis Lagrange en 1779. Es una proyección de una sola superficie esférica sobre un plano, preservando los ángulos.',
                 usage: 'Principalmente de interés teórico. Puede usarse para regiones continentales, pero no es adecuada para mapas mundiales completos debido a la gran distorsión cerca de los bordes del círculo.',
                 author: 'Joseph-Louis Lagrange',
-                math: 'Proyección conforme. Mapea la esfera a un círculo. Las coordenadas son: $x = R \\frac{2 \\cos(\\phi) \\sin((\\lambda - \\lambda_0)/2)}{1 + \\sin(\\phi_0) \\sin(\\phi) + \\cos(\\phi_0) \\cos(\\phi) \\cos((\\lambda - \\lambda_0))}$, $y = R \\frac{\\cos(\\phi_0) \\sin(\\phi) - \\sin(\\phi_0) \\cos(\\phi) \\cos((\\lambda - \\lambda_0))}{1 + \\sin(\\phi_0) \\sin(\\phi) + \\cos(\\phi_0) \\cos(\\phi) \\cos((\\lambda - \\lambda_0))}$. Preserva los ángulos, pero distorsiona el área.',
+                math: 'Proyección conforme. Mapea la esfera a un círculo. Las coordenadas son: \\[x = R \\frac{2 \\cos(\\phi) \\sin((\\lambda - \\lambda_0)/2)}{1 + \\sin(\\phi_0) \\sin(\\phi) + \\cos(\\phi_0) \\cos(\\phi) \\cos((\\lambda - \\lambda_0))}\\] \\[y = R \\frac{\\cos(\\phi_0) \\sin(\\phi) - \\sin(\\phi_0) \\cos(\\phi) \\cos((\\lambda - \\lambda_0))}{1 + \\sin(\\phi_0) \\sin(\\phi) + \\cos(\\phi_0) \\cos(\\phi) \\cos((\\lambda - \\lambda_0))}\\] Preserva los ángulos, pero distorsiona el área.',
                 creator: () => d3.geoLagrange(),
                 defaultScale: null
             },
@@ -401,7 +402,7 @@
                 history: 'Creada por Karl Siemon en 1935. Es una proyección que presenta las loxodromas como líneas rectas, lo que es útil para la navegación.',
                 usage: 'Especialmente útil para la navegación o para rutas de vuelo que siguen una loxodroma. No es de área igual ni conforme, pero ofrece una propiedad única para ciertas aplicaciones.',
                 author: 'Karl Siemon',
-                math: 'Proyección pseudocilíndrica. Las coordenadas son: $x = R (\\lambda - \\lambda_0) \\cos(\\phi_1) / (\\cos(\\phi_1) \\cos(\\phi))$, $y = R (\\phi - \\phi_0)$, donde $\\phi_1$ es el paralelo de escala normal. Las loxodromas son líneas rectas, lo que significa que el rumbo constante se mantiene recto en el mapa.',
+                math: 'Proyección pseudocilíndrica. Las coordenadas son: \\[x = R (\\lambda - \\lambda_0) \\cos(\\phi_1) / (\\cos(\\phi_1) \\cos(\\phi))\\] \\[y = R (\\phi - \\phi_0)\\] donde $\\phi_1$ es el paralelo de escala normal. Las loxodromas son líneas rectas, lo que significa que el rumbo constante se mantiene recto en el mapa.',
                 creator: () => d3.geoLoximuthal(),
                 defaultScale: null
             },
@@ -411,7 +412,7 @@
                 history: 'Desarrollada por Osborn Maitland Miller en 1942. Fue una modificación de la proyección de Mercator para reducir la distorsión polar sin perder su forma rectangular.',
                 usage: 'Una alternativa a la proyección de Mercator para mapas mundiales de referencia. Reduce la exageración de las regiones polares en comparación con Mercator, aunque todavía distorsiona las áreas.',
                 author: 'Osborn Maitland Miller',
-                math: 'Proyección cilíndrica: $x = R (\\lambda - \\lambda_0)$, $y = R \\ln[\\tan(\\pi/4 + 0.4 \\phi)] / 0.8$. Los polos se representan como líneas, no como puntos, y la distorsión de área es menor que la de Mercator en latitudes altas, pero no es de área igual.',
+                math: 'Proyección cilíndrica: \\[x = R (\\lambda - \\lambda_0)\\] \\[y = R \\ln[\\tan(\\pi/4 + 0.4 \\phi)] / 0.8\\] Los polos se representan como líneas, no como puntos, y la distorsión de área es menor que la de Mercator en latitudes altas, pero no es de área igual.',
                 creator: () => d3.geoMiller(),
                 defaultScale: null
             },
@@ -431,7 +432,7 @@
                 history: 'Desarrollada por Johann Heinrich Lambert en 1772. Es una proyección simple y una de las primeras en ser de área igual.',
                 usage: 'Se utiliza para mapas mundiales temáticos donde la precisión de área es fundamental. Ejemplos incluyen la proyección de Gall-Peters, que es una variación de esta.',
                 author: 'Johann Heinrich Lambert',
-                math: 'Proyección cilíndrica de área igual. Las coordenadas son: $x = R (\\lambda - \\lambda_0)$ y $y = R \\sin(\\phi) / \\cos(\\phi_0)$. Una de sus variantes más conocidas es la proyección de Gall-Peters, que usa un paralelo estándar a $\\phi_0 = 45°$. Preserva las áreas, pero la forma se distorsiona significativamente en latitudes altas.',
+                math: 'Proyección cilíndrica de área igual. Las coordenadas son: \\[x = R (\\lambda - \\lambda_0)\\] \\[y = R \\sin(\\phi) / \\cos(\\phi_0)\\] Una de sus variantes más conocidas es la proyección de Gall-Peters, que usa un paralelo estándar a $\\phi_0 = 45°$. Preserva las áreas, pero la forma se distorsiona significativamente en latitudes altas.',
                 creator: () => d3.geoCylindricalEqualArea(),
                 defaultScale: null
             },
@@ -539,7 +540,6 @@
         function updateTitleAndInfo() {
             const projDef = projectionDefinitions[currentProjectionType];
             if (projDef) {
-                // Actualiza el título de la pestaña del navegador
                 document.title = `Proyección ${projDef.name}`;
                 
                 const infoDiv = document.getElementById('projection-info');
@@ -549,8 +549,14 @@
                     <p><strong>Autor:</strong> ${projDef.author}</p>
                     <p><strong>Historia:</strong> ${projDef.history}</p>
                     <p><strong>Uso:</strong> ${projDef.usage}</p>
-                    <p><strong>Matemáticas:</strong> ${projDef.math}</p>
+                    <p><strong>Matemáticas:</strong> <span class="math-formula">${projDef.math}</span></p>
                 `;
+
+                // Re-renderizar las matemáticas con MathJax después de actualizar el contenido
+                // Asegúrate de que MathJax esté cargado antes de llamar a typeset
+                if (typeof MathJax !== 'undefined') {
+                    MathJax.typesetPromise([infoDiv]); 
+                }
             }
         }
         
@@ -891,7 +897,7 @@
                 
                 createMapElements();
                 updateProjection();
-                updateTitleAndInfo(); // Llamada inicial para el título y la info
+                updateTitleAndInfo(); 
                 
                 console.log("Mapa inicializado correctamente");
                 
