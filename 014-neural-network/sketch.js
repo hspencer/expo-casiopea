@@ -10,14 +10,14 @@ let blink;
 
 function setup() {
   let canvas = createCanvas(windowWidth, windowHeight - 50);
-  sliderA = createSlider(2, 77, 8, 1);
-  sliderB = createSlider(2, 77, 8, 1);
-  sliderM = createSlider(-height/2, height/2, 32, 1);
-  sliderG = createSlider(.25, height/2, 1, 0.25);
-  sliderO = createSlider(10, 99, 50, 1);
-  sliderF = createSlider(0.1, 30, 1, 0.1);
-  sliderP = createSlider(0, 1, 0.2, 0.001);
-  blink = createCheckbox('', true);
+  sliderA = createSlider(2, 77, 35, 1);
+  sliderB = createSlider(2, 77, 27, 1);
+  sliderM = createSlider(-height/2, height/2, 17, 1);
+  sliderG = createSlider(.25, height/2, 0.5, 0.25);
+  sliderO = createSlider(10, 99, 61, 1);
+  sliderF = createSlider(0.1, 30, 5.7, 0.1);
+  sliderP = createSlider(0, 1, 0.46, 0.001);
+  blink   = createCheckbox('', true);
   
   sliderA.parent("controls");
   sliderB.parent("controls");
@@ -86,5 +86,20 @@ function draw() {
   
     for (let i = 0; i < colB.length; i++){
     ellipse(colB[i].x, colB[i].y, 10, 10);
+  }
+}
+
+function keyPressed() {
+  if (key === 's') { // al apretar la tecla 's'
+    console.log(`
+  sliderA = createSlider(2, 77, ${sliderA.value()}, 1);
+  sliderB = createSlider(2, 77, ${sliderB.value()}, 1);
+  sliderM = createSlider(-height/2, height/2, ${sliderM.value()}, 1);
+  sliderG = createSlider(.25, height/2, ${sliderG.value()}, 0.25);
+  sliderO = createSlider(10, 99, ${sliderO.value()}, 1);
+  sliderF = createSlider(0.1, 30, ${sliderF.value()}, 0.1);
+  sliderP = createSlider(0, 1, ${sliderP.value()}, 0.001);
+  blink   = createCheckbox('', ${blink.checked()});
+    `);
   }
 }
