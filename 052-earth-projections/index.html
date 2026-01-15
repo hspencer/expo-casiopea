@@ -1,921 +1,699 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Proyección Gringorten Quincuncial Interactiva</title>
-    <script src="https://d3js.org/d3.v7.min.js"></script>
-    <script src="https://d3js.org/d3-geo-projection.v4.min.js"></script>
-    <script src="https://d3js.org/topojson.v3.min.js"></script>
-    <link rel="stylesheet" href="style.css">
-    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Proyecciones v2 — SVG Export</title>
+    <!-- D3 + TopoJSON + Extra Projections -->
+    <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+    <script src="https://cdn.jsdelivr.net/npm/topojson-client@3"></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3-geo-projection@4"></script>
+    <style>
+        :root {
+            --bg: #0b0c0e;
+            --panel: #111318;
+            --ink: #e6e8eb;
+            --muted: #9aa3ad;
+            --accent: #4cc9f0;
+            --ok: #70e000;
+            --warn: #ffd60a;
+            --error: #ff4d6d;
+            --stroke: #e6e8eb;
+            --land: #171a20;
+            --water: #0b0c0e;
+            --borders: #8aa0b5;
+            --graticule: #454f5e;
+            --radius: 16px;
+            --shadow: 0 10px 30px rgba(0, 0, 0, .25);
+            --focus: 0 0 0 3px color-mix(in oklch, var(--accent) 60%, #fff 0%);
+            --ring: 0 1px 0 rgba(255, 255, 255, .045) inset, 0 8px 20px rgba(0, 0, 0, .35);
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        html,
+        body {
+            height: 100%
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--ink);
+            font: 14px/1.45 ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+        }
+
+        .app {
+            display: grid;
+            grid-template-rows: auto 1fr;
+            height: 100%
+        }
+
+        /* Top bar */
+        .toolbar {
+            position: sticky;
+            top: 0;
+            z-index: 3;
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 1rem;
+            align-items: center;
+            padding: .75rem 1rem;
+            background: var(--panel);
+            box-shadow: var(--ring);
+        }
+
+        .toolbar .group {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: .6rem
+        }
+
+        .toolbar label {
+            color: var(--muted);
+            font-weight: 600;
+            letter-spacing: .02em
+        }
+
+        .toolbar select,
+        .toolbar input[type="number"],
+        .toolbar input[type="range"],
+        .toolbar input[type="text"] {
+            appearance: none;
+            border: 1px solid #1e232c;
+            background: #0d1117;
+            color: var(--ink);
+            border-radius: 12px;
+            padding: .45rem .6rem;
+            outline: none;
+            box-shadow: none;
+            min-height: 2.2rem
+        }
+
+        .toolbar input[type="range"] {
+            width: 160px;
+            padding: 0;
+            background: transparent
+        }
+
+        .toolbar button {
+            appearance: none;
+            border: 1px solid #2a2f39;
+            background: #12161d;
+            color: var(--ink);
+            border-radius: 12px;
+            padding: .55rem .9rem;
+            cursor: pointer;
+            font-weight: 700;
+            letter-spacing: .02em;
+            box-shadow: var(--ring);
+        }
+
+        .toolbar button:hover {
+            border-color: #3a404d;
+            transform: translateY(-1px)
+        }
+
+        .toolbar button.primary {
+            background: var(--accent);
+            color: #001219;
+            border-color: transparent
+        }
+
+        /* Canvas area */
+        .stage {
+            position: relative;
+            height: 100%;
+        }
+
+        .wrap {
+            position: absolute;
+            inset: 0;
+            display: grid;
+            place-items: center;
+            padding: 1rem
+        }
+
+        svg.map {
+            width: 100%;
+            height: 100%;
+            max-width: 1600px;
+            aspect-ratio: 16/9;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            background: transparent
+        }
+
+        /* Legend / status */
+        .status {
+            position: absolute;
+            left: 1rem;
+            bottom: 1rem;
+            padding: .4rem .6rem;
+            border-radius: 10px;
+            background: rgba(0, 0, 0, .45);
+            backdrop-filter: blur(6px);
+            color: var(--muted)
+        }
+
+        .status b {
+            color: var(--ink)
+        }
+
+        /* Simple utility */
+        .hide {
+            display: none !important
+        }
+
+        .sep {
+            width: 1px;
+            height: 1.8rem;
+            background: #2a2f39;
+            margin: 0 .4rem
+        }
+
+        /* Light / High contrast themes applied via JS by updating CSS vars */
+    </style>
 </head>
+
 <body>
-    <div id="map-container">
-        <div class="loading">Cargando datos vectoriales de la Tierra...</div>
-    </div>
-
-    <div class="overlay-toggle-btn" id="overlay-toggle-btn">⚙️</div>
-
-    <div class="overlay-container" id="overlay-container">
-        <div class="top-left-info">
-            <div class="projection-info" id="projection-info">
-                Proyección Gringorten Quincuncial - Una proyección conforme que preserva los ángulos localmente
-            </div>
-        </div>
-        
-        <div class="controls overlay-controls">
-            <div class="control-group">
-                <label for="projection-selector">Tipo de Proyección</label>
-                <select id="projection-selector" class="projection-selector">
-                    <option value="gringortenQuincuncial">Gringorten Quincuncial</option>
-                    <option value="orthographic">Ortográfica</option>
-                    <option value="stereographic">Estereográfica</option>
-                    <option value="azimuthalEqualArea">Azimutal Área Igual</option>
-                    <option value="mercator">Mercator</option>
-                    <option value="naturalEarth1">Natural Earth</option>
-                    <option value="mollweide">Mollweide</option>
-                    <option value="robinson">Robinson</option>
-                    <option value="winkel3">Winkel Tripel</option>
-                    <option value="eckert4">Eckert IV</option>
-                    <option value="kavrayskiy7">Kavrayskiy VII</option>
-                    <option value="wagner6">Wagner VI</option>
-                    <option value="aitoff">Aitoff</option>
-                    <option value="albers">Albers</option>
-                    <option value="conicConformal">Cónica Conforme</option>
-                    <option value="gnomonic">Gnomónica</option>
-                    <option value="hammer">Hammer</option>
-                    <option value="laea">Azimutal Equidistante de Lambert</option>
-                    <option value="transverseMercator">Mercator Transversa</option>
-                    <option value="polyconic">Policónica</option>
-                    <option value="bonne">Bonne</option>
-                    <option value="sinusoidal">Sinusoidal</option>
-                    <option value="collignon">Collignon</option>
-                    <option value="equalEarth">Equal Earth</option>
-                    <option value="fahey">Fahey</option>
-                    <option value="gingery">Gingery</option>
-                    <option value="interruptedBoggs">Boggs Interrumpida</option>
-                    <option value="lagrange">Lagrange</option>
-                    <option value="loximuthal">Loximuthal</option>
-                    <option value="miller">Miller</option>
-                    <option value="vanDerGrinten">Van der Grinten</option>
-                    <option value="cylindricalEqualArea">Cilíndrica Área Igual</option>
-                    <option value="guyou">Guyou</option>
+    <div class="app">
+        <!-- Controls -->
+        <header class="toolbar" aria-label="Controls">
+            <div class="group" role="group" aria-label="Projection & data">
+                <label for="projection">Projection</label>
+                <select id="projection">
+                    <option value="EqualEarth">EqualEarth</option>
+                    <option value="NaturalEarth1">NaturalEarth1</option>
+                    <option value="Robinson">Robinson</option>
+                    <option value="Mercator">Mercator</option>
+                    <option value="Equirectangular">Equirectangular</option>
+                    <option value="Orthographic">Orthographic (globe)</option>
+                    <option value="Stereographic">Stereographic</option>
+                    <option value="AzimuthalEqualArea">Azimuthal Equal-Area</option>
+                    <option value="AzimuthalEquidistant">Azimuthal Equidistant</option>
+                    <option value="ConicConformal">Conic Conformal</option>
+                    <option value="ConicEqualArea">Conic Equal-Area</option>
+                    <option value="ConicEquidistant">Conic Equidistant</option>
+                    <option value="Albers">Albers</option>
+                    <option value="AlbersUsa">Albers USA</option>
+                    <option value="Mollweide">Mollweide</option>
                 </select>
+
+                <span class="sep" aria-hidden="true"></span>
+
+                <label for="resolution">Resolution</label>
+                <select id="resolution" title="World-Atlas dataset">
+                    <option value="auto">Auto (try 10m→50m→110m)</option>
+                    <option value="10m">10m (experimental)</option>
+                    <option value="50m" selected>50m</option>
+                    <option value="110m">110m</option>
+                    <option value="custom">Custom URL…</option>
+                </select>
+                <input id="customUrl" class="hide" type="text" placeholder="Top(Geo)JSON URL" size="36" />
             </div>
-            
-            <div class="control-group">
-                <label for="rotation-slider">Longitud Central (λ)</label>
-                <input type="range" id="rotation-slider" class="slider" min="-180" max="180" value="-70" step="1">
-                <div class="value-display" id="rotation-value">-70°</div>
-                <div class="range-info">-180° a 180°</div>
+
+            <div class="group" role="group" aria-label="Export & theme">
+                <label for="theme">Theme</label>
+                <select id="theme">
+                    <option value="dark" selected>Dark</option>
+                    <option value="light">Light</option>
+                    <option value="high">High Contrast</option>
+                </select>
+
+                <span class="sep" aria-hidden="true"></span>
+
+                <button id="resetBtn" title="Reset view">Reset</button>
+                <button id="exportBtn" class="primary" title="Export SVG">Export SVG</button>
             </div>
-            
-            <div class="control-group">
-                <label for="tilt-slider">Latitud Central (φ)</label>
-                <input type="range" id="tilt-slider" class="slider" min="-90" max="90" value="90" step="1">
-                <div class="value-display" id="tilt-value">90°</div>
-                <div class="range-info">-90° a 90°</div>
+        </header>
+
+        <!-- Secondary controls (contextual) -->
+        <section class="toolbar" style="--panel:#0e1117" aria-label="Parameters">
+            <div class="group" role="group" aria-label="View">
+                <label for="scale">Scale</label>
+                <input id="scale" type="range" min="120" max="1200" step="1" value="360" />
+
+                <label for="rotateLambda">λ</label>
+                <input id="rotateLambda" type="range" min="-180" max="180" step="1" value="0" />
+                <label for="rotatePhi">φ</label>
+                <input id="rotatePhi" type="range" min="-90" max="90" step="1" value="0" />
+                <label for="rotateGamma">γ</label>
+                <input id="rotateGamma" type="range" min="-180" max="180" step="1" value="0" />
+
+                <label for="clip">Clip</label>
+                <input id="clip" type="range" min="0" max="180" step="1" value="0" />
+
+                <label for="par1" class="conicOnly">φ1</label>
+                <input id="par1" class="conicOnly" type="number" step="0.1" value="29.5" style="width:6ch" />
+                <label for="par2" class="conicOnly">φ2</label>
+                <input id="par2" class="conicOnly" type="number" step="0.1" value="45.5" style="width:6ch" />
+
+                <label for="graticuleToggle">Graticule</label>
+                <select id="graticuleToggle">
+                    <option value="on" selected>On</option>
+                    <option value="off">Off</option>
+                </select>
+                <label for="graticuleStep">Step</label>
+                <input id="graticuleStep" type="number" min="1" max="30" step="1" value="10" style="width:6ch" />
             </div>
-            
-            <div class="control-group">
-                <label for="roll-slider">Rotación Vista (γ)</label>
-                <input type="range" id="roll-slider" class="slider" min="0" max="360" value="0" step="1">
-                <div class="value-display" id="roll-value">0°</div>
-                <div class="range-info">0° a 360°</div>
+            <div class="group" role="group" aria-label="Layers">
+                <label for="showCountries">Countries</label>
+                <select id="showCountries">
+                    <option value="fill" selected>Fill + borders</option>
+                    <option value="borders">Borders only</option>
+                    <option value="off">Off</option>
+                </select>
+                <label for="strokeWidth">Stroke</label>
+                <input id="strokeWidth" type="range" min="0.25" max="2.5" step="0.05" value="0.6" />
             </div>
-            
-            <button id="reset-btn" class="button reset-btn">Resetear Vista</button>
-            <button id="export-btn" class="button export-btn">Exportar PNG</button>
-        </div>
-        
+        </section>
+
+        <!-- Stage -->
+        <main class="stage">
+            <div class="wrap">
+                <svg id="map" class="map" viewBox="0 0 1280 720" role="img" aria-label="World map"></svg>
+                <div class="status" id="status">Loading…</div>
+            </div>
+        </main>
     </div>
-    
+
     <script>
-        // Verificar que las librerías estén cargadas
-        if (typeof d3 === 'undefined') {
-            document.getElementById('map-container').innerHTML = '<div class="error">Error: D3.js no está cargado</div>';
-            throw new Error('D3.js no está cargado');
-        }
-        
-        console.log('D3 version:', d3.version);
-        
-        // Configuración
-        let width = window.innerWidth;
-        let height = window.innerHeight;
-        
-        // Variables de estado
-        let rotation = [-70, 90, 0]; // [λ, φ, γ]
-        let currentProjectionType = 'gringortenQuincuncial';
-        let projection, path;
-        
-        // Variables para el drag
-        let isDragging = false;
-        let lastMousePos = null;
-        let svg, mapGroup;
-        
-        // Definiciones de proyecciones con sus características
-        const projectionDefinitions = {
-            gringortenQuincuncial: {
-                name: 'Gringorten Quincuncial',
-                description: 'Una proyección conforme que preserva los ángulos localmente.',
-                history: 'Desarrollada por Samuel Gringorten en 1991, es una de las proyecciones más exóticas y matemáticamente complejas. Su objetivo era crear una proyección quincuncial que se ajustara a un cuadrado.',
-                usage: 'Principalmente usada en investigación cartográfica y visualizaciones creativas debido a sus propiedades inusuales, como la posibilidad de un embaldosado infinito.',
-                author: 'Samuel Gringorten',
-                math: 'La proyección Gringorten Quincuncial se basa en la proyección Peirce Quincuncial y transforma el hemisferio en un cuadrado. Implica el uso de funciones elípticas y transformaciones de Schwarz-Christoffel para mapear la esfera a una forma geométrica específica, preservando la conformancia. Es una extensión de la proyección Peirce Quincuncial al hemisferio completo.',
-                creator: () => d3.geoGringortenQuincuncial(),
-                defaultScale: null
-            },
-            orthographic: {
-                name: 'Ortográfica',
-                description: 'Muestra la Tierra como se vería desde el espacio.',
-                history: 'Una de las proyecciones más antiguas, conocida y utilizada desde la antigüedad griega. Es una perspectiva directa de la Tierra.',
-                usage: 'Ideal para representar un hemisferio o una vista "desde el espacio", común en globos y mapas de exploración polar.',
-                author: 'Desconocido (orígenes antiguos)',
-                math: 'Proyección acimutal en la que los puntos de la esfera se proyectan sobre un plano tangente desde un punto en el infinito. Las coordenadas cartesianas $(\\mathbf{x}, \\mathbf{y})$ se derivan de la longitud $\\lambda$ y latitud $\\phi$: \\[x = R \\cos(\\phi) \\sin(\\lambda - \\lambda_0)\\] \\[y = R (\\cos(\\phi_0) \\sin(\\phi) - \\sin(\\phi_0) \\cos(\\phi) \\cos(\\lambda - \\lambda_0))\\] donde $R$ es el radio de la esfera, $(\\lambda_0, \\phi_0)$ es el centro de la proyección.',
-                creator: () => d3.geoOrthographic(),
-                defaultScale: null
-            },
-            stereographic: {
-                name: 'Estereográfica',
-                description: 'Proyección conforme que preserva los ángulos.',
-                history: 'Conocida desde la antigüedad clásica, utilizada por Hiparco, Ptolomeo y matemáticos islámicos. Fue fundamental en el desarrollo del cartografía y la navegación.',
-                usage: 'Utilizada para mapas polares, navegación aérea y en campos como la geología y la cristalografía debido a su propiedad de conformancia.',
-                author: 'Desconocido (orígenes antiguos, popularizada por Hiparco y Ptolomeo)',
-                math: 'Proyección acimutal en la que los puntos de la esfera se proyectan sobre un plano tangente desde el polo opuesto al punto de tangencia. Las coordenadas $(x, y)$ se calculan como: \\[x = 2R \\tan(\\pi/4 + \\phi/2) \\sin(\\lambda - \\lambda_0)\\] \\[y = -2R \\tan(\\pi/4 + \\phi/2) \\cos(\\lambda - \\lambda_0)\\] para una proyección tangente en el Polo Norte. Preserva los ángulos, pero distorsiona las áreas a medida que se aleja del centro.',
-                creator: () => d3.geoStereographic(),
-                defaultScale: null
-            },
-            azimuthalEqualArea: {
-                name: 'Azimutal Área Igual',
-                description: 'Preserva las áreas relativas de las regiones.',
-                history: 'La proyección Lambert Azimuthal Equal-Area fue desarrollada por Johann Heinrich Lambert en 1772. Es una de las primeras proyecciones que garantizan la igualdad de áreas.',
-                usage: 'Comúnmente usada para mapas de continentes, océanos o para representar distribuciones estadísticas donde el tamaño relativo es importante.',
-                author: 'Johann Heinrich Lambert',
-                math: 'Para una proyección con centro en $(\\lambda_0, \\phi_0)$: \\[k = \\sqrt{2 / (1 + \\sin(\\phi_0) \\sin(\\phi) + \\cos(\\phi_0) \\cos(\\phi) \\cos(\\lambda - \\lambda_0))}\\] Las coordenadas son: \\[x = R k \\cos(\\phi) \\sin(\\lambda - \\lambda_0)\\] \\[y = R k (\\cos(\\phi_0) \\sin(\\phi) - \\sin(\\phi_0) \\cos(\\phi) \\cos(\\lambda - \\lambda_0))\\] El factor $k$ asegura que el área se conserve.',
-                creator: () => d3.geoAzimuthalEqualArea(),
-                defaultScale: null
-            },
-            mercator: {
-                name: 'Mercator',
-                description: 'Proyección cilíndrica conforme, popular para navegación.',
-                history: 'Creada por Gerardus Mercator en 1569. Revolucionó la navegación ya que las líneas de rumbo constante (loxodromas) se representan como líneas rectas.',
-                usage: 'Estándar para la navegación marina, mapas mundiales en línea (como Google Maps en ciertos niveles de zoom) y cartas náuticas. Muy útil para la dirección, pero distorsiona severamente las áreas cerca de los polos.',
-                author: 'Gerardus Mercator',
-                math: 'Proyección cilíndrica conforme. Las coordenadas cartesianas $(x, y)$ se calculan como: \\[x = R (\\lambda - \\lambda_0)\\] \\[y = R \\ln[\\tan(\\pi/4 + \\phi/2)]\\] Las líneas de latitud y longitud son ortogonales, y las loxodromas son líneas rectas. La distorsión de área aumenta drásticamente con la latitud.',
-                creator: () => d3.geoMercator(),
-                defaultScale: null
-            },
-            naturalEarth1: {
-                name: 'Natural Earth',
-                description: 'Diseñada para mapas del mundo completo, con buen compromiso entre distorsión.',
-                history: 'Desarrollada por Tom Patterson, con el apoyo de Bernhard Jenny y Bojan Šavrič, en 2012 para mejorar la representación de la Tierra en mapas mundiales.',
-                usage: 'Diseñada específicamente para mapas del mundo a pequeña escala (1:10 millones a 1:100 millones). Ofrece un equilibrio estético y minimiza la distorsión.',
-                author: 'Tom Patterson',
-                math: 'Una proyección pseudocilíndrica que es el resultado de un ajuste empírico y un algoritmo complejo para minimizar las distorsiones visuales. No tiene una fórmula analítica simple; se basa en interpolaciones y algoritmos numéricos para su construcción.',
-                creator: () => d3.geoNaturalEarth1(),
-                defaultScale: null
-            },
-            mollweide: {
-                name: 'Mollweide',
-                description: 'Proyección pseudocilíndrica que preserva áreas.',
-                history: 'Desarrollada por Carl B. Mollweide en 1805. Es una proyección de área igual, lo que significa que las proporciones de área en el mapa son las mismas que en la realidad.',
-                usage: 'Comúnmente utilizada para mapas del mundo donde la precisión de las áreas es crucial, como mapas temáticos de población o distribución de recursos.',
-                author: 'Carl B. Mollweide',
-                math: 'Proyección pseudocilíndrica de área igual. La longitud $\\lambda$ y latitud $\\phi$ se transforman usando una latitud auxiliar $\\theta$: \\[\\lambda = \\lambda_0 + \\frac{R \\cos(\\theta) \\sqrt{2\\pi^2 \\cos^2(\\theta) - (2\\theta + \\sin(2\\theta))^2}}{2(2\\theta + \\sin(2\\theta))}\\] \\[\\phi = \\arcsin\\left(\\frac{2\\theta + \\sin(2\\theta)}{\\pi}\\right)\\] El semieje mayor es el doble del semieje menor, y el meridiano central es una línea recta. Los paralelos son líneas rectas y los meridianos son elipses.',
-                creator: () => d3.geoMollweide(),
-                defaultScale: null
-            },
-            robinson: {
-                name: 'Robinson',
-                description: 'Compromiso entre distorsión de área y forma.',
-                history: 'Creada por Arthur H. Robinson en 1961. Fue diseñada para tener una buena apariencia visual para mapas mundiales, sin adherirse a estrictas propiedades matemáticas.',
-                usage: 'Una de las proyecciones más populares para mapas mundiales generales, atlas y libros de texto, debido a su aspecto agradable y la baja distorsión visual global.',
-                author: 'Arthur H. Robinson',
-                math: 'Es una proyección pseudocilíndrica construida con tablas de coordenadas en lugar de fórmulas matemáticas explícitas. Robinson trabajó con un equipo para determinar visualmente las mejores distribuciones de paralelos y meridianos para reducir la distorsión de forma y área en un mapa mundial. Es un "promedio" de las proyecciones más comunes.',
-                creator: () => d3.geoRobinson(),
-                defaultScale: null
-            },
-            winkel3: {
-                name: 'Winkel Tripel',
-                description: 'Minimiza distorsiones de área, ángulo y distancia.',
-                history: 'Desarrollada por Oswald Winkel en 1921. Su nombre "Tripel" (triple) se refiere a su objetivo de minimizar las tres distorsiones principales (área, ángulo y distancia).',
-                usage: 'Desde 1998, es la proyección estándar para los mapas mundiales de la National Geographic Society. Es una buena opción para mapas de referencia generales donde se busca un equilibrio de distorsiones.',
-                author: 'Oswald Winkel',
-                math: 'Es la media aritmética de la proyección cilíndrica equirectangular y la proyección Aitoff. No es conforme ni de área igual, pero es un buen compromiso. Su complejidad se debe a ser una combinación de otras proyecciones: \\[x = \\frac{1}{2} \\left( (\\lambda - \\lambda_0) \\cos(\\phi) + \\frac{2 \\cos(\\phi) \\sin((\\lambda - \\lambda_0)/2) \\cos(\\alpha)}{\\text{sinc}(\\alpha)} \\right)\\] \\[y = \\frac{1}{2} \\left( \\phi + \\frac{\\sin(\\phi) \\sin(\\alpha)}{\\text{sinc}(\\alpha)} \\right)\\] donde $\\alpha = \\arccos(\\cos(\\phi) \\cos((\\lambda - \\lambda_0)/2))$ y $\\text{sinc}(x) = \\sin(x)/x$.',
-                creator: () => d3.geoWinkel3(),
-                defaultScale: null
-            },
-            eckert4: {
-                name: 'Eckert IV',
-                description: 'Proyección pseudocilíndrica de área igual.',
-                history: 'Creada por Max Eckert en 1906, es una de las seis proyecciones de su serie. Es una proyección de área igual, utilizada para representar el mundo completo.',
-                usage: 'Adecuada para mapas temáticos del mundo donde la precisión de área es fundamental, como distribución de cultivos, densidad de población o recursos naturales.',
-                author: 'Max Eckert',
-                math: 'Proyección pseudocilíndrica de área igual. Los meridianos son elipses y los paralelos son líneas rectas. Se usan fórmulas para garantizar la igualdad de áreas, con una latitud auxiliar $\\theta$: \\[x = \\frac{2}{\\sqrt{4\\pi^2 + \\pi}} R (\\lambda - \\lambda_0)(1 + \\cos(\\theta))\\] \\[y = \\frac{2}{\\sqrt{4\\pi^2 + \\pi}} R (2\\theta + \\sin(2\\theta))\\] Donde el factor de escala es tal que el área se conserva.',
-                creator: () => d3.geoEckert4(),
-                defaultScale: null
-            },
-            kavrayskiy7: {
-                name: 'Kavrayskiy VII',
-                description: 'Proyección pseudocilíndrica con baja distorsión.',
-                history: 'Desarrollada por Vladimir V. Kavrayskiy en 1939. Buscó un buen equilibrio entre distorsiones de forma y área.',
-                usage: 'Una alternativa a la proyección de Robinson para mapas mundiales de uso general, aunque menos común. Ofrece una apariencia bastante equilibrada.',
-                author: 'Vladimir V. Kavrayskiy',
-                math: 'Proyección pseudocilíndrica: \\[x = \\frac{3}{2}R \\lambda \\sqrt{1 - \\left(\\frac{\\phi}{\\pi/2}\\right)^2}\\] \\[y = R \\phi\\] Los meridianos son curvas y los paralelos son líneas rectas. Es un compromiso entre distorsiones, no es conforme ni de área igual, pero es una buena alternativa para mapas de referencia.',
-                creator: () => d3.geoKavrayskiy7(),
-                defaultScale: null
-            },
-            wagner6: {
-                name: 'Wagner VI',
-                description: 'Proyección pseudocilíndrica con polos como líneas.',
-                history: 'Desarrollada por Karl Wagner en 1932. Pertenece a una familia de proyecciones pseudocilíndricas, buscando un balance entre forma y área.',
-                usage: 'Utilizada para mapas mundiales generales, donde se busca una representación visualmente agradable y un buen compromiso en la distorsión.',
-                author: 'Karl Wagner',
-                math: 'Proyección pseudocilíndrica que asigna \\[x = \\frac{1}{2} R (\\lambda - \\lambda_0) \\sqrt{1 - 3 \\left(\\frac{\\phi}{\\pi}\\right)^2}\\] \\[y = R \\phi\\] Los polos son líneas rectas la mitad de largas que el ecuador. Ofrece un buen balance visual.',
-                creator: () => d3.geoWagner6(),
-                defaultScale: null
-            },
-            aitoff: {
-                name: 'Aitoff',
-                description: 'Proyección acimutal modificada, no de área igual ni conforme.',
-                history: 'Desarrollada por David A. Aitoff en 1889. Se basa en la proyección acimutal equidistante, pero las longitudes se reducen a la mitad para darle forma elíptica.',
-                usage: 'Comúnmente utilizada para mapas mundiales en atlas y para representaciones de cielos estrellados, ya que la forma elíptica es estéticamente agradable.',
-                author: 'David A. Aitoff',
-                math: 'Se obtiene a partir de la proyección acimutal equidistante. Sea $\\alpha = \\arccos(\\cos(\\phi) \\cos((\\lambda - \\lambda_0)/2))$. Las coordenadas son: \\[x = 2R \\frac{\\cos(\\phi) \\sin((\\lambda - \\lambda_0)/2)}{\\text{sinc}(\\alpha)}\\] \\[y = R \\frac{\\sin(\\phi)}{\\text{sinc}(\\alpha)}\\] Donde $\\text{sinc}(x) = \\sin(x)/x$.',
-                creator: () => d3.geoAitoff(),
-                defaultScale: null
-            },
-            albers: {
-                name: 'Albers',
-                description: 'Proyección cónica de área igual con dos paralelos estándar.',
-                history: 'Desarrollada por Heinrich C. Albers en 1805. Es una proyección cónica que mantiene la propiedad de igualdad de área.',
-                usage: 'Ideal para mapas de países grandes que tienen un gran alcance este-oeste y un alcance norte-sur limitado, como Estados Unidos. Se usa en mapas temáticos y atlas para garantizar la precisión de área.',
-                author: 'Heinrich C. Albers',
-                math: 'Proyección cónica de área igual. Utiliza dos paralelos estándar $(\\phi_1, \\phi_2)$ para controlar la distorsión. Las coordenadas se derivan de la fórmula del cono: \\[x = R \\rho \\sin(\\theta)\\] \\[y = R (\\rho_0 - \\rho \\cos(\\theta))\\] donde $\\rho$ es una función de $\\phi$ y $\\theta = n (\\lambda - \\lambda_0)$. El factor $n$ se calcula a partir de los paralelos estándar para asegurar la igualdad de área.',
-                creator: () => d3.geoAlbers(),
-                defaultScale: null
-            },
-            conicConformal: {
-                name: 'Cónica Conforme',
-                description: 'Proyección cónica que preserva los ángulos localmente.',
-                history: 'También conocida como Cónica Conforme de Lambert. Desarrollada por Johann Heinrich Lambert en 1772. Es una de las proyecciones más importantes para la aviación y la topografía.',
-                usage: 'Ampliamente utilizada para mapas aeronáuticos, mapas estatales y regionales, y sistemas de coordenadas planas como el SPC (State Plane Coordinate System) en Estados Unidos. Es conforme y las líneas de latitud son arcos circulares concéntricos.',
-                author: 'Johann Heinrich Lambert',
-                math: 'Proyección cónica conforme. Las líneas de latitud son arcos de círculos concéntricos y las de longitud son líneas rectas que irradian desde el vértice del cono. Las coordenadas son: \\[x = R \\rho \\sin(n \\lambda)\\] \\[y = R (\\rho_0 - \\rho \\cos(n \\lambda))\\] donde $n$ es la constante del cono (depende de los paralelos estándar), $\\rho$ es el radio del paralelo proyectado y $\\rho_0$ es el radio del paralelo central.',
-                creator: () => d3.geoConicConformal(),
-                defaultScale: null
-            },
-            gnomonic: {
-                name: 'Gnomónica',
-                description: 'Proyección acimutal en la que las líneas geodésicas son líneas rectas.',
-                history: 'Una de las proyecciones más antiguas, se remonta a la antigua Grecia, utilizada por Thales de Mileto. Es la proyección central del globo sobre un plano tangente.',
-                usage: 'Fundamental para la navegación marítima y aérea, ya que las grandes circunferencias (los caminos más cortos entre dos puntos en la esfera) se representan como líneas rectas. También se usa para sísmica y para el mapeo de cielos.',
-                author: 'Thales de Mileto (orígenes antiguos)',
-                math: 'Proyección acimutal en la que los puntos se proyectan desde el centro de la esfera sobre un plano tangente. Para un centro en $(\\lambda_0, \\phi_0)$: \\[x = R \\frac{\\cos(\\phi) \\sin(\\lambda - \\lambda_0)}{\\sin(\\phi_0) \\sin(\\phi) + \\cos(\\phi_0) \\cos(\\phi) \\cos(\\lambda - \\lambda_0)}\\] \\[y = R \\frac{\\cos(\\phi_0) \\sin(\\phi) - \\sin(\\phi_0) \\cos(\\phi) \\cos(\\lambda - \\lambda_0)}{\\sin(\\phi_0) \\sin(\\phi) + \\cos(\\phi_0) \\cos(\\phi) \\cos(\\lambda - \\lambda_0)}\\] Las distancias y áreas se distorsionan rápidamente lejos del centro.',
-                creator: () => d3.geoGnomonic(),
-                defaultScale: null
-            },
-            hammer: {
-                name: 'Hammer',
-                description: 'Proyección de área igual, similar a Aitoff pero con áreas correctas.',
-                history: 'Desarrollada por Ernst von Hammer en 1892. Es una proyección de área igual y, a menudo, se considera una versión de área igual de la proyección Aitoff.',
-                usage: 'Se utiliza para mapas mundiales temáticos donde es crucial preservar la igualdad de áreas, como en atlas y para la visualización de datos globales.',
-                author: 'Ernst von Hammer',
-                math: 'Proyección acimutal de área igual. Es una proyección elíptica. Las coordenadas son: \\[x = 2R \\frac{\\cos(\\phi) \\sin((\\lambda - \\lambda_0)/2)}{\\sqrt{1 + \\cos(\\phi) \\cos((\\lambda - \\lambda_0)/2)}}\\] \\[y = R \\frac{\\sin(\\phi)}{\\sqrt{1 + \\cos(\\phi) \\cos((\\lambda - \\lambda_0)/2)}}\\] Los meridianos son elipses y los paralelos son curvas complejas.',
-                creator: () => d3.geoHammer(),
-                defaultScale: null
-            },
-            laea: {
-                name: 'Azimutal Equidistante de Lambert',
-                description: 'Preserva las distancias desde el centro del mapa.',
-                history: 'Desarrollada por Johann Heinrich Lambert en 1772. Es una proyección acimutal que asegura que las distancias radiales desde el punto central son correctas.',
-                usage: 'Comúnmente utilizada para mapas polares y hemisféricos. También se usa para el sistema de coordenadas "LAEA Europe" de la Unión Europea.',
-                author: 'Johann Heinrich Lambert',
-                math: 'Proyección acimutal equidistante. Para un centro en $(\\lambda_0, \\phi_0)$: \\[c = \\arccos(\\sin(\\phi_0) \\sin(\\phi) + \\cos(\\phi_0) \\cos(\\phi) \\cos(\\lambda - \\lambda_0))\\] Las coordenadas son: \\[x = R \\frac{\\cos(\\phi) \\sin(\\lambda - \\lambda_0)}{c} \\sin(c)\\] \\[y = R \\frac{\\cos(\\phi_0) \\sin(\\phi) - \\sin(\\phi_0) \\cos(\\phi) \\cos(\\lambda - \\lambda_0)}{c} \\sin(c)\\] Las distancias radiales desde el centro son exactas.',
-                creator: () => d3.geoLambertAzimuthalEqualArea(),
-                defaultScale: null
-            },
-            transverseMercator: {
-                name: 'Mercator Transversa',
-                description: 'Proyección cilíndrica conforme que es perpendicular al ecuador.',
-                history: 'Una variante de la proyección de Mercator. Los orígenes se remontan a Gauss (1820s), pero popularizada por J. E. D. Es un componente clave de los sistemas de cuadrícula UTM.',
-                usage: 'La base de muchos sistemas de coordenadas de cuadrícula nacionales y locales, incluyendo UTM (Universal Transverse Mercator). Es ideal para regiones con gran extensión norte-sur, ya que minimiza la distorsión a lo largo de un meridiano central.',
-                author: 'Carl Friedrich Gauss (popularizada por J. E. D. Es)',
-                math: 'Es una proyección cilíndrica conforme, donde el cilindro es tangente a un meridiano (meridiano central) en lugar del ecuador. Se usa para mapear áreas que son más largas en dirección norte-sur que este-oeste. La complejidad de sus fórmulas implica series y transformaciones para mantener la conformancia.',
-                creator: () => d3.geoTransverseMercator(),
-                defaultScale: null
-            },
-            polyconic: {
-                name: 'Policónica',
-                description: 'Una proyección que tiene todos los paralelos como arcos concéntricos.',
-                history: 'Desarrollada por Ferdinand Hassler en 1820. Cada paralelo es un arco de círculo con su propio centro en el meridiano central, dando la forma distintiva.',
-                usage: 'Históricamente utilizada por el Servicio Geodésico Costero de EE. UU. para mapas a gran escala. Es adecuada para áreas con gran extensión este-oeste y norte-sur, aunque las distorsiones aumentan lejos del meridiano central.',
-                author: 'Ferdinand Hassler',
-                math: 'Todos los paralelos son arcos circulares concéntricos, pero los centros de estos arcos no coinciden. El meridiano central es una línea recta, y los otros meridianos son curvas complejas. Las distancias son correctas a lo largo de cada paralelo y a lo largo del meridiano central. Las fórmulas involucran senos y cosenos de latitud y longitud.',
-                creator: () => d3.geoPolyconic(),
-                defaultScale: null
-            },
-            bonne: {
-                name: 'Bonne',
-                description: 'Proyección pseudocónica de área igual.',
-                history: 'Atribuida a Rigobert Bonne alrededor de 1752, aunque sus principios se conocen desde el siglo XVI. Es una proyección de área igual.',
-                usage: 'Utilizada para mapas de continentes y regiones. Es especialmente útil para áreas con una forma de "corazón" o "abanico", como Asia o África. Históricamente popular para atlas.',
-                author: 'Rigobert Bonne',
-                math: 'Proyección pseudocónica de área igual. Los paralelos son arcos circulares concéntricos, y el meridiano central es una línea recta. Las coordenadas son: \\[x = R \\rho \\sin(\\theta)\\] \\[y = R (\\rho_0 - \\rho \\cos(\\theta))\\] donde $\\rho$ es el radio desde el polo del cono, $\\theta$ es la longitud ajustada, y se usa un paralelo estándar para su construcción. Las distancias son correctas a lo largo del meridiano central y del paralelo estándar.',
-                creator: () => d3.geoBonne(),
-                defaultScale: null
-            },
-            sinusoidal: {
-                name: 'Sinusoidal',
-                description: 'Proyección de área igual, con paralelos rectos y meridianos curvos.',
-                history: 'Conocida desde el siglo XVI (Jean Cossin, 1570). También se la conoce como la proyección de Sanson-Flamsteed. Es una de las proyecciones de área igual más simples.',
-                usage: 'Adecuada para mapas mundiales donde la precisión de área es fundamental, como mapas temáticos de distribución de fenómenos. Se utiliza a menudo para representar continentes como África y América del Sur.',
-                author: 'Jean Cossin / Nicolas Sanson / John Flamsteed',
-                math: 'Proyección pseudocilíndrica de área igual. Los paralelos son líneas rectas, y los meridianos son curvas sinusoidales. Las coordenadas son: \\[x = R (\\lambda - \\lambda_0) \\cos(\\phi)\\] \\[y = R \\phi\\] Las distorsiones de forma son significativas en los bordes del mapa.',
-                creator: () => d3.geoSinusoidal(),
-                defaultScale: null
-            },
-            collignon: {
-                name: 'Collignon',
-                description: 'Proyección de área igual con meridianos que forman triángulos.',
-                history: 'Desarrollada por Édouard Collignon en 1865. Es una proyección de área igual y a veces se le llama la proyección de "doble tetraedro" o "tetraedro plegado".',
-                usage: 'Aunque no es de uso común, se emplea en ciertos mapas temáticos o visualizaciones creativas debido a su forma inusual y su propiedad de igualdad de área.',
-                author: 'Édouard Collignon',
-                math: 'Proyección de área igual. Divide el mundo en dos triángulos, con la base en el ecuador y los vértices en los polos. Las fórmulas son más complejas, involucrando la raíz cuadrada de la distancia desde el ecuador para mantener la igualdad de área.',
-                creator: () => d3.geoCollignon(),
-                defaultScale: null
-            },
-            equalEarth: {
-                name: 'Equal Earth',
-                description: 'Proyección pseudocilíndrica de área igual, diseñada para reemplazar a Gall-Peters.',
-                history: 'Desarrollada en 2018 por Bojan Šavrič, Tom Patterson y Bernhard Jenny. Es una alternativa moderna a las proyecciones de área igual existentes, buscando un mejor equilibrio visual y menos distorsión percibida que las tradicionales (como Gall-Peters).',
-                usage: 'Diseñada para ser la nueva proyección estándar de área igual para mapas mundiales generales y temáticos, especialmente en contextos educativos y científicos.',
-                author: 'Bojan Šavrič, Tom Patterson, Bernhard Jenny',
-                math: 'Es una proyección pseudocilíndrica de área igual definida por una serie de ecuaciones polinómicas. \\[x = A_1 \\lambda \\cos(\\phi) / (A_2 + A_3 \\cos(\\phi)^2 + A_4 \\sin(\\phi)^2)\\] \\[y = B_1 \\sin(\\phi) + B_2 \\sin(\\phi)^3 + B_3 \\sin(\\phi)^7\\] Los coeficientes $A_i, B_i$ son constantes optimizadas para la igualdad de área y la apariencia visual.',
-                creator: () => d3.geoEqualEarth(),
-                defaultScale: null
-            },
-            fahey: {
-                name: 'Fahey',
-                description: 'Una proyección pseudocilíndrica con meridianos curvos.',
-                history: 'Diseñada por Michael Fahey. Es una proyección menos conocida pero interesante por su forma visualmente equilibrada.',
-                usage: 'Principalmente para mapas mundiales en atlas o para fines de referencia donde se busca una alternativa a las proyecciones más comunes con un buen compromiso visual.',
-                author: 'Michael Fahey',
-                math: 'Proyección pseudocilíndrica. Los paralelos son líneas rectas y los meridianos son curvas complejas que se cruzan en los polos. No es de área igual ni conforme, pero ofrece un buen compromiso estético.',
-                creator: () => d3.geoFahey(),
-                defaultScale: null
-            },
-            gingery: {
-                name: 'Gingery',
-                description: 'Una proyección pseudocónica con forma inusual.',
-                history: 'Creada por Ray Gingery. Es una de las proyecciones más modernas y menos convencionales, diseñada para equilibrar distorsiones de una manera única.',
-                usage: 'Principalmente de interés académico o para visualizaciones de datos muy específicas donde se experimenta con formas cartográficas alternativas.',
-                author: 'Ray Gingery',
-                math: 'Es una proyección pseudocónica que utiliza una aproximación diferente para el mapeo. Sus fórmulas son propietarias y no tan ampliamente documentadas como las proyecciones clásicas. Se centra en un balance particular entre las distorsiones.',
-                creator: () => d3.geoGingery(),
-                defaultScale: null
-            },
-            interruptedBoggs: {
-                name: 'Boggs Interrumpida',
-                description: 'Proyección pseudocilíndrica de área igual, interrumpida para reducir la distorsión.',
-                history: 'Desarrollada por S.W. Boggs en 1929. Es una proyección de área igual que se interrumpe para minimizar la distorsión en los océanos o continentes, dependiendo de la interrupción.',
-                usage: 'Ideal para mapas mundiales temáticos donde la precisión de área es fundamental y se desea minimizar la distorsión en las masas terrestres, interrumpiendo los océanos.',
-                author: 'S.W. Boggs',
-                math: 'Basada en la proyección Sinusoidal. Se interrumpe a lo largo de varios meridianos para reducir la distorsión de forma. La Tierra se divide en segmentos, y cada segmento se proyecta de forma independiente. Las fórmulas de la sinusoidal se aplican a cada segmento.',
-                creator: () => d3.geoInterruptedBoggs(),
-                defaultScale: null
-            },
-            lagrange: {
-                name: 'Lagrange',
-                description: 'Proyección conforme que mapea la esfera a un círculo.',
-                history: 'Desarrollada por Joseph-Louis Lagrange en 1779. Es una proyección de una sola superficie esférica sobre un plano, preservando los ángulos.',
-                usage: 'Principalmente de interés teórico. Puede usarse para regiones continentales, pero no es adecuada para mapas mundiales completos debido a la gran distorsión cerca de los bordes del círculo.',
-                author: 'Joseph-Louis Lagrange',
-                math: 'Proyección conforme. Mapea la esfera a un círculo. Las coordenadas son: \\[x = R \\frac{2 \\cos(\\phi) \\sin((\\lambda - \\lambda_0)/2)}{1 + \\sin(\\phi_0) \\sin(\\phi) + \\cos(\\phi_0) \\cos(\\phi) \\cos((\\lambda - \\lambda_0))}\\] \\[y = R \\frac{\\cos(\\phi_0) \\sin(\\phi) - \\sin(\\phi_0) \\cos(\\phi) \\cos((\\lambda - \\lambda_0))}{1 + \\sin(\\phi_0) \\sin(\\phi) + \\cos(\\phi_0) \\cos(\\phi) \\cos((\\lambda - \\lambda_0))}\\] Preserva los ángulos, pero distorsiona el área.',
-                creator: () => d3.geoLagrange(),
-                defaultScale: null
-            },
-            loximuthal: {
-                name: 'Loximuthal',
-                description: 'Proyección pseudocilíndrica en la que las loxodromas son líneas rectas.',
-                history: 'Creada por Karl Siemon en 1935. Es una proyección que presenta las loxodromas como líneas rectas, lo que es útil para la navegación.',
-                usage: 'Especialmente útil para la navegación o para rutas de vuelo que siguen una loxodroma. No es de área igual ni conforme, pero ofrece una propiedad única para ciertas aplicaciones.',
-                author: 'Karl Siemon',
-                math: 'Proyección pseudocilíndrica. Las coordenadas son: \\[x = R (\\lambda - \\lambda_0) \\cos(\\phi_1) / (\\cos(\\phi_1) \\cos(\\phi))\\] \\[y = R (\\phi - \\phi_0)\\] donde $\\phi_1$ es el paralelo de escala normal. Las loxodromas son líneas rectas, lo que significa que el rumbo constante se mantiene recto en el mapa.',
-                creator: () => d3.geoLoximuthal(),
-                defaultScale: null
-            },
-            miller: {
-                name: 'Miller',
-                description: 'Una proyección cilíndrica modificada, similar a Mercator.',
-                history: 'Desarrollada por Osborn Maitland Miller en 1942. Fue una modificación de la proyección de Mercator para reducir la distorsión polar sin perder su forma rectangular.',
-                usage: 'Una alternativa a la proyección de Mercator para mapas mundiales de referencia. Reduce la exageración de las regiones polares en comparación con Mercator, aunque todavía distorsiona las áreas.',
-                author: 'Osborn Maitland Miller',
-                math: 'Proyección cilíndrica: \\[x = R (\\lambda - \\lambda_0)\\] \\[y = R \\ln[\\tan(\\pi/4 + 0.4 \\phi)] / 0.8\\] Los polos se representan como líneas, no como puntos, y la distorsión de área es menor que la de Mercator en latitudes altas, pero no es de área igual.',
-                creator: () => d3.geoMiller(),
-                defaultScale: null
-            },
-            vanDerGrinten: {
-                name: 'Van der Grinten',
-                description: 'Proyección de compromiso que mapea el mundo a un círculo.',
-                history: 'Desarrollada por Alphons J. van der Grinten en 1904. Es una proyección popular por su forma circular.',
-                usage: 'Históricamente muy utilizada para mapas mundiales generales y atlas debido a su forma estéticamente agradable y por ser un compromiso entre las diversas distorsiones. La National Geographic Society la usó antes de adoptar Winkel Tripel.',
-                author: 'Alphons J. van der Grinten',
-                math: 'Es una proyección pseudocilíndrica. Las coordenadas se calculan mediante fórmulas complejas que involucran las longitudes y latitudes, mapeando todo el mundo en un círculo. No es de área igual ni conforme, pero es un compromiso visual entre las distorsiones.',
-                creator: () => d3.geoVanDerGrinten(),
-                defaultScale: null
-            },
-            cylindricalEqualArea: {
-                name: 'Cilíndrica Área Igual',
-                description: 'Proyección cilíndrica que preserva las áreas.',
-                history: 'Desarrollada por Johann Heinrich Lambert en 1772. Es una proyección simple y una de las primeras en ser de área igual.',
-                usage: 'Se utiliza para mapas mundiales temáticos donde la precisión de área es fundamental. Ejemplos incluyen la proyección de Gall-Peters, que es una variación de esta.',
-                author: 'Johann Heinrich Lambert',
-                math: 'Proyección cilíndrica de área igual. Las coordenadas son: \\[x = R (\\lambda - \\lambda_0)\\] \\[y = R \\sin(\\phi) / \\cos(\\phi_0)\\] Una de sus variantes más conocidas es la proyección de Gall-Peters, que usa un paralelo estándar a $\\phi_0 = 45°$. Preserva las áreas, pero la forma se distorsiona significativamente en latitudes altas.',
-                creator: () => d3.geoCylindricalEqualArea(),
-                defaultScale: null
-            },
-            guyou: {
-                name: 'Guyou',
-                description: 'Proyección conforme que mapea la esfera a un cuadrado.',
-                history: 'Desarrollada por Émile Guyou en 1886. Es una proyección quincuncial, una variación de la proyección de Peirce Quincuncial.',
-                usage: 'Principalmente de interés teórico y para visualizaciones artísticas o matemáticas, ya que permite el embaldosado infinito del plano con copias de la proyección. No es de uso común para mapas geográficos generales.',
-                author: 'Émile Guyou',
-                math: 'Una proyección conforme que mapea el hemisferio en un cuadrado. Similar en concepto a la proyección Peirce Quincuncial, utiliza funciones elípticas para la transformación. Los detalles matemáticos son complejos e involucran integrales elípticas y transformaciones conformes.',
-                creator: () => d3.geoGuyou(),
-                defaultScale: null
-            }
+        // ---------- Utilities
+        const $ = (sel) => document.querySelector(sel);
+        const statusEl = $('#status');
+        const setStatus = (msg, tone = '') => {
+            statusEl.textContent = msg; statusEl.style.border = 'none';
+            if (tone === 'ok') statusEl.style.color = getComputedStyle(document.documentElement).getPropertyValue('--ok');
+            else if (tone === 'warn') statusEl.style.color = getComputedStyle(document.documentElement).getPropertyValue('--warn');
+            else if (tone === 'error') statusEl.style.color = getComputedStyle(document.documentElement).getPropertyValue('--error');
+            else statusEl.style.color = 'var(--muted)';
         };
-        
-        // Función para obtener la escala de la proyección
-        function getProjectionScale(projectionType, currentWidth, currentHeight) {
-            let scale;
-            switch (projectionType) {
-                case 'orthographic':
-                case 'stereographic':
-                case 'gnomonic':
-                    scale = Math.min(currentWidth, currentHeight) / 2.5;
-                    break;
-                case 'albers':
-                case 'conicConformal':
-                    scale = Math.min(currentWidth, currentHeight) / 2.8; // Ajustado ligeramente para cónicas
-                    break;
-                case 'mercator':
-                case 'cylindricalEqualArea':
-                case 'miller':
-                    scale = currentWidth / (2 * Math.PI) * 0.9; // Base para cilíndricas rectangulares
-                    break;
-                case 'mollweide':
-                case 'robinson':
-                case 'naturalEarth1':
-                case 'eckert4':
-                case 'kavrayskiy7':
-                case 'wagner6':
-                case 'aitoff':
-                case 'equalEarth':
-                case 'fahey':
-                case 'sinusoidal':
-                case 'collignon':
-                case 'interruptedBoggs':
-                case 'lagrange':
-                case 'loximuthal':
-                case 'vanDerGrinten':
-                    scale = currentWidth / (2 * Math.PI) * 0.85; // Para proyecciones pseudocilíndricas o elípticas
-                    if (currentWidth < 768) scale = currentWidth / (2 * Math.PI) * 0.7; // Ajuste para pantallas pequeñas
-                    break;
-                case 'gringortenQuincuncial':
-                case 'guyou':
-                    scale = Math.min(currentWidth, currentHeight) / 3;
-                    break;
-                default:
-                    scale = Math.min(currentWidth, currentHeight) / 2.2; // Escala por defecto genérica
-            }
-            return scale;
-        }
 
-        // Función para crear la proyección actual
-        function createProjection() {
-            const projDef = projectionDefinitions[currentProjectionType];
-            if (!projDef) {
-                console.error('Proyección no encontrada en definitions:', currentProjectionType);
-                return null;
+        // ---------- Theme handling (ensures contrast for backgrounds)
+        const applyTheme = (mode) => {
+            const r = document.documentElement.style;
+            if (mode === 'light') {
+                r.setProperty('--bg', '#f5f7fb');
+                r.setProperty('--panel', '#ffffff');
+                r.setProperty('--ink', '#0b0c0e');
+                r.setProperty('--muted', '#5a646e');
+                r.setProperty('--stroke', '#101418');
+                r.setProperty('--land', '#dfe6ef');
+                r.setProperty('--water', '#f5f7fb');
+                r.setProperty('--borders', '#556170');
+                r.setProperty('--graticule', '#c3ccd6');
+            } else if (mode === 'high') {
+                r.setProperty('--bg', '#000');
+                r.setProperty('--panel', '#000');
+                r.setProperty('--ink', '#fff');
+                r.setProperty('--muted', '#ddd');
+                r.setProperty('--stroke', '#fff');
+                r.setProperty('--land', '#000');
+                r.setProperty('--water', '#000');
+                r.setProperty('--borders', '#fff');
+                r.setProperty('--graticule', '#777');
+            } else { // dark
+                r.setProperty('--bg', '#0b0c0e');
+                r.setProperty('--panel', '#111318');
+                r.setProperty('--ink', '#e6e8eb');
+                r.setProperty('--muted', '#9aa3ad');
+                r.setProperty('--stroke', '#e6e8eb');
+                r.setProperty('--land', '#171a20');
+                r.setProperty('--water', '#0b0c0e');
+                r.setProperty('--borders', '#8aa0b5');
+                r.setProperty('--graticule', '#454f5e');
             }
-            
-            if (typeof projDef.creator !== 'function') {
-                console.error(`Error: 'creator' para la proyección "${currentProjectionType}" no es una función.`);
-                return null;
-            }
+            draw(); // redraw with new vars
+        };
 
-            try {
-                let proj = projDef.creator();
-                
-                let currentScale = getProjectionScale(currentProjectionType, width, height);
-
-                proj.scale(currentScale).translate([width / 2, height / 2]).rotate(rotation);
-                
-                // Configuraciones especiales de proyecciones
-                if (currentProjectionType === 'albers') {
-                    proj.parallels([29.5, 45.5]); 
-                } else if (currentProjectionType === 'conicConformal') {
-                    proj.parallels([33, 45]);
-                } else if (currentProjectionType === 'loximuthal') {
-                    proj.parallelOfLatitude(0); 
-                } else if (currentProjectionType === 'interruptedBoggs') {
-                    if (proj.lobes) { 
-                        proj.lobes([-150, -90, -30, 30, 90, 150]); 
-                    }
-                }
-                
-                projection = proj;
-                path = d3.geoPath().projection(projection);
-                return true;
-            } catch (error) {
-                console.error('Error al instanciar la proyección D3 para ' + currentProjectionType + ':', error);
-                return false;
-            }
-        }
-        
-        // Función para actualizar el título y la información de la proyección
-        function updateTitleAndInfo() {
-            const projDef = projectionDefinitions[currentProjectionType];
-            if (projDef) {
-                document.title = `Proyección ${projDef.name}`;
-                
-                const infoDiv = document.getElementById('projection-info');
-                infoDiv.innerHTML = `
-                    <div class="projection-main-title">${projDef.name}</div>
-                    <p><strong>Descripción:</strong> ${projDef.description}</p>
-                    <p><strong>Autor:</strong> ${projDef.author}</p>
-                    <p><strong>Historia:</strong> ${projDef.history}</p>
-                    <p><strong>Uso:</strong> ${projDef.usage}</p>
-                    <p><strong>Matemáticas:</strong> <span class="math-formula">${projDef.math}</span></p>
-                `;
-
-                // Re-renderizar las matemáticas con MathJax después de actualizar el contenido
-                // Asegúrate de que MathJax esté cargado antes de llamar a typeset
-                if (typeof MathJax !== 'undefined') {
-                    MathJax.typesetPromise([infoDiv]); 
-                }
-            }
-        }
-        
-        // Función para actualizar la proyección
-        function updateProjection() {
-            if (!svg || !mapGroup || !projection) return;
-            
-            projection.rotate(rotation);
-            
-            mapGroup.selectAll(".sphere").attr("d", path);
-            mapGroup.selectAll(".graticule").attr("d", path);
-            mapGroup.selectAll(".countries").attr("d", path);
-            
-            document.getElementById("rotation-value").textContent = Math.round(rotation[0]) + "°";
-            document.getElementById("tilt-value").textContent = Math.round(rotation[1]) + "°";
-            document.getElementById("roll-value").textContent = Math.round(rotation[2]) + "°";
-            
-            document.getElementById("rotation-slider").value = rotation[0];
-            document.getElementById("tilt-slider").value = rotation[1];
-            document.getElementById("roll-slider").value = rotation[2];
-        }
-        
-        // Función para cambiar la proyección
-        function changeProjection(newProjectionType) {
-            currentProjectionType = newProjectionType;
-            updateTitleAndInfo();
-            
-            if (!createProjection()) {
-                console.warn(`No se pudo cambiar a la proyección ${newProjectionType}.`);
-                return; 
-            }
-
-            if (mapGroup) {
-                mapGroup.selectAll("*").remove();
-                createMapElements();
-                updateProjection();
-            }
-        }
-        
-        // Función para convertir mouse a rotación
-        function mouseToRotation(mouseX, mouseY, lastX, lastY) {
-            const deltaX = mouseX - lastX;
-            const deltaY = mouseY - lastY;
-            const sensitivity = 0.3;
-            
-            let newLambda = rotation[0] - deltaX * sensitivity;
-            let newPhi = Math.max(-90, Math.min(90, rotation[1] - deltaY * sensitivity));
-            let newGamma = rotation[2];
-            
-            while (newLambda > 180) newLambda -= 360;
-            while (newLambda < -180) newLambda += 360;
-            
-            return [newLambda, newPhi, newGamma];
-        }
-        
-        document.getElementById("projection-selector").addEventListener("change", function(e) {
-            changeProjection(e.target.value);
-        });
-        
-        document.getElementById("rotation-slider").addEventListener("input", function(e) {
-            rotation[0] = parseFloat(e.target.value);
-            updateProjection();
-        });
-        
-        document.getElementById("tilt-slider").addEventListener("input", function(e) {
-            rotation[1] = parseFloat(e.target.value);
-            updateProjection();
-        });
-        
-        document.getElementById("roll-slider").addEventListener("input", function(e) {
-            rotation[2] = parseFloat(e.target.value);
-            updateProjection();
-        });
-        
-        function resetView() {
-            rotation = [-70, 90, 0];
-            updateProjection();
-        }
-        
-        function exportMap() {
-            if (!svg) return;
-            
-            const svgElement = document.querySelector(".map-svg");
-            const svgData = new XMLSerializer().serializeToString(svgElement);
-            const canvas = document.createElement("canvas");
-            const ctx = canvas.getContext("2d");
-            const img = new Image();
-            
-            canvas.width = width;
-            canvas.height = height;
-            
-            img.onload = function() {
-                ctx.drawImage(img, 0, 0);
-                const link = document.createElement("a");
-                const projName = projectionDefinitions[currentProjectionType].name.replace(/\s+/g, '-').toLowerCase();
-                link.download = `mapa-${projName}.png`;
-                link.href = canvas.toDataURL();
-                link.click();
-            };
-            
-            setTimeout(() => {
-                img.src = "data:image/svg+xml;base64," + btoa(svgData);
-            }, 100);
-        }
-        
-        document.getElementById("reset-btn").addEventListener("click", resetView);
-        document.getElementById("export-btn").addEventListener("click", exportMap);
-
-        document.getElementById("overlay-toggle-btn").addEventListener("click", function() {
-            const overlay = document.getElementById("overlay-container");
-            overlay.classList.toggle("hidden");
-        });
-        
-        let worldDataCache = null;
-        async function createMapElements() {
-            if (!mapGroup || !path) return;
-            
-            const graticule = d3.geoGraticule();
-            
-            mapGroup.append("path")
-                .datum({type: "Sphere"})
-                .attr("class", "sphere")
-                .attr("d", path);
-            
-            mapGroup.append("path")
-                .datum(graticule())
-                .attr("class", "graticule")
-                .attr("d", path);
-            
-            if (worldDataCache) {
-                renderCountries(worldDataCache);
-            } else {
-                const loadingDiv = document.querySelector('.loading');
-                if (loadingDiv) loadingDiv.style.display = 'block';
-                const world = await loadWorldData();
-                worldDataCache = world;
-                if (loadingDiv) loadingDiv.style.display = 'none';
-                renderCountries(worldDataCache);
-            }
-        }
-
-        function renderCountries(worldData) {
-             if (worldData && worldData.features) {
-                mapGroup.selectAll(".country")
-                    .data(worldData.features)
-                    .enter().append("path")
-                    .attr("class", "countries")
-                    .attr("d", path)
-                    .on("mouseover", function(event, d) {
-                        d3.select(this).style("fill", "#e74c3c");
-                    })
-                    .on("mouseout", function(event, d) {
-                        d3.select(this).style("fill", "#2c3e50");
-                    });
-            }
-        }
-        
-        async function loadWorldData() {
-            try {
-                const worldUrl = "https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json";
-                const world = await d3.json(worldUrl);
-                return topojson.feature(world, world.objects.countries);
-            } catch (error) {
-                console.warn("Error cargando datos de Natural Earth, usando datos de respaldo:", error);
-                return createFallbackWorldData();
-            }
-        }
-        
-        function createFallbackWorldData() {
+        // ---------- Data: smart fetch with graceful fallback
+        const atlasBase = 'https://cdn.jsdelivr.net/npm/world-atlas@2/';
+        function atlasURLsFor(res) {
             return {
-                "type": "FeatureCollection",
-                "features": [
-                    {
-                        "type": "Feature",
-                        "properties": {"name": "Chile"},
-                        "geometry": {
-                            "type": "Polygon",
-                            "coordinates": [[
-                                [-75.64, -17.5], [-69.46, -17.58], [-69.46, -18.98], [-70.33, -20.13], 
-                                [-70.33, -21.04], [-70.05, -21.04], [-70.05, -21.72], [-69.91, -21.72], 
-                                [-69.91, -22.5], [-67.29, -22.78], [-67.29, -23.84], [-67.01, -23.84], 
-                                [-67.01, -24.03], [-66.88, -24.03], [-66.88, -24.63], [-67.32, -24.63], 
-                                [-67.32, -25.17], [-68.39, -26.18], [-68.63, -26.5], [-68.63, -26.9], 
-                                [-69.78, -30.24], [-71.11, -33.05], [-71.11, -33.5], [-71.96, -33.5], 
-                                [-71.96, -34.82], [-71.86, -34.82], [-71.86, -35.27], [-72.15, -35.27], 
-                                [-72.15, -35.97], [-71.49, -38.31], [-73.45, -39.94], [-73.45, -43.79], 
-                                [-74.32, -43.79], [-74.32, -47.75], [-75.64, -47.75], [-75.64, -17.5]
-                            ]]
-                        }
-                    },
-                    {
-                        "type": "Feature",
-                        "properties": {"name": "Nueva Zelanda"},
-                        "geometry": {
-                            "type": "MultiPolygon",
-                            "coordinates": [
-                                [[[173.02, -34.42], [173.55, -35.01], [174.33, -35.27], [174.61, -36.08], 
-                                  [175.34, -37.21], [175.06, -37.46], [175.22, -37.99], [175.95, -38.55], 
-                                  [177.44, -37.88], [178.01, -37.58], [178.52, -37.69], [178.27, -38.58], 
-                                  [177.97, -39.17], [177.21, -39.45], [176.94, -40.22], [177.34, -40.98], 
-                                  [176.46, -41.29], [175.07, -41.68], [174.65, -41.28], [173.02, -40.92], 
-                                  [172.55, -40.48], [172.31, -40.17], [172.44, -39.45], [173.02, -39.02], 
-                                  [173.56, -39.27], [174.25, -38.74], [174.25, -37.38], [173.02, -34.42]]],
-                                [[[166.51, -46.22], [167.05, -46.22], [168.30, -46.57], [169.51, -47.21], 
-                                  [170.62, -45.91], [171.57, -44.90], [171.57, -44.24], [171.28, -43.53], 
-                                  [170.62, -43.37], [169.51, -43.13], [168.87, -42.61], [169.51, -41.77], 
-                                  [170.62, -41.51], [171.57, -40.88], [172.10, -40.49], [172.79, -40.49], 
-                                  [173.02, -40.88], [173.56, -41.51], [174.25, -41.77], [174.78, -41.51], 
-                                  [175.31, -41.77], [175.31, -42.61], [174.78, -43.37], [173.56, -44.24], 
-                                  [172.79, -45.04], [171.57, -45.91], [170.62, -46.57], [169.51, -46.83], 
-                                  [168.30, -46.83], [167.05, -46.57], [166.51, -46.22]]]
-                            ]
-                        }
-                    },
-                    {
-                        "type": "Feature",
-                        "properties": {"name": "Argentina"},
-                        "geometry": {
-                            "type": "Polygon",
-                            "coordinates": [[
-                                [-73.42, -52.83], [-68.63, -52.83], [-68.63, -54.87], [-67.56, -54.87], 
-                                [-66.95, -54.45], [-67.29, -53.85], [-68.14, -53.65], [-68.14, -52.34], 
-                                [-68.73, -52.34], [-69.13, -52.14], [-69.13, -51.04], [-68.27, -50.26], 
-                                [-68.27, -49.35], [-69.46, -47.75], [-71.92, -46.88], [-71.92, -45.56], 
-                                [-71.74, -44.97], [-71.74, -44.41], [-71.92, -44.41], [-71.92, -40.61], 
-                                [-71.74, -40.61], [-70.81, -38.55], [-71.11, -38.31], [-71.11, -36.66], 
-                                [-70.36, -36.00], [-70.36, -35.17], [-69.81, -34.19], [-69.81, -33.27], 
-                                [-70.05, -33.27], [-70.05, -26.90], [-68.25, -24.49], [-68.25, -21.94], 
-                                [-67.33, -22.87], [-66.98, -22.87], [-66.98, -21.83], [-64.96, -22.08], 
-                                [-64.96, -26.63], [-61.88, -26.63], [-61.88, -23.75], [-62.69, -22.24], 
-                                [-62.69, -20.51], [-59.12, -19.36], [-57.74, -19.36], [-57.74, -22.35], 
-                                [-58.16, -24.49], [-58.16, -27.12], [-56.49, -27.55], [-54.49, -26.63], 
-                                [-54.49, -25.74], [-53.37, -25.74], [-53.37, -55.11], [-73.42, -52.83]
-                            ]]
-                        }
-                    },
-                    {
-                        "type": "Feature",
-                        "properties": {"name": "Brasil"},
-                        "geometry": {
-                            "type": "Polygon",
-                            "coordinates": [[
-                                [-73.99, -7.34], [-70.09, 2.22], [-67.87, 1.69], [-67.87, 2.82], 
-                                [-67.27, 2.82], [-66.87, 1.25], [-66.87, 1.69], [-65.65, 1.69], 
-                                [-65.65, 2.82], [-64.27, 2.82], [-64.27, 4.57], [-60.70, 4.99], 
-                                [-60.70, 5.24], [-60.25, 5.24], [-59.98, 4.99], [-59.98, 4.57], 
-                                [-58.45, 4.57], [-58.45, 3.32], [-54.49, 2.31], [-51.63, 4.57], 
-                                [-50.95, 1.21], [-49.97, 1.73], [-49.57, 1.73], [-49.57, 2.22], 
-                                [-49.18, 2.22], [-44.65, -2.14], [-44.65, -7.34], [-43.37, -10.81], 
-                                [-41.01, -11.44], [-39.28, -18.26], [-39.28, -20.30], [-40.95, -21.94], 
-                                [-43.37, -22.97], [-44.65, -27.04], [-48.63, -28.86], [-54.49, -31.49], 
-                                [-57.63, -30.22], [-57.63, -33.75], [-53.37, -33.75], [-53.37, -25.74], 
-                                [-54.49, -25.74], [-54.49, -7.34], [-73.99, -7.34]
-                            ]]
-                        }
-                    },
-                    {
-                        "type": "Feature",
-                        "properties": {"name": "Australia"},
-                        "geometry": {
-                            "type": "Polygon",
-                            "coordinates": [[
-                                [113.34, -10.67], [153.57, -10.67], [153.57, -43.64], [113.34, -43.64], 
-                                [113.34, -10.67]
-                            ]]
-                        }
-                    },
-                    {
-                        "type": "Feature",
-                        "properties": {"name": "Antártida"},
-                        "geometry": {
-                            "type": "Polygon",
-                            "coordinates": [[
-                                [-180, -60], [-150, -62], [-120, -64], [-90, -66], [-60, -68], [-30, -70], 
-                                [0, -72], [30, -70], [60, -68], [90, -66], [120, -64], [150, -62], 
-                                [180, -60], [180, -90], [-180, -90], [-180, -60]
-                            ]]
-                        }
-                    }
-                ]
+                land: `${atlasBase}land-${res}.json`,
+                countries: `${atlasBase}countries-${res}.json`
             };
         }
-        
-        async function createMap() {
-            console.log("Creando mapa con múltiples proyecciones...");
-            
-            try {
-                document.getElementById('map-container').innerHTML = '';
-                
-                svg = d3.select("#map-container")
-                    .append("svg")
-                    .attr("class", "map-svg")
-                    .attr("width", width)
-                    .attr("height", height);
-                
-                mapGroup = svg.append("g");
 
-                if (!createProjection()) {
-                    throw new Error('No se pudo crear la proyección inicial');
+        async function tryFetch(url) {
+            const res = await fetch(url);
+            if (!res.ok) throw new Error(`HTTP ${res.status} for ${url}`);
+            return res.json();
+        }
+
+        async function loadWorld(auto = true, requestedRes = '50m', customUrl = '') {
+            // Returns {land, countries, resolution}
+            const tryList = auto ? ['10m', '50m', '110m'] : [requestedRes];
+
+            // If custom URL is provided, we attempt to read as TopoJSON/GeoJSON countries only
+            if (requestedRes === 'custom' && customUrl) {
+                try {
+                    const data = await tryFetch(customUrl);
+                    return { land: null, countries: data, resolution: 'custom' };
+                } catch (err) {
+                    setStatus('Custom URL failed. Falling back to auto.', 'warn');
                 }
-                
-                svg.on("mousedown", function(event) {
-                    isDragging = true;
-                    lastMousePos = d3.pointer(event);
-                    svg.style("cursor", "grabbing");
-                });
-                
-                svg.on("mousemove", function(event) {
-                    if (isDragging && lastMousePos) {
-                        const currentPos = d3.pointer(event);
-                        rotation = mouseToRotation(currentPos[0], currentPos[1], lastMousePos[0], lastMousePos[1]);
-                        lastMousePos = currentPos;
-                        updateProjection();
-                    }
-                });
-                
-                svg.on("mouseup", function() {
-                    isDragging = false;
-                    lastMousePos = null;
-                    svg.style("cursor", "grab");
-                });
-                
-                svg.on("mouseleave", function() {
-                    isDragging = false;
-                    lastMousePos = null;
-                    svg.style("cursor", "grab");
-                });
+            }
 
-                window.addEventListener('resize', function() {
-                    width = window.innerWidth;
-                    height = window.innerHeight;
-                    svg.attr('width', width).attr('height', height);
-                    
-                    if (createProjection()) {
-                        updateProjection();
+            for (const res of tryList) {
+                const urls = atlasURLsFor(res);
+                try {
+                    const [land, countries] = await Promise.all([
+                        tryFetch(urls.land),
+                        tryFetch(urls.countries)
+                    ]);
+                    return { land, countries, resolution: res };
+                } catch (err) {
+                    // continue to next resolution
+                }
+            }
+            throw new Error('All dataset fetch attempts failed');
+        }
+
+        // ---------- Map setup
+        const svg = d3.select('#map');
+        const g = svg.append('g').attr('id', 'layers');
+        const bg = svg.insert('rect', ':first-child')
+            .attr('class', 'background')
+            .attr('x', 0).attr('y', 0)
+            .attr('width', 1280).attr('height', 720)
+            .attr('fill', 'var(--water)');
+
+        const width = 1280, height = 720;
+        let projection = d3.geoEqualEarth().translate([width / 2, height / 2]).scale(360);
+        let path = d3.geoPath(projection);
+        const graticule = d3.geoGraticule();
+
+        // Layers
+        const layer = {
+            water: g.append('g').attr('id', 'water'),
+            graticule: g.append('g').attr('id', 'graticule'),
+            land: g.append('g').attr('id', 'land'),
+            borders: g.append('g').attr('id', 'borders')
+        };
+
+        // ---------- Projections factory
+        const PROJECTIONS = {
+            EqualEarth: () => d3.geoEqualEarth(),
+            NaturalEarth1: () => d3.geoNaturalEarth1(),
+            Robinson: () => d3.geoRobinson(),
+            Mercator: () => d3.geoMercator(),
+            Equirectangular: () => d3.geoEquirectangular(),
+            Orthographic: () => d3.geoOrthographic(),
+            Stereographic: () => d3.geoStereographic(),
+            AzimuthalEqualArea: () => d3.geoAzimuthalEqualArea(),
+            AzimuthalEquidistant: () => d3.geoAzimuthalEquidistant(),
+            ConicConformal: () => d3.geoConicConformal(),
+            ConicEqualArea: () => d3.geoConicEqualArea(),
+            ConicEquidistant: () => d3.geoConicEquidistant(),
+            Albers: () => d3.geoAlbers(),
+            AlbersUsa: () => d3.geoAlbersUsa(),
+            Mollweide: () => d3.geoMollweide(),
+        };
+
+        // ---------- State
+        const state = {
+            dataset: null,
+            resolution: '50m',
+            land: null,
+            countries: null,
+        };
+
+        // ---------- Controls wiring
+        const projectionSel = $('#projection');
+        const resolutionSel = $('#resolution');
+        const customUrlInput = $('#customUrl');
+        const themeSel = $('#theme');
+        const scaleInput = $('#scale');
+        const rLambda = $('#rotateLambda');
+        const rPhi = $('#rotatePhi');
+        const rGamma = $('#rotateGamma');
+        const clipInput = $('#clip');
+        const par1Input = $('#par1');
+        const par2Input = $('#par2');
+        const gradToggle = $('#graticuleToggle');
+        const gradStep = $('#graticuleStep');
+        const showCountriesSel = $('#showCountries');
+        const strokeWidthInput = $('#strokeWidth');
+
+        function onResolutionChange() {
+            const val = resolutionSel.value;
+            customUrlInput.classList.toggle('hide', val !== 'custom');
+            refreshData();
+        }
+
+        function isConic(name) {
+            return /Conic|Albers/.test(name);
+        }
+
+        function isAzimuthal(name) {
+            return /Azimuthal|Orthographic|Stereographic/.test(name);
+        }
+
+        function updateProjection() {
+            const name = projectionSel.value;
+            const factory = PROJECTIONS[name] || PROJECTIONS.EqualEarth;
+            projection = factory().translate([width / 2, height / 2]).scale(+scaleInput.value);
+
+            // Rotation and clipping
+            projection.rotate([+rLambda.value, +rPhi.value, +rGamma.value]);
+            const clip = +clipInput.value;
+            projection.clipAngle(clip > 0 ? clip : null);
+
+            // Conic parallels
+            const conic = isConic(name);
+            document.querySelectorAll('.conicOnly').forEach(el => el.classList.toggle('hide', !conic));
+            if (conic && projection.parallels) {
+                projection.parallels([+par1Input.value, +par2Input.value]);
+            }
+
+            path = d3.geoPath(projection);
+        }
+
+        function draw() {
+            if (!state.countries && !state.land) { return; }
+
+            // Background fill (ensures exported SVG has correct contrast/contrast-safe background)
+            bg.attr('fill', getComputedStyle(document.documentElement).getPropertyValue('--water'));
+
+            layer.graticule.selectAll('*').remove();
+            if (gradToggle.value === 'on') {
+                const step = Math.max(1, +gradStep.value || 10);
+                const g10 = d3.geoGraticule().step([step, step]);
+                layer.graticule.append('path')
+                    .datum(g10())
+                    .attr('d', path)
+                    .attr('fill', 'none')
+                    .attr('stroke', getComputedStyle(document.documentElement).getPropertyValue('--graticule').trim())
+                    .attr('stroke-width', 0.6);
+                // outline
+                layer.graticule.append('path')
+                    .datum({ type: 'Sphere' })
+                    .attr('d', path)
+                    .attr('fill', 'none')
+                    .attr('stroke', getComputedStyle(document.documentElement).getPropertyValue('--graticule').trim())
+                    .attr('stroke-width', 0.8);
+            }
+
+            layer.land.selectAll('*').remove();
+            layer.borders.selectAll('*').remove();
+
+            if (state.land) {
+                const landFeature = topojson.feature(state.land, state.land.objects.land);
+                layer.land.append('path')
+                    .datum(landFeature)
+                    .attr('d', path)
+                    .attr('fill', getComputedStyle(document.documentElement).getPropertyValue('--land').trim())
+                    .attr('stroke', 'none');
+            }
+
+            if (state.countries) {
+                try {
+                    let countriesFeature;
+                    let bordersMesh;
+
+                    if (state.countries.type === 'Topology') {
+                        const objs = state.countries.objects || {};
+                        const countriesObj =
+                            objs.countries ||
+                            objs.units ||
+                            objs.admin ||
+                            objs.ne_110m_admin_0_countries ||
+                            Object.values(objs)[0];
+
+                        if (countriesObj) {
+                            countriesFeature = topojson.feature(state.countries, countriesObj);
+                            bordersMesh = topojson.mesh(state.countries, countriesObj, (a, b) => a !== b);
+                        }
+                    } else {
+                        countriesFeature = state.countries; // GeoJSON directo
                     }
-                });
-                
-                createMapElements();
-                updateProjection();
-                updateTitleAndInfo(); 
-                
-                console.log("Mapa inicializado correctamente");
-                
-            } catch (error) {
-                console.error("Error creando el mapa:", error);
-                document.getElementById('map-container').innerHTML = 
-                    '<div class="error">Error al crear el mapa: ' + error.message + '</div>';
+
+                    const mode = showCountriesSel.value;
+                    if (mode !== 'off') {
+                        if (mode === 'fill' && countriesFeature) {
+                            layer.land.selectAll('path.country')
+                                .data(countriesFeature.features || [])
+                                .join('path')
+                                .attr('class', 'country')
+                                .attr('d', path)
+                                .attr('fill', getComputedStyle(document.documentElement).getPropertyValue('--land').trim())
+                                .attr('stroke', 'none');
+                        }
+                        if (bordersMesh) {
+                            layer.borders.append('path')
+                                .datum(bordersMesh)
+                                .attr('d', path)
+                                .attr('fill', 'none')
+                                .attr('stroke', getComputedStyle(document.documentElement).getPropertyValue('--borders').trim())
+                                .attr('stroke-width', +strokeWidthInput.value)
+                                .attr('vector-effect', 'non-scaling-stroke');
+                        }
+                    }
+                } catch (e) {
+                    console.error('Countries parse error', e);
+                    setStatus('No se pudieron dibujar COUNTRIES (Top(o)JSON incompatible).', 'warn');
+                }
+            }
+            let countriesFeature;
+            let bordersMesh;
+            const objName = state.countries.objects ? Object.keys(state.countries.objects)[0] : null; // attempt best-guess
+
+            if (objName) {
+                countriesFeature = topojson.feature(state.countries, state.countries.objects[objName]);
+                bordersMesh = topojson.mesh(state.countries, state.countries.objects[objName], (a, b) => a !== b);
+            } else {
+                // If already GeoJSON
+                countriesFeature = state.countries;
+            }
+
+            const mode = showCountriesSel.value;
+            if (mode !== 'off') {
+                if (mode === 'fill' && countriesFeature) {
+                    layer.land.selectAll('path.country')
+                        .data(countriesFeature.features)
+                        .join('path')
+                        .attr('class', 'country')
+                        .attr('d', path)
+                        .attr('fill', getComputedStyle(document.documentElement).getPropertyValue('--land').trim())
+                        .attr('stroke', 'none');
+                }
+                if (bordersMesh) {
+                    layer.borders.append('path')
+                        .datum(bordersMesh)
+                        .attr('d', path)
+                        .attr('fill', 'none')
+                        .attr('stroke', getComputedStyle(document.documentElement).getPropertyValue('--borders').trim())
+                        .attr('stroke-width', +strokeWidthInput.value)
+                        .attr('vector-effect', 'non-scaling-stroke');
+                }
             }
         }
-        
-        document.addEventListener("DOMContentLoaded", function() {
-            createMap();
-        });
-        
-        if (document.readyState === 'loading') {
-        } else {
-            createMap();
+
+        setStatus(`Projection: ${projectionSel.value} • Res: ${state.resolution} • Scale: ${scaleInput.value}`);
+  }
+
+        async function refreshData() {
+            try {
+                setStatus('Loading data…');
+                const resSel = resolutionSel.value;
+                const auto = resSel === 'auto';
+                const result = await loadWorld(auto, resSel, customUrlInput.value.trim());
+                state.resolution = result.resolution;
+                state.land = result.land;
+                state.countries = result.countries;
+                setStatus(`Data loaded (${state.resolution}).`, 'ok');
+                draw();
+            } catch (err) {
+                console.error(err);
+                setStatus('Failed to load datasets.', 'error');
+            }
         }
+
+        // ---------- Export SVG (inline styles + background rect preserved)
+        function exportSVG() {
+            const clone = svg.node().cloneNode(true);
+            // Inline important presentation attributes for portability
+            const cssVars = getComputedStyle(document.documentElement);
+            const strokeColor = cssVars.getPropertyValue('--borders').trim();
+            const landFill = cssVars.getPropertyValue('--land').trim();
+            const waterFill = cssVars.getPropertyValue('--water').trim();
+
+            // Ensure background exists and has proper fill
+            const bgRect = clone.querySelector('rect.background');
+            if (bgRect) bgRect.setAttribute('fill', waterFill);
+
+            // Countries/land
+            clone.querySelectorAll('#land path').forEach(p => {
+                if (!p.getAttribute('fill')) p.setAttribute('fill', landFill);
+                p.setAttribute('stroke', 'none');
+            });
+
+            // Borders
+            clone.querySelectorAll('#borders path').forEach(p => {
+                p.setAttribute('fill', 'none');
+                p.setAttribute('stroke', strokeColor);
+                p.setAttribute('stroke-width', strokeWidthInput.value);
+                p.setAttribute('vector-effect', 'non-scaling-stroke');
+            });
+
+            // Graticule
+            clone.querySelectorAll('#graticule path').forEach(p => {
+                p.setAttribute('fill', 'none');
+                p.setAttribute('stroke', cssVars.getPropertyValue('--graticule').trim());
+                p.setAttribute('stroke-width', 0.6);
+            });
+
+            // Serialize
+            const ser = new XMLSerializer();
+            const src = `<?xml version="1.0" encoding="UTF-8"?>\n` + ser.serializeToString(clone);
+            const blob = new Blob([src], { type: 'image/svg+xml;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `map-${projectionSel.value}-${state.resolution}.svg`;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            URL.revokeObjectURL(url);
+        }
+
+        // ---------- Event listeners
+        projectionSel.addEventListener('change', () => { updateProjection(); draw(); });
+        resolutionSel.addEventListener('change', onResolutionChange);
+        customUrlInput.addEventListener('change', refreshData);
+        themeSel.addEventListener('change', (e) => applyTheme(e.target.value));
+        scaleInput.addEventListener('input', () => { updateProjection(); draw(); });
+        rLambda.addEventListener('input', () => { updateProjection(); draw(); });
+        rPhi.addEventListener('input', () => { updateProjection(); draw(); });
+        rGamma.addEventListener('input', () => { updateProjection(); draw(); });
+        clipInput.addEventListener('input', () => { updateProjection(); draw(); });
+        par1Input.addEventListener('change', () => { updateProjection(); draw(); });
+        par2Input.addEventListener('change', () => { updateProjection(); draw(); });
+        gradToggle.addEventListener('change', draw);
+        gradStep.addEventListener('change', draw);
+        showCountriesSel.addEventListener('change', draw);
+        strokeWidthInput.addEventListener('input', draw);
+        $('#exportBtn').addEventListener('click', exportSVG);
+        $('#resetBtn').addEventListener('click', () => {
+            scaleInput.value = 360; rLambda.value = 0; rPhi.value = 0; rGamma.value = 0; clipInput.value = 0;
+            par1Input.value = 29.5; par2Input.value = 45.5; gradStep.value = 10; gradToggle.value = 'on';
+            showCountriesSel.value = 'fill'; strokeWidthInput.value = 0.6; projectionSel.value = 'EqualEarth';
+            updateProjection(); draw();
+        });
+
+        // ---------- Init
+        (async function init() {
+            applyTheme('dark');
+            updateProjection();
+            await refreshData();
+        })();
     </script>
 </body>
+
 </html>
