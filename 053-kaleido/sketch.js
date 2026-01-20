@@ -118,7 +118,7 @@ class Particle {
         this.location = createVector(x, y);
         this.alpha = 25; // Alpha bajo para acumulación
         this.rate = random(0.5, 1.5);
-        this.amp = 2;
+        this.amp = 1;
     }
 
     update() {
