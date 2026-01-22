@@ -1,7 +1,7 @@
-const DRAW_DURATION = 20000;
-const FADE_DURATION = 5000;
+const DRAW_DURATION = 25000;
+const FADE_DURATION = 1000;
 const TOTAL_CYCLE = DRAW_DURATION + FADE_DURATION;
-const MAX_TRACERS = 300;
+const MAX_TRACERS = 100;
 const MARGIN = 15;
 
 let tracers = [];
