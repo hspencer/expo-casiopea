@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "proxy-server": "^1.2.0"
+  }
+}
