@@ -1,4 +1,2 @@
 .DS_Store
-
-# Proxy local con API key — NO subir a GitHub
-055-news-haiku/proxy-server.js
+node_modules
