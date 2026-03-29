@@ -5,25 +5,28 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Proyecciones v2 — SVG Export</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
     <!-- D3 + TopoJSON + Extra Projections -->
     <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
     <script src="https://cdn.jsdelivr.net/npm/topojson-client@3"></script>
     <script src="https://cdn.jsdelivr.net/npm/d3-geo-projection@4"></script>
     <style>
         :root {
-            --bg: #0b0c0e;
-            --panel: #111318;
-            --ink: #e6e8eb;
-            --muted: #9aa3ad;
+            --bg: #f5f7fb;
+            --panel: #ffffff;
+            --ink: #0b0c0e;
+            --muted: #5a646e;
             --accent: #4cc9f0;
             --ok: #70e000;
             --warn: #ffd60a;
             --error: #ff4d6d;
-            --stroke: #e6e8eb;
-            --land: #171a20;
-            --water: #0b0c0e;
-            --borders: #8aa0b5;
-            --graticule: #454f5e;
+            --stroke: #101418;
+            --land: #dfe6ef;
+            --water: #f5f7fb;
+            --borders: #556170;
+            --graticule: #c3ccd6;
             --radius: 16px;
             --shadow: 0 10px 30px rgba(0, 0, 0, .25);
             --focus: 0 0 0 3px color-mix(in oklch, var(--accent) 60%, #fff 0%);
@@ -43,12 +46,12 @@
             margin: 0;
             background: var(--bg);
             color: var(--ink);
-            font: 14px/1.45 ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+            font: 14px/1.45 'Alegreya', Georgia, serif;
         }
 
         .app {
             display: grid;
-            grid-template-rows: auto 1fr;
+            grid-template-rows: auto auto 1fr;
             height: 100%
         }
 
@@ -84,8 +87,8 @@
         .toolbar input[type="range"],
         .toolbar input[type="text"] {
             appearance: none;
-            border: 1px solid #1e232c;
-            background: #0d1117;
+            border: 1px solid color-mix(in srgb, var(--ink) 15%, transparent);
+            background: var(--bg);
             color: var(--ink);
             border-radius: 12px;
             padding: .45rem .6rem;
@@ -102,19 +105,19 @@
 
         .toolbar button {
             appearance: none;
-            border: 1px solid #2a2f39;
-            background: #12161d;
+            border: 1px solid color-mix(in srgb, var(--ink) 15%, transparent);
+            background: var(--bg);
             color: var(--ink);
             border-radius: 12px;
             padding: .55rem .9rem;
             cursor: pointer;
             font-weight: 700;
             letter-spacing: .02em;
-            box-shadow: var(--ring);
+            box-shadow: none;
         }
 
         .toolbar button:hover {
-            border-color: #3a404d;
+            border-color: color-mix(in srgb, var(--ink) 25%, transparent);
             transform: translateY(-1px)
         }
 
@@ -220,8 +223,8 @@
             <div class="group" role="group" aria-label="Export & theme">
                 <label for="theme">Theme</label>
                 <select id="theme">
-                    <option value="dark" selected>Dark</option>
-                    <option value="light">Light</option>
+                    <option value="dark">Dark</option>
+                    <option value="light" selected>Light</option>
                     <option value="high">High Contrast</option>
                 </select>
 
@@ -233,7 +236,7 @@
         </header>
 
         <!-- Secondary controls (contextual) -->
-        <section class="toolbar" style="--panel:#0e1117" aria-label="Parameters">
+        <section class="toolbar" aria-label="Parameters">
             <div class="group" role="group" aria-label="View">
                 <label for="scale">Scale</label>
                 <input id="scale" type="range" min="120" max="1200" step="1" value="360" />
@@ -560,43 +563,9 @@
                     setStatus('No se pudieron dibujar COUNTRIES (Top(o)JSON incompatible).', 'warn');
                 }
             }
-            let countriesFeature;
-            let bordersMesh;
-            const objName = state.countries.objects ? Object.keys(state.countries.objects)[0] : null; // attempt best-guess
 
-            if (objName) {
-                countriesFeature = topojson.feature(state.countries, state.countries.objects[objName]);
-                bordersMesh = topojson.mesh(state.countries, state.countries.objects[objName], (a, b) => a !== b);
-            } else {
-                // If already GeoJSON
-                countriesFeature = state.countries;
-            }
-
-            const mode = showCountriesSel.value;
-            if (mode !== 'off') {
-                if (mode === 'fill' && countriesFeature) {
-                    layer.land.selectAll('path.country')
-                        .data(countriesFeature.features)
-                        .join('path')
-                        .attr('class', 'country')
-                        .attr('d', path)
-                        .attr('fill', getComputedStyle(document.documentElement).getPropertyValue('--land').trim())
-                        .attr('stroke', 'none');
-                }
-                if (bordersMesh) {
-                    layer.borders.append('path')
-                        .datum(bordersMesh)
-                        .attr('d', path)
-                        .attr('fill', 'none')
-                        .attr('stroke', getComputedStyle(document.documentElement).getPropertyValue('--borders').trim())
-                        .attr('stroke-width', +strokeWidthInput.value)
-                        .attr('vector-effect', 'non-scaling-stroke');
-                }
-            }
+            setStatus(`Projection: ${projectionSel.value} • Res: ${state.resolution} • Scale: ${scaleInput.value}`);
         }
-
-        setStatus(`Projection: ${projectionSel.value} • Res: ${state.resolution} • Scale: ${scaleInput.value}`);
-  }
 
         async function refreshData() {
             try {
@@ -689,7 +658,7 @@
 
         // ---------- Init
         (async function init() {
-            applyTheme('dark');
+            applyTheme('light');
             updateProjection();
             await refreshData();
         })();
