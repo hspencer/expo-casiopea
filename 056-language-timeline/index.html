@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>La extensión inextensa</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:system-ui,-apple-system,'Helvetica Neue',sans-serif;
+  background:#fafaf8;color:#1a1a18;
+  padding:1.75rem 2.25rem 2rem;
+  max-width:880px;margin:0 auto
+}
+.eyebrow{display:block;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#aaa;margin-bottom:5px}
+h1{font-size:21px;font-weight:500;margin-bottom:7px}
+.intro{font-size:13px;color:#777;line-height:1.65;max-width:580px;margin-bottom:1.5rem}
+
+/* ── SVG wrapper ── */
+#chart{display:block;width:100%;overflow:visible}
+
+/* ── Separador ── */
+.sep{height:1px;background:#e8e5de;margin:1.5rem 0}
+
+/* ── Barras ── */
+.bars-label{
+  font-size:10px;letter-spacing:.07em;text-transform:uppercase;
+  color:#aaa;margin-bottom:.85rem
+}
+.bar-row{display:flex;align-items:center;gap:10px;margin-bottom:9px}
+.swatch{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.bname{font-size:12px;font-weight:500;width:106px;flex-shrink:0}
+.track{flex:1;height:7px;border-radius:4px;background:#edeae2;position:relative}
+.fill{height:7px;border-radius:4px;min-width:6px;transition:width .3s}
+.btime{font-size:11px;color:#999;width:72px;text-align:right;flex-shrink:0}
+
+/* ── Panel de detalle ── */
+#det{
+  border-radius:12px;padding:.9rem 1.1rem;
+  background:#f1ede6;border-left:3px solid #ddd;
+  min-height:78px;margin-top:1.25rem;
+  transition:border-color .2s
+}
+.ph{font-size:13px;color:#bbb}
+.dh{display:flex;align-items:center;gap:8px;margin-bottom:.4rem}
+.dd{width:9px;height:9px;border-radius:50%;border:2px solid;display:inline-block;flex-shrink:0}
+.dn{font-size:13px;font-weight:600}
+.dy{font-size:11px;color:#999}
+.dm{font-size:11px;color:#777;margin-bottom:.4rem}
+.dt{font-size:13px;color:#2a2a26;line-height:1.6}
+</style>
+</head>
+<body>
+
+<span class="eyebrow">Seminario · La extensión inextensa</span>
+<h1>Seis hitos en la fijación del lenguaje</h1>
+<p class="intro">
+  Eje logarítmico: igual distancia visual = igual razón de cambio temporal.
+  Los hitos se comprimen hacia la derecha; la curva muestra la aceleración exponencial.
+</p>
+
+<!--
+  viewBox 0 0 680 220
+  ML=80 MR=50 PW=550
+  MT=50 PH=120 → eje en y=170
+  Curva: e^(4.2t), normalizada, t∈[0,1]
+  Hito xNorm: (log10(ya_max) - log10(ya)) / log_rng
+    ya = años hasta hoy  |  ya_max=5525 (Escritura)  |  ya_min=0.5 (Lenguajes)
+    LOG_RNG = log10(5525) - log10(0.5) = 3.742 - (-0.301) = 4.043
+  xPx = 80 + xNorm*550
+  yPx = 50 + 120*(1 - (e^4.2t-1)/65.69)
+-->
+<svg id="chart" viewBox="0 0 680 220" role="img" aria-label="Línea de tiempo logarítmica de la extensión inextensa">
+
+  <!-- ── Curva exponencial ── -->
+  <polyline
+    fill="none" stroke="#a63117" stroke-width="1.75" stroke-linejoin="round" stroke-linecap="round"
+    points="
+      80,170  102,170  124,169  146,169  168,168
+      190,168  212,167  234,166  256,165  278,164
+      300,162  322,160  344,158  366,155  388,152
+      410,148  432,144  454,139  476,133  498,126
+      520,119  542,110  564,98   586,85   608,69   630,50
+    "
+  />
+
+  <!-- ── Eje X ── -->
+  <line x1="55" y1="170" x2="648" y2="170" stroke="#ccc" stroke-width="0.5"/>
+  <!-- extensión punteada -->
+  <line x1="649" y1="170" x2="669" y2="170" stroke="#ddd" stroke-width="0.5" stroke-dasharray="3 3"/>
+  <!-- flecha -->
+  <polygon points="673,170 666,167 666,173" fill="#ccc"/>
+  <!-- etiquetas eje -->
+  <text x="58"  y="183" font-size="9" fill="#ccc" font-family="system-ui">← más antiguo</text>
+  <text x="644" y="183" font-size="9" fill="#ccc" font-family="system-ui" text-anchor="end">más reciente →</text>
+  <text x="352" y="183" font-size="9" fill="#d0cdc5" font-family="system-ui" text-anchor="middle" font-style="italic">eje logarítmico</text>
+
+  <!-- ══════════════════════════════════════════
+       LÍNEAS VERTICALES PUNTEADAS (curva → eje)
+       solo para los hitos que suben notoriamente
+       ══════════════════════════════════════════ -->
+
+  <!-- Internet: curva y=154 → eje y=164 (tope del dot) -->
+  <line x1="379" y1="154" x2="379" y2="164" stroke="#ccc" stroke-width="0.5" stroke-dasharray="2 2"/>
+
+  <!-- IA: curva y=119 → eje y=164 -->
+  <line x1="524" y1="119" x2="524" y2="164" stroke="#bbb" stroke-width="0.5" stroke-dasharray="2 2"/>
+
+  <!-- Lenguajes: curva y=50 → eje y=164 -->
+  <line x1="630" y1="50" x2="630" y2="164" stroke="#bbb" stroke-width="0.5" stroke-dasharray="2 2"/>
+
+  <!-- ══════════════════════════════
+       DOTS — todos en el eje y=170
+       ══════════════════════════════ -->
+
+  <!-- 1. Escritura  x=80 -->
+  <g id="h0" style="cursor:pointer" onclick="sel(0)">
+    <circle cx="80"  cy="170" r="7" fill="#EEEDFE" stroke="#3C3489" stroke-width="1.75"/>
+  </g>
+  <!-- 2. Imprenta   x=213 -->
+  <g id="h1" style="cursor:pointer" onclick="sel(1)">
+    <circle cx="213" cy="170" r="7" fill="#E1F5EE" stroke="#085041" stroke-width="1.75"/>
+  </g>
+  <!-- 3. Computación x=330 -->
+  <g id="h2" style="cursor:pointer" onclick="sel(2)">
+    <circle cx="330" cy="170" r="7" fill="#FAECE7" stroke="#712B13" stroke-width="1.75"/>
+  </g>
+  <!-- 4. Internet   x=379 -->
+  <g id="h3" style="cursor:pointer" onclick="sel(3)">
+    <circle cx="379" cy="170" r="7" fill="#E6F1FB" stroke="#0C447C" stroke-width="1.75"/>
+  </g>
+  <!-- 5. IA         x=524 -->
+  <g id="h4" style="cursor:pointer" onclick="sel(4)">
+    <circle cx="524" cy="170" r="7" fill="#EAF3DE" stroke="#27500A" stroke-width="1.75"/>
+  </g>
+  <!-- 6. Lenguajes  x=630 -->
+  <g id="h5" style="cursor:pointer" onclick="sel(5)">
+    <circle cx="630" cy="170" r="7" fill="#FAEEDA" stroke="#633806" stroke-width="1.75"/>
+  </g>
+
+  <!-- ═══════════════════════════════════════════════════════
+       ETIQUETAS SOBRE EL EJE
+       Escritura, Computación, IA, Lenguajes  →  arriba
+       Imprenta, Internet                     →  abajo
+       Separados con línea conectora corta donde es necesario
+       ═══════════════════════════════════════════════════════ -->
+
+  <!-- 1. Escritura — ARRIBA (x=80, dot top y=163) -->
+  <line x1="80" y1="148" x2="80" y2="163" stroke="#d0cdc5" stroke-width="0.5"/>
+  <text x="80" y="140" font-size="11" font-weight="600" fill="#3C3489" font-family="system-ui" text-anchor="middle">Escritura</text>
+  <text x="80" y="127" font-size="9"  fill="#bbb" font-family="system-ui" text-anchor="middle">~3500 a.C.</text>
+
+  <!-- 2. Imprenta — ABAJO (x=213, dot bottom y=177) -->
+  <line x1="213" y1="177" x2="213" y2="183" stroke="#d0cdc5" stroke-width="0.5"/>
+  <text x="213" y="194" font-size="11" font-weight="600" fill="#085041" font-family="system-ui" text-anchor="middle">Imprenta</text>
+  <text x="213" y="207" font-size="9"  fill="#bbb" font-family="system-ui" text-anchor="middle">~1440</text>
+
+  <!-- 3. Computación — ARRIBA (x=330, dot top y=163) -->
+  <line x1="330" y1="133" x2="330" y2="163" stroke="#d0cdc5" stroke-width="0.5"/>
+  <text x="330" y="125" font-size="11" font-weight="600" fill="#712B13" font-family="system-ui" text-anchor="middle">Computación</text>
+  <text x="330" y="113" font-size="9"  fill="#bbb" font-family="system-ui" text-anchor="middle">1945</text>
+
+  <!-- 4. Internet — ABAJO (x=379, dot bottom y=177) -->
+  <line x1="379" y1="177" x2="379" y2="183" stroke="#d0cdc5" stroke-width="0.5"/>
+  <text x="379" y="194" font-size="11" font-weight="600" fill="#0C447C" font-family="system-ui" text-anchor="middle">Internet</text>
+  <text x="379" y="207" font-size="9"  fill="#bbb" font-family="system-ui" text-anchor="middle">1990</text>
+
+  <!-- 5. IA — ARRIBA (x=524, dot top y=163) -->
+  <line x1="524" y1="90" x2="524" y2="163" stroke="#d0cdc5" stroke-width="0.5"/>
+  <text x="524" y="82"  font-size="11" font-weight="600" fill="#27500A" font-family="system-ui" text-anchor="middle">IA</text>
+  <text x="524" y="70"  font-size="9"  fill="#bbb" font-family="system-ui" text-anchor="middle">2022</text>
+
+  <!-- 6. Lenguajes — ARRIBA (x=630, dot top y=163) -->
+  <line x1="630" y1="38" x2="630" y2="163" stroke="#d0cdc5" stroke-width="0.5"/>
+  <text x="630" y="29"  font-size="11" font-weight="600" fill="#633806" font-family="system-ui" text-anchor="middle">Lenguajes</text>
+  <text x="630" y="17"  font-size="9"  fill="#bbb" font-family="system-ui" text-anchor="middle">2025–</text>
+
+</svg>
+
+<!-- ── Separador ── -->
+<div class="sep"></div>
+
+<!-- ── Barras de asimilación ── -->
+<p class="bars-label">Tiempo de asimilación cultural &nbsp;·&nbsp; escala logarítmica</p>
+<div id="bars"></div>
+
+<!-- ── Panel de detalle ── -->
+<div id="det"><p class="ph">← haz clic en un hito para ver más</p></div>
+
+<script>
+const HITOS = [
+  { n:"Escritura",           yr:"~3500 a.C.", ya: 5525,
+    fija:"la palabra",        asim:"~3.000 años",  asimYrs: 3000,
+    c:"#3C3489", bg:"#EEEDFE",
+    d:"Inicio de la historia propiamente tal. Lo oral se vuelve durable y transmisible. El saber colectivo puede trascender la memoria individual y las generaciones. La escritura es el primer dispositivo de externalización cognitiva colectiva." },
+  { n:"Imprenta",            yr:"~1440",      ya:  585,
+    fija:"la página",         asim:"~300 años",    asimYrs:  300,
+    c:"#085041", bg:"#E1F5EE",
+    d:"Gutenberg industrializa la fijación de palabras. Se disparan la alfabetización, la reforma religiosa y la ciencia moderna. La página multiplica el alcance del pensamiento a una escala social inédita. El tiempo de asimilación se mide en siglos." },
+  { n:"Computación",         yr:"1945",       ya:   80,
+    fija:"el algoritmo",      asim:"~40 años",     asimYrs:   40,
+    c:"#712B13", bg:"#FAECE7",
+    d:"La palabra se vuelve performativa: se fija un proceso ejecutable, no solo una idea. El algoritmo se replica sin costo marginal. No todos programan, pero todos son afectados por lo programado. El tiempo de asimilación se reduce a décadas." },
+  { n:"Internet",            yr:"1990",       ya:   35,
+    fija:"la red de algoritmos", asim:"~20 años",  asimYrs:   20,
+    c:"#0C447C", bg:"#E6F1FB",
+    d:"Las palabras performativas se conectan en red. Participa potencialmente toda la sociedad. Los algoritmos se componen, circulan y ejecutan en tiempo real a escala global. La asimilación ocurre en una generación." },
+  { n:"IA",                  yr:"2022",       ya:    3,
+    fija:"redes neuronales dialogables", asim:"~2 años", asimYrs: 2,
+    c:"#27500A", bg:"#EAF3DE",
+    d:"Por primera vez se puede expresar intención en lenguaje natural y recibir implementación como respuesta. No se requiere codificación explícita. El modelo compila la descripción en comportamiento. La asimilación se mide en meses." },
+  { n:"Lenguajes de intención", yr:"2025–",  ya:  0.5,
+    fija:"la intención comunicativa", asim:"< 1 año?", asimYrs: 0.5,
+    c:"#633806", bg:"#FAEEDA",
+    d:"La extensión inextensa: el espacio semántico como material de arquitectura y diseño. Todos somos desarrolladores. La brecha entre pensar y construir converge a cero. Los lenguajes de intención (como Allium) formalizan qué debe hacer el sistema, no cómo. La singularidad se aproxima." }
+];
+
+// ── Barras ──────────────────────────────────────────────────────────────
+const LOG_MAX = Math.log10(3000);
+function barPct(yrs) {
+  if (yrs <= 0) return 3;
+  const p = Math.log10(yrs) / LOG_MAX * 100;
+  return Math.max(3, Math.round(p));
+}
+
+document.getElementById('bars').innerHTML = HITOS.map((h,i) => `
+  <div class="bar-row" style="cursor:pointer" onclick="sel(${i})">
+    <span class="swatch" style="background:${h.bg};border:1.5px solid ${h.c}"></span>
+    <span class="bname" style="color:${h.c}">${h.n.split(' ')[0]}</span>
+    <div class="track">
+      <div class="fill" style="width:${barPct(h.asimYrs)}%;background:${h.c}"></div>
+    </div>
+    <span class="btime">${h.asim}</span>
+  </div>
+`).join('');
+
+// ── Detalle ──────────────────────────────────────────────────────────────
+let selIdx = -1;
+
+function sel(i) {
+  // Reset dot strokes
+  for (let k = 0; k < 6; k++) {
+    const g = document.getElementById('h' + k);
+    if (g) g.querySelector('circle').setAttribute('stroke-width', k === i ? '2.5' : '1.75');
+  }
+  selIdx = i;
+  const h = HITOS[i];
+  const det = document.getElementById('det');
+  det.style.borderLeftColor = h.c;
+  det.innerHTML = `
+    <div class="dh">
+      <span class="dd" style="background:${h.bg};border-color:${h.c}"></span>
+      <span class="dn" style="color:${h.c}">${h.n}</span>
+      <span class="dy">${h.yr}</span>
+    </div>
+    <p class="dm">Fija: <strong>${h.fija}</strong> &nbsp;·&nbsp; Asimilación: <strong>${h.asim}</strong></p>
+    <p class="dt">${h.d}</p>
+  `;
+}
+</script>
+
+</body>
+</html>
