@@ -6,6 +6,12 @@
       "runtimeExecutable": "npx",
       "runtimeArgs": ["serve", "052-earth-projections", "-l", "3100"],
       "port": 3100
+    },
+    {
+      "name": "watercolour-shapes",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["serve", ".", "-l", "3101"],
+      "port": 3101
     }
   ]
 }
