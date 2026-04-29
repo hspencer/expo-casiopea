@@ -11,19 +11,19 @@
 // elapsed, so labels with low delays appear BEFORE the watercolour figures
 // start to materialise. This produces an interleaved entrance: text and
 // images take turns coming in.
-const SNAPSHOT_DELAY = 1600;       // ms before the snapshot starts fading in
-const SNAPSHOT_FADE_IN = 5200;     // ms it takes the snapshot to fully appear
+const SNAPSHOT_DELAY = 3200;       // ms before the snapshot starts fading in
+const SNAPSHOT_FADE_IN = 10400;    // ms it takes the snapshot to fully appear
 const FADE_IN_DURATION = SNAPSHOT_DELAY + SNAPSHOT_FADE_IN; // total entrance
-const HOLD_DURATION = 14000;
-const FADE_OUT_DURATION = 1800;
+const HOLD_DURATION = 28000;
+const FADE_OUT_DURATION = 3600;
 
 // Each label appears on its own clock during the entrance + hold phases.
 // Delays are measured from the start of the entrance — so a label with
 // delay 0 begins fading in immediately, before the snapshot has appeared.
 const LABEL_APPEAR_DELAY_MIN = 0;
-const LABEL_APPEAR_DELAY_MAX = FADE_IN_DURATION - 500;
-const LABEL_APPEAR_DURATION_MIN = 1500;
-const LABEL_APPEAR_DURATION_MAX = 3500;
+const LABEL_APPEAR_DELAY_MAX = FADE_IN_DURATION - 1000;
+const LABEL_APPEAR_DURATION_MIN = 3000;
+const LABEL_APPEAR_DURATION_MAX = 7000;
 
 // Curated typeface palette — each label picks one family and a weight from
 // that family's range. Mixing serif and sans creates contrast across labels
