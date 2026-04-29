@@ -126,15 +126,15 @@ const NAMES = (function buildNames() {
     "cabo de la última hora", "cabo de las tormentas", "cabo escondido",
     "cabo de invierno", "cabo del silencio", "cabo del olvido",
     "cabo de la primera luz",
-    "promontorio", "espolón", "punta", "punta del olvido",
+    "brazo extendido", "espolón", "punta", "punta del olvido",
     "lengua de tierra", "saliente", "morro"
   ], ["horizontal", "elongated", "spiky"]);
 
   // Thin, very elongated — isthmuses, straits, channels
   add([
-    "istmo", "istmo seco", "istmo de los vientos",
+    "istmo", "istmo seco", "istmo de los vientos", "el camino",
     "estrecho", "estrecho mayor", "canal", "canal del norte",
-    "manga", "muñón", "ribete", "vena", "filón"
+    "manga", "derrotero", "aventura", "vena", "filón"
   ], ["thin", "elongated", "horizontal"]);
 
   // Indented — bays, gulfs, fjords, coves
@@ -149,9 +149,9 @@ const NAMES = (function buildNames() {
   // Multiple protrusions — deltas, archipelagoes, ranges
   add([
     "delta", "delta seco", "delta del recuerdo", "delta de la noche",
-    "delta del olvido",
+    "delta del nilo",
     "archipiélago", "archipiélago menor", "archipiélago del sur",
-    "archipiélago del olvido",
+    "archipiélago del singularidades",
     "constelación de islas", "rosario de islas",
     "cordillera", "cordillera baja", "cordillera del fin",
     "cordillera del recuerdo", "cordillera del aire",
@@ -160,7 +160,7 @@ const NAMES = (function buildNames() {
 
   // Compact — islands, regions, lands
   add([
-    "isla", "isla menor", "isla seca", "isla mayor", "isla del olvido",
+    "isla", "isla menor", "isla seca", "isla mayor", "isla del olivo",
     "isla en el aire", "isla a la deriva", "isla del sueño", "isla del fin",
     "isla del eco", "isla nueva",
     "atolón", "islote", "peñasco insular",
@@ -168,8 +168,8 @@ const NAMES = (function buildNames() {
     "comarca", "comarca seca",
     "territorio", "territorio nuevo",
     "tierra firme", "tierra incógnita", "tierra del fin", "tierra del medio",
-    "tierra de nadie", "tierra del eco", "tierra del olvido",
-    "país sin nombre", "país austral", "país antiguo", "país del olvido",
+    "tierra de nadie", "tierra del eco", "tierra ignota",
+    "gentes sin nombre", "país austral", "país antiguo", "país del este",
     "país del medio", "país menor"
   ], ["compact"]);
 
@@ -202,7 +202,7 @@ const NAMES = (function buildNames() {
   add([
     "monte", "monte alto", "cerro", "cerro pelado", "colina",
     "loma", "loma incierta", "lomada",
-    "picacho", "pico", "cumbre", "cima", "mogote", "altozano",
+    "pináculo", "montaña", "cumbre", "cima", "mogote", "portezuelo",
     "cabezo", "alto"
   ], ["compact", "spiky"]);
 
@@ -251,7 +251,7 @@ const NAMES = (function buildNames() {
   // Branched — multi-spike
   add([
     "rama", "ramaje", "ramo", "ramazón", "follaje",
-    "raíz", "raíz vieja", "raicilla", "raíz aérea", "rizoma",
+    "raíz", "raíz profunda", "micelio", "raíz aérea", "rizoma",
     "asta", "cornamenta"
   ], ["spiky", "multi-spike"]);
 
@@ -325,26 +325,26 @@ const NAMES = (function buildNames() {
 
   // Eyes — small compact
   add([
-    "ojo", "ojo de aguja", "ojo del huracán", "iris", "pupila",
+    "ojo", "tú quien lee", "estamos aquí", "iris", "pupila",
     "anillo", "argolla", "aro", "ojete"
   ], ["compact", "small"]);
 
   // Stars / radial
   add([
-    "estrella", "estrellita", "luminaria", "constelación",
+    "estrella", "almendra", "luminaria", "constelación",
     "espinario", "rosa de los vientos"
   ], ["spiky", "multi-spike"]);
 
   // Comets, arrows
   add([
-    "cometa", "cometa larga",
+    "cometa", "errante",
     "saeta", "flecha"
   ], ["spiky", "elongated"]);
 
   // Sharp character
   add([
-    "perfil de roca", "perfil agudo", "diente", "colmillo",
-    "cuerno", "garra", "uña"
+    "perfil de roca", "macro formas", "dientes", "colmillos",
+    "cuerno", "púa", "garra"
   ], ["spiky"]);
 
   // Smooth, large
@@ -518,34 +518,27 @@ function draw() {
     background(bgColor);
     phase = "fadeIn";
     phaseStart = millis();
-    cycleStart = millis();
     setAllLabelOpacity(0);
     return;
   }
 
   const t = millis() - phaseStart;
-  let snapOpacity = 1;
+  let opacity = 1;
 
   if (phase === "fadeIn") {
-    // Snapshot waits SNAPSHOT_DELAY before starting to fade in. Labels can
-    // already be appearing during that window — that's the interleave.
-    if (t < SNAPSHOT_DELAY) {
-      snapOpacity = 0;
-    } else {
-      snapOpacity = constrain((t - SNAPSHOT_DELAY) / SNAPSHOT_FADE_IN, 0, 1);
-    }
+    opacity = constrain(t / FADE_IN_DURATION, 0, 1);
     if (t >= FADE_IN_DURATION) {
       phase = "hold";
       phaseStart = millis();
     }
   } else if (phase === "hold") {
-    snapOpacity = 1;
+    opacity = 1;
     if (t >= HOLD_DURATION) {
       phase = "fadeOut";
       phaseStart = millis();
     }
   } else if (phase === "fadeOut") {
-    snapOpacity = 1 - constrain(t / FADE_OUT_DURATION, 0, 1);
+    opacity = 1 - constrain(t / FADE_OUT_DURATION, 0, 1);
     if (t >= FADE_OUT_DURATION) {
       generateComposition();
       rebuildLabels();
@@ -557,40 +550,37 @@ function draw() {
     }
   }
 
-  const easedSnap = easeInOut(snapOpacity);
+  const eased = easeInOut(opacity);
 
   background(bgColor);
   if (snapshot) {
     push();
     translate(-width / 2, -height / 2);
-    tint(255, 255 * easedSnap);
+    tint(255, 255 * eased);
     image(snapshot, 0, 0, width, height);
     noTint();
     pop();
   }
 
-  // Labels run on a clock relative to the start of the cycle (entrance), so
-  // their delay/duration applies seamlessly across fadeIn → hold.
-  updateLabelOpacities(easedSnap, phase, millis() - cycleStart);
+  updateLabelOpacities(eased, phase, t);
 }
 
-function updateLabelOpacities(globalOpacity, currentPhase, cycleT) {
+function updateLabelOpacities(globalOpacity, currentPhase, phaseT) {
   for (let i = 0; i < labelEls.length; i++) {
     const el = labelEls[i];
     const lab = figures[i].label;
     let op;
-    if (currentPhase === "render") {
+    if (currentPhase === "render" || currentPhase === "fadeIn") {
+      // Labels stay hidden while the brush composition fades in.
       op = 0;
-    } else if (currentPhase === "fadeIn" || currentPhase === "hold") {
-      // Each label appears at its own appearDelay, with its own duration.
-      // Some labels start at 0 — before SNAPSHOT_DELAY — so they're visible
-      // before the watercolour figures fade in.
-      const dt = cycleT - lab.appearDelay;
+    } else if (currentPhase === "hold") {
+      const dt = phaseT - lab.appearDelay;
       if (dt <= 0) {
         op = 0;
       } else {
         const u = constrain(dt / lab.appearDuration, 0, 1);
-        op = 1 - pow(1 - u, 2); // ease-out
+        // ease-out: starts fast, settles smoothly
+        op = 1 - pow(1 - u, 2);
       }
     } else if (currentPhase === "fadeOut") {
       // All labels fade out together with the composition.
