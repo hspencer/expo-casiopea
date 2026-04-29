@@ -178,17 +178,17 @@ const NAMES = (function buildNames() {
 
   // Compact — islands, regions, lands
   add([
-    "isla", "isla menor", "isla seca", "isla mayor", "isla del olivo",
-    "isla en el aire", "isla a la deriva", "isla del sueño", "isla del fin",
-    "isla del eco", "isla nueva",
+    "isla", "isla menor", "isla seca", "isla mayor", "isla olvidada",
+    "tu isla", "deriva", "noche de isla", "aislada",
+    "la mocha", "isla nueva",
     "atolón", "islote", "peñasco insular",
     "región", "región interior", "región austral", "región del crepúsculo",
     "comarca", "comarca seca",
     "territorio", "territorio nuevo",
     "tierra firme", "tierra incógnita", "tierra del fin", "tierra del medio",
-    "tierra de nadie", "tierra del eco", "tierra ignota",
-    "gentes sin nombre", "país austral", "país antiguo", "país del este",
-    "país del medio", "país menor"
+    "no man's land", "tierra del eco", "tierra ignota",
+    "gentes sin nombre", "austral", "los antiguos", "este a oeste",
+    "país del medio", "principiantes"
   ], ["compact"]);
 
   // Larger compact — continents, mantles
