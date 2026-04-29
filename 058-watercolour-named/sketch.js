@@ -139,12 +139,12 @@ const NAMES = (function buildNames() {
   add([
     "península", "península seca", "península mayor", "península doble",
     "península del este", "península extranjera", "península de niebla",
-    "península del sueño", "península del olvido",
+    "península del sueño", "península olvidada",
     "cabo", "al fin del cabo", "cabo norte", "cabo sur",
     "cabo de la última hora", "cabo de las tormentas", "cabo escondido",
-    "cabo de invierno", "cabo del silencio", "cabo del olvido",
+    "cabo de invierno", "cabo del silencio", "cabo de tormentas",
     "cabo de la primera luz",
-    "brazo extendido", "espolón", "punta", "punta del olvido",
+    "brazo extendido", "espolón", "punta", "punta lejana",
     "lengua de tierra", "saliente", "morro"
   ], ["horizontal", "elongated", "spiky"]);
 
@@ -166,13 +166,13 @@ const NAMES = (function buildNames() {
 
   // Multiple protrusions — deltas, archipelagoes, ranges
   add([
-    "delta", "delta seco", "delta del recuerdo", "delta de la noche",
+    "delta", "delta seco", "delta del nile", "delta de la noche",
     "delta del nilo",
     "archipiélago", "friendship", "archipiélago del sur",
     "archipiélago de singularidades",
     "constelación de islas", "rosario de islas",
-    "cordillera", "cordillera baja", "cordillera del fin",
-    "cordillera del recuerdo", "cordillera del aire",
+    "cordillera", "cordillera serrada", "cordillera escampada",
+    "cordillera del Puelche", "cordillera de aire",
     "sierra", "sierra dentada"
   ], ["multi-spike", "spiky", "horizontal"]);
 
@@ -193,8 +193,8 @@ const NAMES = (function buildNames() {
 
   // Larger compact — continents, mantles
   add([
-    "continente", "continente perdido", "continente austral",
-    "continente menor"
+    "continente", "continente regalado", "continente austral",
+    "continente interior"
   ], ["large", "compact"]);
 
   // Long flat horizontal — coasts, shores, edges
@@ -220,8 +220,8 @@ const NAMES = (function buildNames() {
   add([
     "monte", "monte alto", "cerro", "cerro pelado", "colina",
     "loma", "loma incierta", "lomada",
-    "pináculo", "montaña", "cumbre", "cima", "mogote", "portezuelo",
-    "cabezo", "alto"
+    "puntiagudo", "montaña", "cumbre", "cima", "mogote", "portezuelo",
+    "morro", "alto"
   ], ["compact", "spiky"]);
 
   // Smooth dunes
@@ -350,7 +350,7 @@ const NAMES = (function buildNames() {
   // Stars / radial
   add([
     "estrella", "almendra", "luminaria", "constelación",
-    "espinario", "rosa de los vientos"
+    "espino", "rosa de los vientos"
   ], ["spiky", "multi-spike"]);
 
   // Comets, arrows
@@ -597,8 +597,9 @@ function updateLabelOpacities(globalOpacity, currentPhase, phaseT) {
         op = 0;
       } else {
         const u = constrain(dt / lab.appearDuration, 0, 1);
-        // ease-out: starts fast, settles smoothly
-        op = 1 - pow(1 - u, 2);
+        // ease-in-out: zero slope at both ends, so the very first frame the
+        // label is "on" is barely visible — no perceptible jump from 0.
+        op = easeInOut(u);
       }
     } else if (currentPhase === "fadeOut") {
       // All labels fade out together with the composition.
