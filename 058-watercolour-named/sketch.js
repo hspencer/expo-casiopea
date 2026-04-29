@@ -41,21 +41,31 @@ const FONT_FAMILIES = [
 const RECENT_NAMES_WINDOW = 120;
 const recentNames = [];
 
-// Curated colour palettes. Each cycle picks one at random; figures, horizons
-// and the paper background all draw from that single palette so the
-// composition feels unified.
+// Canvas background. Stays constant across all cycles so the transition
+// between compositions doesn't flash a different paper colour. The warm
+// tones that used to live as `bg` per palette are folded back into each
+// palette's `colors` array — they become one more figure colour instead.
+const BG_COLOR = "#ffffff";
+
+// Curated colour palettes. Each cycle picks one at random; figures and
+// horizons all draw from that single palette so the composition feels
+// unified.
 //
 // Palettes are hand-picked for harmony — references include Hokusai, Klee,
 // Rothko, Wes Anderson films, Bauhaus, Le Corbusier polychromy, Frida Kahlo,
 // Cy Twombly, William Morris, plus locally-flavoured atmospheres
 // (Atacama, Patagonia, Mediterráneo).
 //
+// The `bg` field below is what used to be the paper colour. It's now
+// promoted to a figure colour in PALETTES (see expansion below), while the
+// canvas itself stays white.
+//
 // (Online services that offer curated palette JSON: ColourLovers
 // `https://www.colourlovers.com/api/palettes/top?format=json`, Colormind
 // `http://colormind.io/api/`, the npm package `nice-color-palettes`. They
 // all bring CORS / rate-limit / availability concerns, so we ship a static
 // set instead.)
-const PALETTES = [
+const PALETTES_RAW = [
   { name: "Hokusai",            bg: "#f5ecd9", colors: ["#1b3a64", "#4a6c92", "#8b9bb6", "#c5b186", "#7c3a2d"] },
   { name: "Mar Cantábrico",     bg: "#eef3f4", colors: ["#0e2c3a", "#1b5570", "#3e8989", "#a5c0c4", "#d6c690"] },
   { name: "Granada",            bg: "#f3eee0", colors: ["#8c1f24", "#c97f31", "#e3b450", "#3a5a40", "#0d324d"] },
@@ -86,9 +96,17 @@ const PALETTES = [
   { name: "Polaroid 1973",      bg: "#f0e6cf", colors: ["#a85a3a", "#d99a4a", "#7e9b6c", "#3a5a64", "#a32c4a"] }
 ];
 
-// Active palette (set per cycle in generateComposition).
+// Each palette's warm paper tone becomes one more figure colour, while the
+// canvas background stays white across every cycle.
+const PALETTES = PALETTES_RAW.map(p => ({
+  name: p.name,
+  colors: [...p.colors, p.bg]
+}));
+
+// Active palette (set per cycle in generateComposition). bgColor is kept as
+// a let so existing references compile, but it's now a constant white.
 let activePalette = PALETTES[0];
-let bgColor = activePalette.bg;
+let bgColor = BG_COLOR;
 
 const STROKE_BRUSHES = ["2H", "HB", "rotring", "pen"];
 const HATCH_BRUSHES = ["marker", "marker2"];
@@ -626,11 +644,9 @@ function easeInOut(x) {
 // Composition: a horizontal row of figures, free to overlap.
 
 function generateComposition() {
-  // Pick a curated palette for this cycle. Background, figures and horizons
-  // all draw from it.
+  // Pick a curated palette for this cycle. The canvas background stays
+  // white (BG_COLOR) so cycle transitions don't flash a different paper.
   activePalette = random(PALETTES);
-  bgColor = activePalette.bg;
-  if (document.body) document.body.style.background = bgColor;
 
   horizons = buildHorizons();
 
