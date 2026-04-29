@@ -12,6 +12,12 @@
       "runtimeExecutable": "npx",
       "runtimeArgs": ["serve", ".", "-l", "3101"],
       "port": 3101
+    },
+    {
+      "name": "watercolour-named",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["serve", ".", "-l", "3102"],
+      "port": 3102
     }
   ]
 }

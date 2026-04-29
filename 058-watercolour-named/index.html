@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Watercolour Named</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;0,900;1,400;1,700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="../js/p5.min.js"></script>
+    <script src="../js/spectral.min.js"></script>
+    <script src="../js/p5.brush.min.js"></script>
+    <style>
+      html {
+        overflow: hidden;
+      }
+      body {
+        margin: 0;
+        background: #fbfaf6;
+        font-family: "Playfair Display", serif;
+      }
+      #labels {
+        position: absolute;
+        top: 0;
+        left: 0;
+        pointer-events: none;
+      }
+      #labels .label {
+        position: absolute;
+        transform: translate(-50%, -50%) rotate(var(--r, 0deg));
+        white-space: nowrap;
+        color: #ffffff;
+        mix-blend-mode: difference;
+        opacity: 0;
+        will-change: opacity;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="labels"></div>
+    <script src="./sketch.js"></script>
+  </body>
+</html>
