@@ -166,9 +166,9 @@ const NAMES = (function buildNames() {
 
   // Multiple protrusions — deltas, archipelagoes, ranges
   add([
-    "delta", "delta seco", "delta del nile", "delta de la noche",
-    "delta del nilo",
-    "archipiélago", "friendship", "archipiélago del sur",
+    "delta", "amazonía", "patagonia", "las torres",
+    "alfa",
+    "archipiélago", "friendship", "quien lee",
     "archipiélago de singularidades",
     "constelación de islas", "rosario de islas",
     "cordillera", "cordillera serrada", "cordillera escampada",
@@ -220,7 +220,7 @@ const NAMES = (function buildNames() {
   add([
     "monte", "monte alto", "cerro", "cerro pelado", "colina",
     "loma", "loma incierta", "lomada",
-    "puntiagudo", "montaña", "cumbre", "cima", "mogote", "portezuelo",
+    "puntiagudo", "montaña", "cumbre", "cima", "cenote", "portezuelo",
     "morro", "alto"
   ], ["compact", "spiky"]);
 
