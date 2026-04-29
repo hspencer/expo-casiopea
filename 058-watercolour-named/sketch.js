@@ -268,7 +268,7 @@ const NAMES = (function buildNames() {
 
   // Branched — multi-spike
   add([
-    "rama", "ramaje", "ramo", "ramazón", "follaje",
+    "rama", "ramaje", "arboleda", "espesura", "verde", "follaje",
     "raíz", "raíz profunda", "micelio", "raíz aérea", "rizoma",
     "asta", "cornamenta"
   ], ["spiky", "multi-spike"]);
