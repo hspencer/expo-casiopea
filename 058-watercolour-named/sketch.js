@@ -25,6 +25,10 @@ const LABEL_APPEAR_DELAY_MAX = FADE_IN_DURATION - 1000;
 const LABEL_APPEAR_DURATION_MIN = 3000;
 const LABEL_APPEAR_DURATION_MAX = 7000;
 
+// Only roughly half of the figures get a name. The rest stay anonymous,
+// letting the eye breathe between labelled forms.
+const LABEL_PROBABILITY = 0.55;
+
 // Curated typeface palette — each label picks one family and a weight from
 // that family's range. Mixing serif and sans creates contrast across labels
 // without losing cohesion within a single label.
@@ -56,34 +60,34 @@ const recentNames = [];
 // all bring CORS / rate-limit / availability concerns, so we ship a static
 // set instead.)
 const PALETTES = [
-  { name: "Hokusai",            bg: "#f5ecd9", colors: ["#1b3a64", "#4a6c92", "#8b9bb6", "#c5b186", "#7c3a2d"] },
-  { name: "Mar Cantábrico",     bg: "#eef3f4", colors: ["#0e2c3a", "#1b5570", "#3e8989", "#a5c0c4", "#d6c690"] },
-  { name: "Granada",            bg: "#f3eee0", colors: ["#8c1f24", "#c97f31", "#e3b450", "#3a5a40", "#0d324d"] },
-  { name: "Budapest",           bg: "#fce4d6", colors: ["#d18a99", "#a04668", "#62223a", "#d4af6f", "#3a3744"] },
-  { name: "Tenenbaums",         bg: "#f0ead6", colors: ["#a02418", "#dca34a", "#1f3a5f", "#5e7c4e", "#2f2a26"] },
-  { name: "Moonrise",           bg: "#e8dabd", colors: ["#a64a2c", "#c08646", "#5b6f47", "#3f5066", "#a3aa9b"] },
-  { name: "Rothko",             bg: "#f0e3d0", colors: ["#7d1f1c", "#c34a2a", "#e08a3d", "#3b0c0c", "#9c2b2b"] },
-  { name: "Paul Klee",          bg: "#f3ead7", colors: ["#b97a3b", "#3f5a70", "#94604c", "#465d4f", "#cab38c"] },
-  { name: "Hilma af Klint",     bg: "#f8f1de", colors: ["#dba48a", "#b3a8c8", "#c2a04a", "#7d8e63", "#3d567a"] },
-  { name: "Frida Kahlo",        bg: "#f3e9d2", colors: ["#9d1f3e", "#d3a93f", "#1a4178", "#4a7c4a", "#c25b3f"] },
-  { name: "Patagonia",          bg: "#eaeae0", colors: ["#1d2c3a", "#3e5a6c", "#7b8a93", "#cfb88e", "#5a3a26"] },
-  { name: "Atacama",            bg: "#efe4d2", colors: ["#7b3a1f", "#c08246", "#deb472", "#374a3e", "#d2c1a2"] },
-  { name: "Mediterráneo",       bg: "#f5f1e0", colors: ["#1f3a64", "#3a86a8", "#a3c8d8", "#dba74e", "#a8412c"] },
-  { name: "Bauhaus",            bg: "#f4f1ea", colors: ["#c8131e", "#1638a3", "#f7c200", "#1a1a1a", "#7a7a7a"] },
-  { name: "Le Corbusier",       bg: "#f0ead8", colors: ["#a04420", "#d8a040", "#264a64", "#5b6042", "#2c2a26"] },
-  { name: "Solarized",          bg: "#eee8d5", colors: ["#073642", "#586e75", "#cb4b16", "#b58900", "#268bd2"] },
-  { name: "Cinque Terre",       bg: "#f4ead2", colors: ["#c45a3b", "#d99a4a", "#3a76a3", "#7e9b6c", "#7d3a2c"] },
-  { name: "Persa",              bg: "#f3e8c7", colors: ["#1d3a72", "#7e1f3d", "#c79b3e", "#a23a2a", "#4d6a3c"] },
-  { name: "Cy Twombly",         bg: "#f3ecd9", colors: ["#a06d4a", "#cdaa78", "#8c2a1f", "#2c2a24", "#6f6e58"] },
-  { name: "William Morris",     bg: "#eee5cf", colors: ["#3a4f2c", "#7d3a2a", "#c79836", "#1f3a4a", "#a89b6e"] },
-  { name: "Tundra",             bg: "#e8eef0", colors: ["#1f3a4a", "#5a7c8a", "#a3a59e", "#c4a474", "#7d3326"] },
-  { name: "Ghibli",             bg: "#f1eccf", colors: ["#7da34c", "#3a72a3", "#d8b04a", "#c45a3b", "#3d3128"] },
-  { name: "Mondrian",           bg: "#f6f3eb", colors: ["#dc1f1f", "#1b39c0", "#ffd400", "#1a1a1a"] },
-  { name: "Vermeer",            bg: "#efe4cf", colors: ["#234d8a", "#a83a2b", "#d6b66a", "#3d4636", "#a3a08e"] },
-  { name: "Otoño",              bg: "#f1ebd5", colors: ["#7c2a1a", "#b85a26", "#d99432", "#5e6e3a", "#3d2c1a"] },
-  { name: "Invierno nórdico",   bg: "#eef0f0", colors: ["#1f2a3a", "#4a5a72", "#8898a3", "#c2cdd3", "#9d4a3a"] },
-  { name: "Textil andino",      bg: "#f3e7c8", colors: ["#7c1a3a", "#b22b4a", "#d99432", "#1f3a4a", "#3a5a3a"] },
-  { name: "Polaroid 1973",      bg: "#f0e6cf", colors: ["#a85a3a", "#d99a4a", "#7e9b6c", "#3a5a64", "#a32c4a"] }
+  { name: "Hokusai",            bg: "#fdfbf7", colors: ["#1b3a64", "#4a6c92", "#8b9bb6", "#c5b186", "#7c3a2d"] },
+  { name: "Mar Cantábrico",     bg: "#fbfcfd", colors: ["#0e2c3a", "#1b5570", "#3e8989", "#a5c0c4", "#d6c690"] },
+  { name: "Granada",            bg: "#fcfbf8", colors: ["#8c1f24", "#c97f31", "#e3b450", "#3a5a40", "#0d324d"] },
+  { name: "Budapest",           bg: "#fef9f6", colors: ["#d18a99", "#a04668", "#62223a", "#d4af6f", "#3a3744"] },
+  { name: "Tenenbaums",         bg: "#fcfaf6", colors: ["#a02418", "#dca34a", "#1f3a5f", "#5e7c4e", "#2f2a26"] },
+  { name: "Moonrise",           bg: "#faf7f0", colors: ["#a64a2c", "#c08646", "#5b6f47", "#3f5066", "#a3aa9b"] },
+  { name: "Rothko",             bg: "#fcf9f5", colors: ["#7d1f1c", "#c34a2a", "#e08a3d", "#3b0c0c", "#9c2b2b"] },
+  { name: "Paul Klee",          bg: "#fcfaf6", colors: ["#b97a3b", "#3f5a70", "#94604c", "#465d4f", "#cab38c"] },
+  { name: "Hilma af Klint",     bg: "#fdfcf8", colors: ["#dba48a", "#b3a8c8", "#c2a04a", "#7d8e63", "#3d567a"] },
+  { name: "Frida Kahlo",        bg: "#fcfaf5", colors: ["#9d1f3e", "#d3a93f", "#1a4178", "#4a7c4a", "#c25b3f"] },
+  { name: "Patagonia",          bg: "#fafaf8", colors: ["#1d2c3a", "#3e5a6c", "#7b8a93", "#cfb88e", "#5a3a26"] },
+  { name: "Atacama",            bg: "#fbf9f5", colors: ["#7b3a1f", "#c08246", "#deb472", "#374a3e", "#d2c1a2"] },
+  { name: "Mediterráneo",       bg: "#fdfcf8", colors: ["#1f3a64", "#3a86a8", "#a3c8d8", "#dba74e", "#a8412c"] },
+  { name: "Bauhaus",            bg: "#fdfcfa", colors: ["#c8131e", "#1638a3", "#f7c200", "#1a1a1a", "#7a7a7a"] },
+  { name: "Le Corbusier",       bg: "#fcfaf6", colors: ["#a04420", "#d8a040", "#264a64", "#5b6042", "#2c2a26"] },
+  { name: "Solarized",          bg: "#fbfaf6", colors: ["#073642", "#586e75", "#cb4b16", "#b58900", "#268bd2"] },
+  { name: "Cinque Terre",       bg: "#fdfaf5", colors: ["#c45a3b", "#d99a4a", "#3a76a3", "#7e9b6c", "#7d3a2c"] },
+  { name: "Persa",              bg: "#fcfaf3", colors: ["#1d3a72", "#7e1f3d", "#c79b3e", "#a23a2a", "#4d6a3c"] },
+  { name: "Cy Twombly",         bg: "#fcfbf7", colors: ["#a06d4a", "#cdaa78", "#8c2a1f", "#2c2a24", "#6f6e58"] },
+  { name: "William Morris",     bg: "#fbf9f4", colors: ["#3a4f2c", "#7d3a2a", "#c79836", "#1f3a4a", "#a89b6e"] },
+  { name: "Tundra",             bg: "#fafbfc", colors: ["#1f3a4a", "#5a7c8a", "#a3a59e", "#c4a474", "#7d3326"] },
+  { name: "Ghibli",             bg: "#fcfbf4", colors: ["#7da34c", "#3a72a3", "#d8b04a", "#c45a3b", "#3d3128"] },
+  { name: "Mondrian",           bg: "#fdfcfb", colors: ["#dc1f1f", "#1b39c0", "#ffd400", "#1a1a1a"] },
+  { name: "Vermeer",            bg: "#fbf9f4", colors: ["#234d8a", "#a83a2b", "#d6b66a", "#3d4636", "#a3a08e"] },
+  { name: "Otoño",              bg: "#fcfbf6", colors: ["#7c2a1a", "#b85a26", "#d99432", "#5e6e3a", "#3d2c1a"] },
+  { name: "Invierno nórdico",   bg: "#fbfcfc", colors: ["#1f2a3a", "#4a5a72", "#8898a3", "#c2cdd3", "#9d4a3a"] },
+  { name: "Textil andino",      bg: "#fcfaf3", colors: ["#7c1a3a", "#b22b4a", "#d99432", "#1f3a4a", "#3a5a3a"] },
+  { name: "Polaroid 1973",      bg: "#fcfaf4", colors: ["#a85a3a", "#d99a4a", "#7e9b6c", "#3a5a64", "#a32c4a"] }
 ];
 
 // Active palette (set per cycle in generateComposition).
@@ -458,6 +462,7 @@ const NAMES = (function buildNames() {
 })();
 
 let figures = [];
+let labeledFigures = []; // subset of `figures` that get a name + label
 let horizons = [];
 let phase = "render"; // "render" | "fadeIn" | "hold" | "fadeOut"
 let phaseStart = 0;
@@ -568,7 +573,7 @@ function draw() {
 function updateLabelOpacities(globalOpacity, currentPhase, phaseT) {
   for (let i = 0; i < labelEls.length; i++) {
     const el = labelEls[i];
-    const lab = figures[i].label;
+    const lab = labeledFigures[i].label;
     let op;
     if (currentPhase === "render" || currentPhase === "fadeIn") {
       // Labels stay hidden while the brush composition fades in.
@@ -636,9 +641,18 @@ function generateComposition() {
   horizons = buildHorizons();
 
   figures = [];
+  labeledFigures = [];
   const count = floor(random(5, 10));
   const baseY = height * random(0.45, 0.55);
   const cellW = width / count;
+
+  // Decide which figures get labels. Each figure rolls independently against
+  // LABEL_PROBABILITY; we then guarantee at least one labelled and at most
+  // count-1 labelled, so a composition always has both kinds.
+  const labelMask = [];
+  for (let i = 0; i < count; i++) labelMask.push(random() < LABEL_PROBABILITY);
+  if (!labelMask.some(Boolean)) labelMask[floor(random(count))] = true;
+  if (labelMask.every(Boolean)) labelMask[floor(random(count))] = false;
 
   const usedNames = new Set();
 
@@ -651,14 +665,19 @@ function generateComposition() {
     fig.cx = cx;
     fig.cy = cy;
     fig.size = size;
-
-    // Shape-aware naming: read the actual outline, choose a name whose tag
-    // profile best matches the figure's geometric character.
     fig.shapeTags = computeShapeTags(fig.verts);
-    fig.name = pickNameForTags(fig.shapeTags, usedNames);
-    usedNames.add(fig.name);
 
-    fig.label = buildLabelStyle(fig);
+    if (labelMask[i]) {
+      // Shape-aware naming: read the actual outline, choose a name whose tag
+      // profile best matches the figure's geometric character.
+      fig.name = pickNameForTags(fig.shapeTags, usedNames);
+      usedNames.add(fig.name);
+      fig.label = buildLabelStyle(fig);
+      labeledFigures.push(fig);
+    } else {
+      fig.name = null;
+      fig.label = null;
+    }
 
     figures.push(fig);
   }
@@ -826,13 +845,13 @@ function rebuildLabels() {
   while (labelsContainer.firstChild) {
     labelsContainer.removeChild(labelsContainer.firstChild);
   }
-  labelEls = new Array(figures.length);
+  labelEls = new Array(labeledFigures.length);
 
   // Pass 1: build elements with their type styles, append off-screen so we can
   // measure the rendered bounding box (rotation included via getBoundingClientRect).
   const items = [];
-  for (let i = 0; i < figures.length; i++) {
-    const fig = figures[i];
+  for (let i = 0; i < labeledFigures.length; i++) {
+    const fig = labeledFigures[i];
     const lab = fig.label;
     const el = document.createElement("div");
     el.className = "label";
