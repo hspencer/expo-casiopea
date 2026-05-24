@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Lissajous Cube</title>
+    <script src="../js/p5.min.js"></script>
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        overflow: hidden;
+        background: #ffffff;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica,
+          Arial, sans-serif;
+        color: #15151a;
+      }
+      #stage {
+        position: fixed;
+        inset: 0;
+      }
+      canvas {
+        display: block;
+      }
+      #panel {
+        position: fixed;
+        top: 12px;
+        left: 12px;
+        z-index: 10;
+        width: 240px;
+        max-width: calc(100vw - 24px);
+        max-height: calc(100vh - 24px);
+        overflow-y: auto;
+        background: rgba(255, 255, 255, 0.88);
+        backdrop-filter: blur(6px);
+        -webkit-backdrop-filter: blur(6px);
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        padding: 10px 12px 12px;
+        font-size: 12px;
+        line-height: 1.35;
+        user-select: none;
+      }
+      #panel header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        margin-bottom: 8px;
+      }
+      #panel h1 {
+        font-size: 12px;
+        font-weight: 600;
+        margin: 0;
+        letter-spacing: 0.02em;
+        text-transform: uppercase;
+        color: #15151a;
+      }
+      #panel button {
+        font: inherit;
+        background: transparent;
+        border: 1px solid rgba(0, 0, 0, 0.2);
+        border-radius: 4px;
+        padding: 2px 8px;
+        cursor: pointer;
+        color: #15151a;
+      }
+      #panel button:hover {
+        background: rgba(0, 0, 0, 0.05);
+      }
+      #panel.collapsed .controls {
+        display: none;
+      }
+      .control {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        align-items: center;
+        gap: 4px 8px;
+        margin-bottom: 6px;
+      }
+      .control label {
+        grid-column: 1 / 2;
+        color: #4a4a55;
+      }
+      .control .val {
+        grid-column: 2 / 3;
+        font-variant-numeric: tabular-nums;
+        color: #15151a;
+        font-weight: 500;
+      }
+      .control input[type="range"] {
+        grid-column: 1 / 3;
+        width: 100%;
+        accent-color: #15151a;
+        margin: 0;
+      }
+      .group {
+        border-top: 1px solid rgba(0, 0, 0, 0.08);
+        margin-top: 8px;
+        padding-top: 8px;
+      }
+      .group:first-of-type {
+        border-top: none;
+        margin-top: 0;
+        padding-top: 0;
+      }
+      .group-title {
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: #888;
+        margin: 0 0 6px;
+      }
+      .hint {
+        margin-top: 8px;
+        font-size: 10.5px;
+        color: #888;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="stage"></div>
+
+    <aside id="panel">
+      <header>
+        <h1>Lissajous Cube</h1>
+        <button id="toggle" type="button" aria-label="Colapsar panel">–</button>
+      </header>
+
+      <div class="controls">
+        <div class="group">
+          <p class="group-title">Curva</p>
+          <div class="control">
+            <label for="freqX">Frecuencia X</label>
+            <span class="val" id="freqX-val">3</span>
+            <input id="freqX" type="range" min="1" max="12" step="1" value="3" />
+          </div>
+          <div class="control">
+            <label for="freqY">Frecuencia Y</label>
+            <span class="val" id="freqY-val">2</span>
+            <input id="freqY" type="range" min="1" max="12" step="1" value="2" />
+          </div>
+          <div class="control">
+            <label for="freqZ">Frecuencia Z</label>
+            <span class="val" id="freqZ-val">5</span>
+            <input id="freqZ" type="range" min="1" max="12" step="1" value="5" />
+          </div>
+          <div class="control">
+            <label for="phase">Fase (π)</label>
+            <span class="val" id="phase-val">0.25</span>
+            <input id="phase" type="range" min="0" max="2" step="0.01" value="0.25" />
+          </div>
+        </div>
+
+        <div class="group">
+          <p class="group-title">Grafo</p>
+          <div class="control">
+            <label for="points">Puntos</label>
+            <span class="val" id="points-val">128</span>
+            <input id="points" type="range" min="16" max="256" step="4" value="128" />
+          </div>
+          <div class="control">
+            <label for="boxThick">Grosor centro</label>
+            <span class="val" id="boxThick-val">2</span>
+            <input id="boxThick" type="range" min="0.2" max="10" step="0.1" value="2" />
+          </div>
+          <div class="control">
+            <label for="endThick">Grosor extremo</label>
+            <span class="val" id="endThick-val">10</span>
+            <input id="endThick" type="range" min="1" max="30" step="0.5" value="10" />
+          </div>
+          <div class="control">
+            <label for="segments">Segmentos</label>
+            <span class="val" id="segments-val">7</span>
+            <input id="segments" type="range" min="3" max="20" step="1" value="7" />
+          </div>
+        </div>
+
+        <div class="group">
+          <p class="group-title">Escena</p>
+          <div class="control">
+            <label for="rotSpeed">Rotación</label>
+            <span class="val" id="rotSpeed-val">-0.005</span>
+            <input id="rotSpeed" type="range" min="-0.05" max="0.05" step="0.001" value="-0.005" />
+          </div>
+          <div class="control">
+            <label for="cubeStroke">Grosor guía</label>
+            <span class="val" id="cubeStroke-val">10</span>
+            <input id="cubeStroke" type="range" min="0" max="20" step="0.5" value="10" />
+          </div>
+          <div class="control">
+            <label for="showCube">Caja guía</label>
+            <span class="val"><input id="showCube" type="checkbox" checked /></span>
+          </div>
+        </div>
+
+        <p class="hint">Arrastra para orbitar · rueda para zoom</p>
+      </div>
+    </aside>
+
+    <script src="./sketch.js"></script>
+  </body>
+</html>
