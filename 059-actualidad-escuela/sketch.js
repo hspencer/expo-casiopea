@@ -28,7 +28,7 @@ const COLORES = {
   diseno:       "#F9664A",
   arquitectura: "#62BBD6",
   ambas:        "#B3B3B3",
-  neutro:       "#B3B3B3"   // magíster / sin carrera → gris también
+  neutro:       "#aa99bc"   // magíster / sin carrera → morado
 };
 
 // Color base (hex) según el conjunto de carreras de un curso.
@@ -277,10 +277,6 @@ function draw(){
     translate(pos.x, pos.y);
     rotate(p.body.angle);
 
-    // sombra suave sobre fondo claro
-    noStroke(); fill(0,0,0,28);
-    dibujarForma(p, 1, 3, 4);
-
     // cuerpo
     fill(p.color); stroke(0,0,0,55); strokeWeight(1);
     dibujarForma(p, 1, 0, 0);
@@ -289,7 +285,7 @@ function draw(){
     // Tamaño proporcional al elemento y al nº de letras (para que quepan).
     if (p.iniciales){
       const n = p.iniciales.length;
-      const ts = Math.min(p.radio * 1.05, (p.radio * 2.6) / n);
+      const ts = Math.min(p.radio * 1.05, (p.radio * 2.6) / n) * 0.7;  // 70%
       noStroke(); fill(p.colorLetra);
       textAlign(CENTER, CENTER);
       textStyle(BOLD);
@@ -297,10 +293,10 @@ function draw(){
       text(p.iniciales, 0, ts * 0.06);   // leve ajuste óptico vertical
     }
 
-    // la pieza SELECCIONADA queda con el borde marcado
+    // la pieza SELECCIONADA queda con el borde marcado, pegado al contorno
     if (seleccionada === p){
       noFill(); stroke(30,26,22,235); strokeWeight(2);
-      dibujarForma(p, 1.13, 0, 0);
+      dibujarForma(p, 1, 0, 0);
     }
     pop();
   }
