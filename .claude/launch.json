@@ -18,6 +18,12 @@
       "runtimeExecutable": "npx",
       "runtimeArgs": ["serve", ".", "-l", "3102"],
       "port": 3102
+    },
+    {
+      "name": "actualidad-escuela",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["serve", ".", "-l", "3103"],
+      "port": 3103
     }
   ]
 }
