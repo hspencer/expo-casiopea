@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Actualidad de la Escuela — Supernova de tiza</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@300;400;500;600&family=IBM+Plex+Sans:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+    <!-- p5.js + spectral + p5.brush locales (mismo patron que 057/058) -->
+    <script src="../js/p5.min.js"></script>
+    <script src="../js/spectral.min.js"></script>
+    <script src="../js/p5.brush.min.js"></script>
+    <style>
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+        overflow: hidden;
+        background: #04050a; /* cielo estelar negro (referente 3) */
+      }
+      canvas {
+        display: block;
+      }
+
+      /* Capa de etiquetas HTML: cada curso lleva su nombre completo dentro de
+         la figura de tiza. Son los elementos interactivos (rollover + click);
+         el contenedor no captura el mouse, solo las etiquetas. */
+      #labels {
+        position: absolute;
+        top: 0;
+        left: 0;
+        pointer-events: none;
+        z-index: 10;
+        opacity: 0;
+        transition: opacity 900ms ease;
+      }
+
+      .curso {
+        position: absolute;
+        transform: translate(-50%, -50%);
+        pointer-events: auto;
+        cursor: pointer;
+        text-align: center;
+        color: #f3f0ea;
+        font-family: "IBM Plex Sans Condensed", sans-serif;
+        font-weight: 400;
+        line-height: 1.04;
+        letter-spacing: 0.01em;
+        text-shadow: 0 0 6px rgba(0, 0, 0, 0.9), 0 0 2px rgba(0, 0, 0, 0.9);
+        text-decoration: none;
+        user-select: none;
+        transition: color 160ms ease, text-shadow 160ms ease,
+          letter-spacing 200ms ease;
+        will-change: left, top;
+      }
+      /* Rollover: el nombre se aviva como tiza recien trazada */
+      .curso:hover {
+        color: #ffffff;
+        letter-spacing: 0.05em;
+        text-shadow: 0 0 10px rgba(180, 150, 255, 0.7),
+          0 0 4px rgba(0, 0, 0, 0.95);
+      }
+
+      /* Titulo fijo del sketch, arriba a la izquierda */
+      #titulo {
+        position: fixed;
+        top: 22px;
+        left: 26px;
+        z-index: 20;
+        color: #e8e4dc;
+        font-family: "IBM Plex Sans Condensed", sans-serif;
+        pointer-events: none;
+        text-shadow: 0 0 8px rgba(0, 0, 0, 0.95);
+      }
+      #titulo .h {
+        font-size: 17px;
+        font-weight: 500;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        margin: 0;
+      }
+      #titulo .s {
+        font-size: 12px;
+        font-weight: 300;
+        opacity: 0.7;
+        margin: 3px 0 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="labels"></div>
+    <script src="./sketch.js"></script>
+  </body>
+</html>

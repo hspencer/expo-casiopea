@@ -1,0 +1,493 @@
+{
+  "anio": 2026,
+  "orbitas": [
+    "talleres-arquitectura",
+    "talleres-diseno",
+    "cursos-arquitectura",
+    "cursos-diseno",
+    "otros"
+  ],
+  "cursos": [
+    {
+      "titulo": "Acceder a la observación- Paralelo 1- S1",
+      "tituloRaw": "Acceder a la observación- Paralelo 1- S1 2026",
+      "alumnos": 52,
+      "tipo": "Taller de Etapa",
+      "carreras": [
+        "Arquitectura"
+      ],
+      "profesores": [
+        "Rodrigo Saavedra",
+        "Josefa Correa de la Torre"
+      ],
+      "url": "https://wiki.ead.pucv.cl/Acceder_a_la_observaci%C3%B3n-_Paralelo_1-_S1_2026",
+      "orbita": "talleres-arquitectura"
+    },
+    {
+      "titulo": "Taller Marginalidad Borde Costero y Ciudad Puerto",
+      "tituloRaw": "Taller Marginalidad Borde Costero y Ciudad Puerto 2026 S1",
+      "alumnos": 37,
+      "tipo": "Taller de Etapa",
+      "carreras": [
+        "Arquitectura"
+      ],
+      "profesores": [
+        "Jorge Ferrada"
+      ],
+      "url": "https://wiki.ead.pucv.cl/Taller_Marginalidad_Borde_Costero_y_Ciudad_Puerto_2026_S1",
+      "orbita": "talleres-arquitectura"
+    },
+    {
+      "titulo": "Taller de Investigación Proyectual S1",
+      "tituloRaw": "Taller de Investigación Proyectual S1 2026",
+      "alumnos": 32,
+      "tipo": "Taller de Etapa",
+      "carreras": [
+        "Arquitectura"
+      ],
+      "profesores": [
+        "Óscar Andrade",
+        "Álvaro Mercado",
+        "Raúl Castro"
+      ],
+      "url": "https://wiki.ead.pucv.cl/Taller_de_Investigaci%C3%B3n_Proyectual_S1_2026",
+      "orbita": "talleres-arquitectura"
+    },
+    {
+      "titulo": "Taller del Programa y Forma de la Edificación 1º Semestre",
+      "tituloRaw": "Taller del Programa y Forma de la Edificación 1º Semestre 2026: Taller de Obras",
+      "alumnos": 17,
+      "tipo": "Taller de Etapa",
+      "carreras": [
+        "Arquitectura"
+      ],
+      "profesores": [
+        "Andrés Garcés"
+      ],
+      "url": "https://wiki.ead.pucv.cl/Taller_del_Programa_y_Forma_de_la_Edificaci%C3%B3n_1%C2%BA_Semestre_2026:_Taller_de_Obras",
+      "orbita": "talleres-arquitectura"
+    },
+    {
+      "titulo": "Taller del Acto y el Vacío: Tamaño Arquitectónico del Interior - 1° Semestre",
+      "tituloRaw": "Taller del Acto y el Vacío: Tamaño Arquitectónico del Interior - 1° Semestre 2026",
+      "alumnos": 7,
+      "tipo": "Taller de Etapa",
+      "carreras": [
+        "Arquitectura"
+      ],
+      "profesores": [
+        "Alen Silva",
+        "Francisca Kemp"
+      ],
+      "url": "https://wiki.ead.pucv.cl/Taller_del_Acto_y_el_Vac%C3%ADo:_Tama%C3%B1o_Arquitect%C3%B3nico_del_Interior_-_1%C2%B0_Semestre_2026",
+      "orbita": "talleres-arquitectura"
+    },
+    {
+      "titulo": "Taller del Acto y del Vacío. La Casa en vertical: Altitud-Altura-Estatura 1S",
+      "tituloRaw": "Taller del Acto y del Vacío. La Casa en vertical: Altitud-Altura-Estatura 1S 2026",
+      "alumnos": 6,
+      "tipo": "Taller de Etapa",
+      "carreras": [
+        "Arquitectura"
+      ],
+      "profesores": [
+        "Erick Caro",
+        "Tomás José Herrera Bustos"
+      ],
+      "url": "https://wiki.ead.pucv.cl/Taller_del_Acto_y_del_Vac%C3%ADo._La_Casa_en_vertical:_Altitud-Altura-Estatura_1S_2026",
+      "orbita": "talleres-arquitectura"
+    },
+    {
+      "titulo": "Taller de Vivienda Colectiva 1° Semestre",
+      "tituloRaw": "Taller de Vivienda Colectiva 1° Semestre 2026",
+      "alumnos": 4,
+      "tipo": "Taller de Etapa",
+      "carreras": [
+        "Arquitectura"
+      ],
+      "profesores": [
+        "Iván Ivelic"
+      ],
+      "url": "https://wiki.ead.pucv.cl/Taller_de_Vivienda_Colectiva_1%C2%B0_Semestre_2026",
+      "orbita": "talleres-arquitectura"
+    },
+    {
+      "titulo": "Taller del acto y el vacío: Taller de la casa; lo holgado de un interior 1S",
+      "tituloRaw": "Taller del acto y el vacío: Taller de la casa; lo holgado de un interior 1S 2026",
+      "alumnos": 2,
+      "tipo": "Taller de Etapa",
+      "carreras": [
+        "Arquitectura"
+      ],
+      "profesores": [
+        "Anna Braghini",
+        "Maria Dolores Yañez"
+      ],
+      "url": "https://wiki.ead.pucv.cl/Taller_del_acto_y_el_vac%C3%ADo:_Taller_de_la_casa;_lo_holgado_de_un_interior_1S_2026",
+      "orbita": "talleres-arquitectura"
+    },
+    {
+      "titulo": "Taller del Barrio y Policentrismo Urbano 1S",
+      "tituloRaw": "Taller del Barrio y Policentrismo Urbano 1S 2026",
+      "alumnos": 1,
+      "tipo": "Taller de Etapa",
+      "carreras": [
+        "Arquitectura"
+      ],
+      "profesores": [
+        "Emanuela Di Felice"
+      ],
+      "url": "https://wiki.ead.pucv.cl/Taller_del_Barrio_y_Policentrismo_Urbano_1S_2026",
+      "orbita": "talleres-arquitectura"
+    },
+    {
+      "titulo": "Taller de Observación Fundamento y Forma",
+      "tituloRaw": "Taller de Observación Fundamento y Forma 2026 S1",
+      "alumnos": 87,
+      "tipo": "Taller de Etapa",
+      "carreras": [
+        "Diseño"
+      ],
+      "profesores": [
+        "Isidora Correa",
+        "Natalia Duimovic",
+        "Luis Saavedra",
+        "Eloísa Pizzagalli"
+      ],
+      "url": "https://wiki.ead.pucv.cl/Taller_de_Observaci%C3%B3n_Fundamento_y_Forma_2026_S1",
+      "orbita": "talleres-diseno"
+    },
+    {
+      "titulo": "Taller de Diseño de Interacción",
+      "tituloRaw": "Taller de Diseño de Interacción 2026",
+      "alumnos": 23,
+      "tipo": "Taller de Etapa",
+      "carreras": [
+        "Diseño"
+      ],
+      "profesores": [
+        "Javiera Ruiz",
+        "Katherine Exss"
+      ],
+      "url": "https://wiki.ead.pucv.cl/Taller_de_Dise%C3%B1o_de_Interacci%C3%B3n_2026",
+      "orbita": "talleres-diseno"
+    },
+    {
+      "titulo": "Taller de la Ocasión Editorial",
+      "tituloRaw": "Taller de la Ocasión Editorial 2026",
+      "alumnos": 21,
+      "tipo": "Taller de Etapa",
+      "carreras": [
+        "Diseño"
+      ],
+      "profesores": [
+        "Sylvia Arriagada"
+      ],
+      "url": "https://wiki.ead.pucv.cl/Taller_de_la_Ocasi%C3%B3n_Editorial_2026",
+      "orbita": "talleres-diseno"
+    },
+    {
+      "titulo": "Taller de personas y territorios",
+      "tituloRaw": "Taller de personas y territorios 2026",
+      "alumnos": 21,
+      "tipo": "Taller de Etapa",
+      "carreras": [
+        "Diseño"
+      ],
+      "profesores": [
+        "Leonardo Aravena"
+      ],
+      "url": "https://wiki.ead.pucv.cl/Taller_de_personas_y_territorios_2026",
+      "orbita": "talleres-diseno"
+    },
+    {
+      "titulo": "Taller de Algoritmos Cinéticos",
+      "tituloRaw": "Taller de Algoritmos Cinéticos 2026",
+      "alumnos": 20,
+      "tipo": "Taller de Etapa",
+      "carreras": [
+        "Diseño"
+      ],
+      "profesores": [
+        "Arturo Chicano"
+      ],
+      "url": "https://wiki.ead.pucv.cl/Taller_de_Algoritmos_Cin%C3%A9ticos_2026",
+      "orbita": "talleres-diseno"
+    },
+    {
+      "titulo": "Taller Ciudad Legible",
+      "tituloRaw": "Taller Ciudad Legible 2026",
+      "alumnos": 17,
+      "tipo": "Taller de Etapa",
+      "carreras": [
+        "Diseño"
+      ],
+      "profesores": [
+        "Michèle Wilkomirsky"
+      ],
+      "url": "https://wiki.ead.pucv.cl/Taller_Ciudad_Legible_2026",
+      "orbita": "talleres-diseno"
+    },
+    {
+      "titulo": "Taller de Tipografía",
+      "tituloRaw": "Taller de Tipografía 2026",
+      "alumnos": 17,
+      "tipo": "Taller de Etapa",
+      "carreras": [
+        "Diseño"
+      ],
+      "profesores": [
+        "Manuel Sanfuentes"
+      ],
+      "url": "https://wiki.ead.pucv.cl/Taller_de_Tipograf%C3%ADa_2026",
+      "orbita": "talleres-diseno"
+    },
+    {
+      "titulo": "Taller Topológico Multiescalar",
+      "tituloRaw": "Taller Topológico Multiescalar 2026",
+      "alumnos": 14,
+      "tipo": "Taller de Etapa",
+      "carreras": [
+        "Diseño"
+      ],
+      "profesores": [
+        "Marcelo Araya"
+      ],
+      "url": "https://wiki.ead.pucv.cl/Taller_Topol%C3%B3gico_Multiescalar_2026",
+      "orbita": "talleres-diseno"
+    },
+    {
+      "titulo": "Taller del Habitáculo",
+      "tituloRaw": "Taller del Habitáculo 2026",
+      "alumnos": 13,
+      "tipo": "Taller de Etapa",
+      "carreras": [
+        "Diseño"
+      ],
+      "profesores": [
+        "Alfred Thiers"
+      ],
+      "url": "https://wiki.ead.pucv.cl/Taller_del_Habit%C3%A1culo_2026",
+      "orbita": "talleres-diseno"
+    },
+    {
+      "titulo": "Taller del Hacer Visible",
+      "tituloRaw": "Taller del Hacer Visible 2026",
+      "alumnos": 13,
+      "tipo": "Taller de Etapa",
+      "carreras": [
+        "Diseño"
+      ],
+      "profesores": [
+        "Alejandro Garretón"
+      ],
+      "url": "https://wiki.ead.pucv.cl/Taller_del_Hacer_Visible_2026",
+      "orbita": "talleres-diseno"
+    },
+    {
+      "titulo": "Taller de Titulación: Personas, gráficas y territorios",
+      "tituloRaw": "Taller de Titulación: Personas, gráficas y territorios 2026",
+      "alumnos": 6,
+      "tipo": "Taller de Título",
+      "carreras": [
+        "Diseño"
+      ],
+      "profesores": [
+        "Michèle Wilkomirsky"
+      ],
+      "url": "https://wiki.ead.pucv.cl/Taller_de_Titulaci%C3%B3n:_Personas,_gr%C3%A1ficas_y_territorios_2026",
+      "orbita": "talleres-diseno"
+    },
+    {
+      "titulo": "Taller de Título Diseño de Interacción",
+      "tituloRaw": "Taller de Título Diseño de Interacción 2026",
+      "alumnos": 5,
+      "tipo": "Taller de Título",
+      "carreras": [
+        "Diseño"
+      ],
+      "profesores": [
+        "Katherine Exss"
+      ],
+      "url": "https://wiki.ead.pucv.cl/Taller_de_T%C3%ADtulo_Dise%C3%B1o_de_Interacci%C3%B3n_2026",
+      "orbita": "talleres-diseno"
+    },
+    {
+      "titulo": "Taller de Titulación",
+      "tituloRaw": "Taller de Titulación 2026",
+      "alumnos": 3,
+      "tipo": "Taller de Título",
+      "carreras": [
+        "Diseño"
+      ],
+      "profesores": [
+        "Alfred Thiers"
+      ],
+      "url": "https://wiki.ead.pucv.cl/Taller_de_Titulaci%C3%B3n_2026",
+      "orbita": "talleres-diseno"
+    },
+    {
+      "titulo": "Metodología de la Investigación",
+      "tituloRaw": "Metodología de la Investigación 2026 S1",
+      "alumnos": 30,
+      "tipo": "Ramo Lectivo",
+      "carreras": [
+        "Arquitectura"
+      ],
+      "profesores": [
+        "Adriana Marín",
+        "Tomás José Herrera Bustos"
+      ],
+      "url": "https://wiki.ead.pucv.cl/Metodolog%C3%ADa_de_la_Investigaci%C3%B3n_2026_S1",
+      "orbita": "cursos-arquitectura"
+    },
+    {
+      "titulo": "Poética General 1S",
+      "tituloRaw": "Poética General 1S 2026",
+      "alumnos": 47,
+      "tipo": "Ramo Lectivo",
+      "carreras": [
+        "Diseño"
+      ],
+      "profesores": [
+        "Jaime Reyes"
+      ],
+      "url": "https://wiki.ead.pucv.cl/Po%C3%A9tica_General_1S_2026",
+      "orbita": "cursos-diseno"
+    },
+    {
+      "titulo": "Aproximaciones Cualitativas y Cuantitativas a la Investigación S1",
+      "tituloRaw": "Aproximaciones Cualitativas y Cuantitativas a la Investigación S1 2026 - Diseño",
+      "alumnos": 32,
+      "tipo": "Ramo Lectivo",
+      "carreras": [
+        "Diseño"
+      ],
+      "profesores": [
+        "Adriana Marín"
+      ],
+      "url": "https://wiki.ead.pucv.cl/Aproximaciones_Cualitativas_y_Cuantitativas_a_la_Investigaci%C3%B3n_S1_2026_-_Dise%C3%B1o",
+      "orbita": "cursos-diseno"
+    },
+    {
+      "titulo": "Diseño de Experiencia de Usuario",
+      "tituloRaw": "Diseño de Experiencia de Usuario 2026",
+      "alumnos": 27,
+      "tipo": "Ramo Lectivo",
+      "carreras": [
+        "Diseño"
+      ],
+      "profesores": [
+        "Sofía Accatini"
+      ],
+      "url": "https://wiki.ead.pucv.cl/Dise%C3%B1o_de_Experiencia_de_Usuario_2026",
+      "orbita": "cursos-diseno"
+    },
+    {
+      "titulo": "Producción Gráfica",
+      "tituloRaw": "Producción Gráfica 2026",
+      "alumnos": 13,
+      "tipo": "Ramo Lectivo",
+      "carreras": [
+        "Diseño"
+      ],
+      "profesores": [
+        "Javiera Paris"
+      ],
+      "url": "https://wiki.ead.pucv.cl/Producci%C3%B3n_Gr%C3%A1fica_2026",
+      "orbita": "cursos-diseno"
+    },
+    {
+      "titulo": "Interacción & Performatividad",
+      "tituloRaw": "Interacción & Performatividad 2026",
+      "alumnos": 10,
+      "tipo": "Ramo Lectivo",
+      "carreras": [
+        "Diseño"
+      ],
+      "profesores": [
+        "Renzo Varela"
+      ],
+      "url": "https://wiki.ead.pucv.cl/Interacci%C3%B3n_%26_Performatividad_2026",
+      "orbita": "cursos-diseno"
+    },
+    {
+      "titulo": "Fabricación con Medios Digitales",
+      "tituloRaw": "Fabricación con Medios Digitales 2026",
+      "alumnos": 8,
+      "tipo": "Ramo Lectivo",
+      "carreras": [
+        "Diseño"
+      ],
+      "profesores": [
+        "Leonardo Aravena"
+      ],
+      "url": "https://wiki.ead.pucv.cl/Fabricaci%C3%B3n_con_Medios_Digitales_2026",
+      "orbita": "cursos-diseno"
+    },
+    {
+      "titulo": "Taller de Amereida",
+      "tituloRaw": "Taller de Amereida 2026",
+      "alumnos": 18,
+      "tipo": "Otro",
+      "carreras": [
+        "Arquitectura",
+        "Diseño"
+      ],
+      "profesores": [
+        "Carlos Covarrubias",
+        "Jaime Reyes",
+        "Isabel Margarita Reyes",
+        "Manuel Sanfuentes"
+      ],
+      "url": "https://wiki.ead.pucv.cl/Taller_de_Amereida_2026",
+      "orbita": "otros"
+    },
+    {
+      "titulo": "Comunicabilidad del proyecto creativo",
+      "tituloRaw": "Comunicabilidad del proyecto creativo 2026",
+      "alumnos": 9,
+      "tipo": "Ramo de Posgrado",
+      "carreras": [
+        "Magíster"
+      ],
+      "profesores": [
+        "Ursula Exss",
+        "Katherine Exss"
+      ],
+      "url": "https://wiki.ead.pucv.cl/Comunicabilidad_del_proyecto_creativo_2026",
+      "orbita": "otros"
+    },
+    {
+      "titulo": "Metodología de la Investigación Proyectual",
+      "tituloRaw": "Metodología de la Investigación Proyectual 2026",
+      "alumnos": 3,
+      "tipo": "Ramo de Posgrado",
+      "carreras": [
+        "Magíster"
+      ],
+      "profesores": [
+        "Daniela Salgado"
+      ],
+      "url": "https://wiki.ead.pucv.cl/Metodolog%C3%ADa_de_la_Investigaci%C3%B3n_Proyectual_2026",
+      "orbita": "otros"
+    },
+    {
+      "titulo": "Seminario de América 1. Semestre 1",
+      "tituloRaw": "Seminario de América 1. Semestre 1 2026",
+      "alumnos": 2,
+      "tipo": "Ramo de Posgrado",
+      "carreras": [
+        "Arquitectura",
+        "Diseño",
+        "Magíster",
+        "Otra"
+      ],
+      "profesores": [
+        "Jaime Reyes"
+      ],
+      "url": "https://wiki.ead.pucv.cl/Seminario_de_Am%C3%A9rica_1._Semestre_1_2026",
+      "orbita": "otros"
+    }
+  ]
+}
