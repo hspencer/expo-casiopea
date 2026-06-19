@@ -31,7 +31,7 @@ let hovered = null;
 let dim = 0;
 
 function altoDesdeAncho(w) {
-  return Math.floor(constrain(map(w, 380, 1000, 760, 500, true), 500, 760));
+  return Math.floor(constrain(map(w, 380, 1000, 836, 550, true), 550, 836));
 }
 
 function setup() {
@@ -283,7 +283,7 @@ function draw() {
 
   for (let i = orbitas.length - 1; i >= 0; i--) {
     const o = orbitas[i];
-    o.drift += o.vel;
+    o.drift -= o.vel;
     dibujarHorizonte(o, mx * o.depth, my * o.depth);
   }
 
@@ -305,14 +305,15 @@ function draw() {
 
   dim = lerp(dim, hovered ? 1 : 0, 0.18);
 
-  noFill();
   strokeWeight(1.5);
-  stroke(TIZA[0], TIZA[1], TIZA[2], 180);
+  stroke(TIZA[0], TIZA[1], TIZA[2], 89);
   for (const c of cursos) {
     if (!c.visible) continue;
     c.hov = lerp(c.hov, c === hovered ? 1 : 0, 0.18);
     const s = c.hov * 0.75;
     if (s < 0.02) continue;
+    if (c === hovered) fill(0, 0, 0, 170);
+    else noFill();
     beginShape();
     for (const v of c.poly) vertex(c.x + v[0] * s, c.y + v[1] * s);
     endShape(CLOSE);
@@ -355,74 +356,34 @@ function bordeInferiorY(x, t) {
 }
 
 function dibujarMascaraTornasol() {
-  const t = frameCount * 0.004;
-
+  const t = frameCount * 0.001;
   drawingContext.globalCompositeOperation = "destination-in";
   noStroke();
   fill(255);
   trazarMascaraInferior(t);
   drawingContext.globalCompositeOperation = "source-over";
-
-  blendMode(SCREEN);
-  noFill();
-  rimInferior(t - 0.12, 255, 45, 80);
-  rimInferior(t, 60, 255, 130);
-  rimInferior(t + 0.12, 80, 140, 255);
-  drawingContext.shadowBlur = 0;
-  drawingContext.shadowOffsetX = 0;
-  blendMode(BLEND);
 }
 
 function trazarMascaraInferior(t) {
   const m = 14;
-  const N = 150;
+  const N = 6;
   beginShape();
   vertex(-m, -m);
   vertex(W + m, -m);
-  for (let i = 0; i <= N; i++) {
-    const x = W + m - (i / N) * (W + 2 * m);
+  for (let i = N; i >= 0; i--) {
+    const x = (i / N) * W;
     vertex(x, bordeInferiorY(x, t));
   }
   endShape(CLOSE);
 }
 
-function rimInferior(t, r, g, b) {
-  const off = 100000;
-  const blur = 16;
-  drawingContext.shadowOffsetX = off;
-  drawingContext.shadowColor = `rgba(${r},${g},${b},0.85)`;
-  stroke(0);
-  push();
-  translate(-off, 0);
-  drawingContext.shadowBlur = blur * 1.6;
-  strokeWeight(16);
-  trazarLineaInferior(t);
-  drawingContext.shadowBlur = blur;
-  strokeWeight(8);
-  trazarLineaInferior(t);
-  pop();
-  drawingContext.shadowOffsetX = 0;
-  drawingContext.shadowBlur = 0;
-}
-
-function trazarLineaInferior(t) {
-  const N = 130;
-  beginShape();
-  curveVertex(-30, bordeInferiorY(0, t));
-  for (let i = 0; i <= N; i++) {
-    const x = (i / N) * W;
-    curveVertex(x, bordeInferiorY(x, t));
-  }
-  curveVertex(W + 30, bordeInferiorY(W, t));
-  endShape();
-}
 
 function dibujarHorizonte(o, ox, oy) {
   const N = 120;
   const a0 = ANG_UP - o.drawHalf - MARGEN;
   const a1 = ANG_UP + o.drawHalf + MARGEN;
   noFill();
-  stroke(TIZA[0], TIZA[1], TIZA[2], 178);
+  stroke(TIZA[0], TIZA[1], TIZA[2], 80);
   strokeWeight(1.1);
   beginShape();
   for (let i = 0; i <= N; i++) {
