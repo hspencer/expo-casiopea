@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Dendrita 3D adaptativa III - embed wiki</title>
+    <style>
+      body {
+        margin: 0;
+        background: #f4f1ea;
+      }
+      /* El contenedor manda el ancho; el sketch se dibuja cuadrado (alto = ancho). */
+      #p5 {
+        width: 100%;
+        max-width: 900px;
+        margin: 0 auto;
+      }
+      #p5 canvas {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Para incrustar en la wiki Casiopea basta con este contenedor mas la
+         carga de p5 y del sketch. El sketch NO usa p5.brush y es cuadrado
+         responsive: ocupa el ancho del contenedor y calcula el alto igual. -->
+    <div id="p5"></div>
+
+    <script src="../js/p5.min.js"></script>
+    <script src="./sketch.js"></script>
+  </body>
+</html>

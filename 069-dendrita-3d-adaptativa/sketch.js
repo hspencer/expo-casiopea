@@ -93,6 +93,7 @@ function setup() {
   lado = anchoContenedor();
   const c = createCanvas(lado, lado, WEBGL);
   c.parent("p5");
+  c.style('border-radius', '50%');
   pixelDensity(Math.min(displayDensity(), 2));
   calcularGeometria();
   observarVisibilidad(cont);
@@ -102,7 +103,7 @@ function setup() {
 
 // calcularGeometria
 function calcularGeometria() {
-  R = (lado / 2) * 0.82;
+  R = (lado / 2) * 0.83;
 }
 
 // observarTamano
