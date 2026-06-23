@@ -60,6 +60,7 @@ const SENS_DRAG = 0.01;
 
 // --- Estado -------------------------------------------------------------
 let lado, R;
+let canvasElt;
 let nodos = [];    // {x, y, z, vx, vy, vz, hijos}
 let aristas = [];  // {a, b, rest}
 let claves = null;
@@ -94,6 +95,32 @@ function setup() {
   const c = createCanvas(lado, lado, WEBGL);
   c.parent("p5");
   c.style('border-radius', '50%');
+  canvasElt = c.elt;
+  canvasElt.setAttribute('tabindex', '0');
+  canvasElt.focus();
+  canvasElt.addEventListener('keydown', function (ev) {
+    const k = ev.key;
+    if (k === ' ') {
+      reiniciar();
+      loop();
+      ev.preventDefault();
+    } else if (k.toLowerCase() === 'p') {
+      if (fase !== 'congelado') {
+        if (pausado) {
+          totalPausa += millis() - tPausaInicio;
+          pausado = false;
+        } else {
+          tPausaInicio = millis();
+          pausado = true;
+        }
+      }
+      ev.preventDefault();
+    } else if (k.toLowerCase() === 'e') {
+      soloAristas = !soloAristas;
+      if (fase === 'congelado') redraw();
+      ev.preventDefault();
+    }
+  });
   pixelDensity(Math.min(displayDensity(), 2));
   calcularGeometria();
   observarVisibilidad(cont);
@@ -103,7 +130,7 @@ function setup() {
 
 // calcularGeometria
 function calcularGeometria() {
-  R = (lado / 2) * 0.83;
+  R = (lado / 2) * 0.86;
 }
 
 // observarTamano
@@ -168,30 +195,7 @@ function reiniciar() {
   soloAristas = false;
 }
 
-// keyPressed — ESPACIO reinicia, P pausa/reanuda, E alterna modo aristas
-function keyPressed() {
-  if (key === ' ') {
-    reiniciar();
-    loop();
-    return false;
-  }
-  if (key.toLowerCase() === 'p') {
-    if (fase === 'congelado') return false;
-    if (pausado) {
-      totalPausa += millis() - tPausaInicio; // descuenta el tiempo pausado
-      pausado = false;
-    } else {
-      tPausaInicio = millis();
-      pausado = true;
-    }
-    return false;
-  }
-  if (key.toLowerCase() === 'e') {
-    soloAristas = !soloAristas;
-    if (fase === 'congelado') redraw();
-    return false;
-  }
-}
+// keyPressed — manejado por listener nativo en el canvas (setup)
 
 // claveArista
 function claveArista(a, b) {
@@ -542,7 +546,10 @@ function sobreCanvas() {
 
 // mousePressed
 function mousePressed() {
-  if (sobreCanvas()) arrastrando = true;
+  if (sobreCanvas()) {
+    arrastrando = true;
+    canvasElt.focus();
+  }
 }
 
 // mouseReleased
