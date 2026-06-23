@@ -29,9 +29,10 @@ let cargando = true;
 let huboError = false;
 let hovered = null;
 let dim = 0;
+let velScale = 1;
 
 function altoDesdeAncho(w) {
-  return Math.floor(constrain(map(w, 380, 1000, 836, 550, true), 550, 836));
+  return Math.floor(constrain(map(w, 380, 1000, 960, 620, true), 620, 960));
 }
 
 function setup() {
@@ -210,7 +211,7 @@ function definirGeometria() {
       c.orbitaRef = o;
       const t = (c.alumnos - minA) / Math.max(maxA - minA, 1);
       c.sizeR = lerp(22, 70, Math.sqrt(t));
-      c.poly = generarPoligono(c.sizeR * 1.6 + 55, c.alumnos + k);
+      c.poly = generarPoligono(c.sizeR * 2.2 + 80, c.alumnos + k);
       c.x = 0;
       c.y = 0;
       c.zoom = 1;
@@ -221,14 +222,15 @@ function definirGeometria() {
 }
 
 function generarPoligono(rad, semilla) {
-  const n = floor(random(7, 11));
-  const verts = [];
+  const n = floor(random(7, 13));
+  const raw = [];
   for (let i = 0; i < n; i++) {
-    const ang = (TWO_PI / n) * i + random(-0.16, 0.16);
-    const rr = rad * (0.82 + 0.24 * noise(semilla + cos(ang) * 1.6, semilla + sin(ang) * 1.6));
-    verts.push([cos(ang) * rr, sin(ang) * rr]);
+    const ang = (TWO_PI / n) * i + random(-0.45, 0.45);
+    const rr = rad * (0.50 + 0.58 * noise(semilla + cos(ang) * 2.2, semilla + sin(ang) * 2.2));
+    raw.push([cos(ang) * rr, sin(ang) * rr, ang]);
   }
-  return verts;
+  raw.sort(function (a, b) { return a[2] - b[2]; });
+  return raw.map(function (v) { return [v[0], v[1]]; });
 }
 
 function envolver(ang, centro, semi) {
@@ -281,9 +283,10 @@ function draw() {
   const mx = map(mouseX, 0, W, 1, -1, true) * 26;
   const my = map(mouseY, 0, H, 1, -1, true) * 14;
 
+  velScale = lerp(velScale, hovered ? 0.02 : 1.0, 0.04);
   for (let i = orbitas.length - 1; i >= 0; i--) {
     const o = orbitas[i];
-    o.drift -= o.vel;
+    o.drift -= o.vel * velScale;
     dibujarHorizonte(o, mx * o.depth, my * o.depth);
   }
 
@@ -305,35 +308,40 @@ function draw() {
 
   dim = lerp(dim, hovered ? 1 : 0, 0.18);
 
-  strokeWeight(1.5);
-  stroke(TIZA[0], TIZA[1], TIZA[2], 89);
+  // actualizar hov para todos
   for (const c of cursos) {
     if (!c.visible) continue;
     c.hov = lerp(c.hov, c === hovered ? 1 : 0, 0.18);
+  }
+
+  // 1. polígonos de fondo (no-hovered)
+  strokeWeight(1.5);
+  stroke(TIZA[0], TIZA[1], TIZA[2], 89);
+  noFill();
+  for (const c of cursos) {
+    if (!c.visible) continue;
+    if (c === hovered) continue;
     const s = c.hov * 0.75;
     if (s < 0.02) continue;
-    if (c === hovered) fill(0, 0, 0, 170);
-    else noFill();
     beginShape();
     for (const v of c.poly) vertex(c.x + v[0] * s, c.y + v[1] * s);
     endShape(CLOSE);
   }
-  cursor(hovered ? "pointer" : "default");
 
+  // 2. textos no-hovered
   textAlign(CENTER, CENTER);
   textSize(TEXTO);
   textLeading(TEXTO * 1.1);
   noStroke();
   for (const c of cursos) {
     if (!c.visible) continue;
-    const grande = c === hovered;
-    c.zoom = lerp(c.zoom, grande ? 1.18 : 1, 0.2);
+    if (c === hovered) continue;
+    c.zoom = lerp(c.zoom, 1, 0.2);
     const boxW = 124;
     const boxH = 92;
     drawingContext.shadowColor = "rgba(0,0,0,0.9)";
     drawingContext.shadowBlur = 6;
-    const alpha = grande ? 255 : lerp(225, 128, dim);
-    fill(255, 255, 255, alpha);
+    fill(255, 255, 255, lerp(225, 128, dim));
     push();
     translate(c.x, c.y);
     scale(c.zoom);
@@ -341,6 +349,36 @@ function draw() {
     pop();
     drawingContext.shadowBlur = 0;
   }
+
+  // 3. hovered al frente: polígono + texto encima de todo
+  if (hovered) {
+    const c = hovered;
+    const s = c.hov * 0.75;
+    strokeWeight(1.5);
+    stroke(TIZA[0], TIZA[1], TIZA[2], 89);
+    fill(0, 0, 0, 170);
+    beginShape();
+    for (const v of c.poly) vertex(c.x + v[0] * s, c.y + v[1] * s);
+    endShape(CLOSE);
+
+    c.zoom = lerp(c.zoom, 1.18, 0.2);
+    const boxW = 124;
+    const boxH = 92;
+    textAlign(CENTER, CENTER);
+    textSize(TEXTO);
+    textLeading(TEXTO * 1.1);
+    noStroke();
+    drawingContext.shadowColor = "rgba(0,0,0,0.9)";
+    drawingContext.shadowBlur = 6;
+    fill(255, 255, 255, 255);
+    push();
+    translate(c.x, c.y);
+    scale(c.zoom);
+    text(c.titulo, -boxW / 2, -boxH / 2, boxW, boxH);
+    pop();
+    drawingContext.shadowBlur = 0;
+  }
+  cursor(hovered ? "pointer" : "default");
 
   dibujarMascaraTornasol();
   blendMode(BLEND);
@@ -383,7 +421,7 @@ function dibujarHorizonte(o, ox, oy) {
   const a0 = ANG_UP - o.drawHalf - MARGEN;
   const a1 = ANG_UP + o.drawHalf + MARGEN;
   noFill();
-  stroke(TIZA[0], TIZA[1], TIZA[2], 80);
+  stroke(TIZA[0], TIZA[1], TIZA[2], 80  );
   strokeWeight(1.1);
   beginShape();
   for (let i = 0; i <= N; i++) {
