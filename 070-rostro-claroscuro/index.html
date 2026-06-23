@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Rostro poligonal - embed wiki</title>
+    <style>
+      body {
+        margin: 0;
+        background: #777;
+        display: flex;
+        min-height: 100vh;
+        align-items: center;
+        justify-content: center;
+      }
+      /* Sketch cuadrado fijo de 300x300, alto contraste B/N. */
+      #p5 {
+        width: 300px;
+        height: 300px;
+      }
+      #p5 canvas {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Para incrustar en la wiki Casiopea basta con este contenedor mas la
+         carga de p5 y del sketch. Click sobre el lienzo regenera el rostro. -->
+    <div id="p5"></div>
+
+    <script src="../js/p5.min.js"></script>
+    <script src="./sketch.js"></script>
+  </body>
+</html>

@@ -24,6 +24,12 @@
       "runtimeExecutable": "npx",
       "runtimeArgs": ["serve", ".", "-l", "3103"],
       "port": 3103
+    },
+    {
+      "name": "rostro-claroscuro",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["serve", ".", "-l", "3104"],
+      "port": 3104
     }
   ]
 }
